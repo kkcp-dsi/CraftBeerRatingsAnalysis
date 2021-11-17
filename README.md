@@ -1,4 +1,4 @@
-# Craft Beer Ratings Analysis
+# [Craft Beer Ratings Analysis](https://kkcp-dsi.github.io/CraftBeerRatingsAnalysis/)
 
 As we both are Craft Beer Enthusiasts, we decided to analyze ratings
 that were given out to the beers from all the independent breweries in
