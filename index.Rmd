@@ -1,6 +1,6 @@
 --- 
-title: "YOUR TITLE HERE"
-author: "YOUR NAMES HERE"
+title: "Craft Beer Ratings Analysis"
+author: "Krishna Kalluri, Chao Pang"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
