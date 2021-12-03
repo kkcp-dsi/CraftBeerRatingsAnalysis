@@ -1,0 +1,29 @@
+---
+title: "Missing_values"
+author: "Chao Pang, Krishna Kalluri"
+date: "12/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+source("plot_missing.R")
+```
+
+```{r}
+all_beers <- read_csv("../data/all_beers.csv")
+all_breweries <- read_csv("../data/all_breweries.csv")
+```
+
+```{r}
+plot_missing(all_beers)
+```
+
+```{r}
+source("plot_missing.R")
+plot_missing(all_breweries)
+```
