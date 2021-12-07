@@ -20,3 +20,11 @@ population_data <- read_csv('../data/us_population_by_state_2020.csv')
 ```{r}
 population_data
 ```
+
+```{r}
+temperature_data <- read_csv('../data/us_avg_temperature_by_state.csv')
+```
+
+```{r}
+temperature_data
+```
