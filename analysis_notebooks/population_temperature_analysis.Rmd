@@ -1,0 +1,22 @@
+---
+title: "population_analysis"
+author: "Chao Pang, Krishna Kalluri"
+date: "12/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library('tidyverse')
+```
+
+```{r}
+population_data <- read_csv('../data/us_population_by_state_2020.csv')
+```
+
+```{r}
+population_data
+```
