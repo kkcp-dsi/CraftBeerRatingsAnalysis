@@ -1,0 +1,45 @@
+---
+title: "init_analysis"
+author: "Chao Pang, Krihsna Kalluri"
+date: "12/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+folder_path <- paste(getwd(), 'data', sep='/')
+all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
+all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
+```
+
+Clean up the data
+
+Below we cleaned up the beer_abv column by removing the characters % ABV.
+
+```{r}
+cleaned_all_beers <- all_beers %>% 
+  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
+  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu))))
+```
+
+```{r}
+
+ggplot(cleaned_all_beers, aes(x=beer_average_rating)) +
+  geom_histogram(bins = 50)
+```
+
+```{r}
+cleaned_all_beers %>%
+  group_by(beer_style) %>%
+  count() %>%
+  ungroup() %>%
+  arrange(desc(n)) %>%
+  top_n(100)
+```
