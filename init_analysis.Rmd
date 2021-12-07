@@ -36,10 +36,47 @@ ggplot(cleaned_all_beers, aes(x=beer_average_rating)) +
 ```
 
 ```{r}
-cleaned_all_beers %>%
+top_most_popular_beer_styles <- cleaned_all_beers %>%
+  drop_na(beer_average_rating) %>%
   group_by(beer_style) %>%
-  count() %>%
+  summarise(freq=n(), style_average_rating=mean(beer_average_rating)) %>%
   ungroup() %>%
-  arrange(desc(n)) %>%
-  top_n(100)
+  arrange(desc(freq)) %>%
+  mutate(rn=row_number()) %>%
+  filter(rn <= 50)
+
+ggplot(top_most_popular_beer_styles, aes(x=freq, y=fct_reorder(beer_style, freq))) +
+  geom_point() + 
+  ggtitle("Top 50 most popular beer styles") + 
+  xlab("Num of beers") + 
+  ylab("Beer style")
+```
+
+```{r}
+most_popular_beer_ratings <- top_most_popular_beer_styles %>% 
+  inner_join(cleaned_all_beers, on = beer_style) %>%
+  drop_na(beer_average_rating)
+  
+ggplot(most_popular_beer_ratings, aes(x=beer_average_rating, y= fct_reorder(beer_style, beer_average_rating))) +
+  geom_boxplot() + 
+  ggtitle("Boxplots of beer ratings for the top 50 most popular beer styles") + 
+  xlab("Beer rating") + 
+  ylab("Beer style")
+```
+
+```{r}
+cleaned_all_beers %>%
+  drop_na(c(beer_num_ratings, beer_average_rating)) %>%
+  inner_join(top_most_popular_beer_styles, on=beer_style) %>%
+  
+ggplot(aes(x=beer_num_ratings, y=beer_average_rating)) +
+  geom_point(alpha=0.2)
+```
+
+```{r}
+pairs(cleaned_all_beers %>%
+  filter(beer_abv <= 20) %>%
+  filter(beer_ibu <= 400) %>%
+  select(c(beer_abv, beer_ibu, beer_average_rating, beer_num_ratings)) %>%
+  drop_na())
 ```
