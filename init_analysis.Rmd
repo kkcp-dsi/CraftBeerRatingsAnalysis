@@ -26,7 +26,9 @@ Below we cleaned up the beer_abv column by removing the characters % ABV.
 ```{r}
 cleaned_all_beers <- all_beers %>% 
   mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
-  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu))))
+  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
+  mutate(beer_dated=as.Date(beer_added, format = "%m/%d/%y")) %>%
+  mutate(year=format(beer_dated, format="%Y"))
 ```
 
 ```{r}
@@ -43,11 +45,12 @@ top_most_popular_beer_styles <- cleaned_all_beers %>%
   ungroup() %>%
   arrange(desc(freq)) %>%
   mutate(rn=row_number()) %>%
-  filter(rn <= 50)
+  filter(rn <= 20) %>%
+  mutate(beer_style=fct_reorder(factor(beer_style), rn))
 
 ggplot(top_most_popular_beer_styles, aes(x=freq, y=fct_reorder(beer_style, freq))) +
   geom_point() + 
-  ggtitle("Top 50 most popular beer styles") + 
+  ggtitle("Top 20 most popular beer styles") + 
   xlab("Num of beers") + 
   ylab("Beer style")
 ```
@@ -59,7 +62,7 @@ most_popular_beer_ratings <- top_most_popular_beer_styles %>%
   
 ggplot(most_popular_beer_ratings, aes(x=beer_average_rating, y= fct_reorder(beer_style, beer_average_rating))) +
   geom_boxplot() + 
-  ggtitle("Boxplots of beer ratings for the top 50 most popular beer styles") + 
+  ggtitle("Boxplots of beer ratings for the top 20 most popular beer styles") + 
   xlab("Beer rating") + 
   ylab("Beer style")
 ```
@@ -79,4 +82,84 @@ pairs(cleaned_all_beers %>%
   filter(beer_ibu <= 400) %>%
   select(c(beer_abv, beer_ibu, beer_average_rating, beer_num_ratings)) %>%
   drop_na())
+```
+
+```{r}
+cleaned_all_beers %>% 
+  inner_join(top_most_popular_beer_styles, on=beer_style) %>%
+  drop_na(c(beer_average_rating, year)) %>%
+  select(beer_style, year) %>%
+  group_by(beer_style, year) %>%
+  summarise(freq=n()) %>%
+  ungroup() %>%
+
+  
+ggplot(loans_full_schema, aes(loan_amount, reorder(loan_purpose, loan_amount, FUN = median))) + 
+  geom_density_ridges() + 
+  labs(title="Ridgelines of loan amount (x) by different loan purposes (y)")
+  
+ggplot(aes(year, freq)) + 
+  geom_point() +
+  facet_wrap(~beer_style, scales="free_y")
+```
+
+```{r}
+test <- top_most_popular_beer_styles %>%
+  mutate(beer_style=fct_reorder(factor(beer_style), rn))
+  
+```
+
+```{r}
+facted_hist_input <- cleaned_all_beers %>% 
+  inner_join(top_most_popular_beer_styles, on=beer_style) %>%
+  drop_na(c(beer_average_rating, year)) %>%
+  select(beer_style, beer_added, year, rn) %>%
+  mutate(year=as.double(year)) %>%
+  mutate(beer_style=factor(beer_style))
+  
+ggplot(facted_hist_input, aes(year)) + 
+  geom_bar()  + 
+  facet_wrap(~fct_reorder(facted_hist_input$beer_style, facted_hist_input$rn))
+```
+
+```{r}
+facted_hist_input %>% 
+  group_by(beer_style, year) %>%
+  summarise(freq=n()) %>%
+  ungroup() %>%
+
+ggplot(aes(year, freq)) +
+  geom_line() + 
+  facet_wrap(~beer_style)
+```
+
+```{r}
+cleaned_all_breweries <- all_breweries %>%
+  filter(num_of_beers >= 10) %>%
+  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
+```
+
+```{r}
+cleaned_all_breweries %>%
+  group_by(state) %>%
+  summarise(freq=n(), 
+            state_mean_rating=mean(average_rating), 
+            state_median_rating=median(average_rating), 
+            state_mean_num_of_ratings=mean(num_of_ratings), 
+            state_median_num_of_ratings=median(num_of_ratings)) %>%
+  ungroup() %>%
+  
+  ggplot(aes(state_mean_rating, state_mean_num_of_ratings)) +
+    geom_point()
+```
+
+```{r}
+cleaned_all_breweries %>%
+  group_by(state) %>%
+  arrange(desc(average_rating)) %>%
+  slice(1:2) %>%
+  ungroup() %>%
+  
+ggplot(aes(x=average_rating, y=fct_reorder(state, average_rating, .fun=max))) +
+  geom_point()
 ```
