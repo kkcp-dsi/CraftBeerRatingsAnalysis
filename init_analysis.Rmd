@@ -116,7 +116,7 @@ ggplot(facted_hist_input, aes(year)) +
 ```
 
 ```{r}
-heatmap_input <- most_popular_beer_ratings %>%
+parallel_coord_input <- most_popular_beer_ratings %>%
   select(beer_style, beer_abv, beer_ibu, beer_average_rating, beer_num_ratings, year) %>%
   mutate(year=as.integer(year)) %>%
   drop_na() %>% 
@@ -124,7 +124,7 @@ heatmap_input <- most_popular_beer_ratings %>%
   filter(beer_ibu <= 400)
   
 
-GGally::ggparcoord(heatmap_input, 
+GGally::ggparcoord(parallel_coord_input, 
                    columns=2:5, 
                    scale='uniminmax', 
                    alphaLines = 0.2, 
@@ -296,5 +296,23 @@ state_choropleth(new_england_by_state,
                  num_colors = 1,
                  title = "No of Breweries per State in 2021",
                  legend = "count")
+```
+```{r, fig.height=8, fig.width=10}
+most_popular_beer_ratings %>%
+  filter(rn <= 10) %>%
+  mutate(state=gsub('[_]', ' ', state)) %>%
+  group_by(state, beer_style) %>%
+  summarise(freq=n(), rn=min(rn)) %>%
+  mutate(freq=scale(freq)) %>%
+
+ggplot(aes(fct_reorder(beer_style, rn), fct_rev(fct_infreq(state)), fill=freq)) +
+  geom_tile(color="white") + 
+  theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(), 
+    axis.line = element_line(colour = "black")
+  ) + 
+  scale_x_discrete(labels = abbreviate)
 ```
 
