@@ -77,7 +77,11 @@
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#to-formulate-our-questions-below"><i class="fa fa-check"></i><b>1.1</b> To formulate our questions below,</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span><strong>OpenBreweryDB</strong></span> </a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span><strong>Untappd</strong></span></a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
@@ -104,7 +108,63 @@
             <section class="normal" id="section-">
 <div id="data-sources" class="section level1" number="2">
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
+<p>To answer these questions, we’ve obtained data from two sources <code>OpenBreweryDB</code> and <code>Untappd</code>, which we will describe in detail in the following sections. We are still working on obtaining the ingredients of beers, depending on whether or not we will actually acquire the data, our questions may be subject to changes. </p>
+<div id="openbrewerydb" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> <a href="https://openbrewerydb.org"><strong>OpenBreweryDB</strong></a> </h2>
+<p>Open Brewery DB is a free dataset and API with public information on breweries, cideres, brewpubs, and bottle shops. We downloaded lists of breweries per state using the <code>OpenBreweryDB</code> API.</p>
+<p><a href="https://www.openbrewerydb.org/documentation/01-listbreweries">List Breweries API</a></p>
+<p><strong>Sample Data:</strong></p>
+<pre><code>## # A tibble: 10 × 25
+##    obdb_id   name   brewery_type street   address_2 address_3 city  state county_province postal_code website_url phone
+##    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;     &lt;lgl&gt;     &lt;chr&gt; &lt;chr&gt; &lt;lgl&gt;           &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;
+##  1 claremon… Clare… micro        1420 N … NA        NA        Clar… Cali… NA              91711-3528  http://www… 9096…
+##  2 palmetto… Palme… regional     289 Hug… NA        NA        Char… Sout… NA              29403-4560  http://www… 8439…
+##  3 the-craf… The C… micro        21140 A… NA        NA        Ashb… Virg… NA              20147       http://www… 7036…
+##  4 lazyg-br… LazyG… planning     &lt;NA&gt;     NA        NA        Pres… Ariz… NA              86303-4270  &lt;NA&gt;        4806…
+##  5 basic-ci… Basic… micro        1010 E … NA        NA        Wayn… Virg… NA              22980-5855  http://www… 8162…
+##  6 dempseys… Demps… brewpub      50 E Wa… NA        NA        Peta… Cali… NA              94952-3115  http://www… 7077…
+##  7 brewers-… Brewe… brewpub      48329 E… NA        NA        Oakr… Oreg… NA              97463-9700  http://www… 5417…
+##  8 skagway-… Skagw… brewpub      641 Bro… NA        NA        Skag… Alas… NA              99840-9800  http://www… 9079…
+##  9 jacks-br… Jack&#39;… brewpub      39176 A… NA        NA        Frem… Cali… NA              94538-1304  &lt;NA&gt;        5107…
+## 10 obed-and… Obed … micro        500 S 6… NA        NA        Spri… Illi… NA              62701-1810  http://www… 2176…
+## # … with 13 more variables: country &lt;chr&gt;, longitude &lt;dbl&gt;, latitude &lt;dbl&gt;, tags &lt;lgl&gt;, brewery_id &lt;chr&gt;,
+## #   average_rating &lt;dbl&gt;, num_of_ratings &lt;dbl&gt;, num_of_beers &lt;dbl&gt;, total_check_ins &lt;chr&gt;,
+## #   unique_user_check_ins &lt;chr&gt;, last_four_week_check_ins &lt;dbl&gt;, brewery_desc &lt;chr&gt;, brewery &lt;chr&gt;</code></pre>
+<p>We used the brewery names downloaded from OpenBreweryDB as queries to get the list of beers and their corresponding aggregated rating information from the Untappd.</p>
+</div>
+<div id="untappd" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> <a href="https://untappd.com/"><strong>Untappd</strong></a></h2>
+<p>Untappd is a social network for beer enthusiasts that allows its users to check-in as they drink beers, share these check-ins, and option to rate the beer they are consuming, earn badges, share pictures of their beers, comment on checked-in beers. It also allows Breweries to officially post the beers that they produce. (paraphrased the definition from Wikipedia).</p>
+<p><a href="./brewery_beer_parser/beer_scrapping.py">Beer Data Web Scrapper</a></p>
+<p>We web scraped the rating information for the top 24 most popular beers for each brewery on Untappd for all the states in US. Because the brewery name downloaded from OpenBreweryDB is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, then retrieved the top 24 most popular beers associated with that brewery. We Added State and Brewery name to beer dataset ion order to make it easy for us to join brewery data to beer data.</p>
+<p>We built a parser to get the list of beers from untappd using Python as we started scrapping data earlier than when we were introduced to web scrapping in R.</p>
+<p><strong>Sample Data:</strong></p>
+<pre><code>## # A tibble: 20 × 11
+##    brewery state beer_url beer_name beer_style beer_desc beer_abv beer_ibu beer_average_ra… beer_num_ratings beer_added
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;               &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;     
+##  1 CraftH… Neva… https:/… Neon Emp… IPA - Red  Enticing… 7.8% ABV 60 IBU               3.74              655 10/20/17  
+##  2 Sunriv… Oreg… https:/… Emotiona… IPA - New… This haz… 6.8% ABV 40 IBU               3.99             1180 06/09/18  
+##  3 Revela… Dela… https:/… Mamajuana Brown Ale… Brewed w… 4.5% ABV 23 IBU               3.61             2063 08/25/16  
+##  4 Roofto… Wash… https:/… Oatmeal … Stout - O… This cla… 6.5% ABV 34 IBU               3.64              436 02/13/16  
+##  5 Stick_… Penn… https:/… Syncro    IPA - Ses… Barley a… 4.9% ABV N/A IBU              3.99              175 09/10/20  
+##  6 Five_S… Cali… https:/… The Way   IPA - New… The haze… 6.7% ABV 31 IBU               3.72               54 04/26/21  
+##  7 South_… Wisc… https:/… Annivers… Extra Spe… Modeled … 5.9% ABV 35 IBU               3.57              357 06/04/12  
+##  8 Shelte… New_… https:/… Me So Ho… IPA - Imp… &lt;NA&gt;      8.1% ABV N/A IBU              3.41               29 08/06/15  
+##  9 Hellto… Penn… https:/… Idle Han… IPA - Imp… &lt;NA&gt;      8% ABV   N/A IBU              3.93            10614 01/22/12  
+## 10 Wishfu… Illi… https:/… Dubbel D… Belgian D… A Belgia… 7.2% ABV 17 IBU               3.94               35 07/27/19  
+## 11 Rants_… Idaho https:/… Cowpoke … Porter - … This Ame… 6.3% ABV 32 IBU               3.67              252 10/06/16  
+## 12 BJs_Re… Colo… https:/… Harvest … Wheat  - … Not just… 4.9% ABV 15 IBU               3.55            34550 08/21/10  
+## 13 Tin_Wh… Minn… https:/… Rainbow … Sour - Ot… Rainbow … 4.1% ABV 10 IBU               3.82              366 07/11/20  
+## 14 Danger… Flor… https:/… Zindulge… Blonde Ale Zindulge… 6% ABV   N/A IBU              3.76               65 10/10/19  
+## 15 Dirt_F… Virg… https:/… Purple D… Fruit      Light Al… 4.7% ABV 13 IBU               3.54              225 07/08/17  
+## 16 DC_Bra… Dist… https:/… Brau Pils Pilsner -… Brau Pil… 4.5% ABV N/A IBU              3.28            18247 04/04/15  
+## 17 Portic… Mass… https:/… Fuzzy Wh… Kölsch     &lt;NA&gt;      5.4% ABV N/A IBU              3.39               21 08/25/13  
+## 18 Nickel… Nort… https:/… Choco Fu… Stout - C… &lt;NA&gt;      7.9% ABV N/A IBU              3.6               134 12/28/19  
+## 19 Great_… New_… https:/… Pils Bey… Pilsner -… This pil… 5.6% ABV N/A IBU              3.79              110 02/28/18  
+## 20 Birmin… Alab… https:/… Imperial… Sour - Fr… “Imperia… 7.2% ABV N/A IBU              4.18              190 08/28/20</code></pre>
+<p>** We did check <a href="https://untapped.com/robots.txt" class="uri">https://untapped.com/robots.txt</a> to see if scrapping is permitted. They do not have any restrictions under user agents. And we also checked their user agreement. There weren’t any rules about getting data for the list of beers. They only mentioned rules about obtaining user data.</p>
 
+</div>
 </div>
             </section>
 
