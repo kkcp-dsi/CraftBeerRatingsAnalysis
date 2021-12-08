@@ -132,13 +132,18 @@ GGally::ggparcoord(heatmap_input,
 ```
 
 ```{r}
-facted_hist_input %>% 
-  group_by(beer_style, year) %>%
-  summarise(freq=n()) %>%
-  ungroup() %>%
-  ggplot(aes(year, freq)) +
-  geom_line() +
-  facet_wrap(~beer_style)
+weighted_average_rating_by_state <- cleaned_all_breweries %>%
+  select(brewery_id, num_of_ratings, num_of_beers, average_rating, state) %>%
+  unique() %>%
+  group_by(state) %>%
+  summarise(weighted_average_rating=num_of_beers/sum(num_of_beers) * average_rating,
+            average_rating = average_rating) %>%
+  summarise(weighted_average_rating=sum(weighted_average_rating), 
+            average_rating=mean(average_rating),
+            total_num_of_breweries = n())
+
+ggplot(weighted_average_rating_by_state, aes(weighted_average_rating, average_rating)) +
+  geom_point()
 ```
 
 ```{r}
@@ -173,29 +178,16 @@ ggplot(aes(x=average_rating, y=fct_reorder(state, average_rating, .fun=max))) +
 ```
 
 ```{r}
-state_political <- read_csv(paste(folder_path, 'states_politics.csv', sep='/'))
-state_political
+population <- read_csv(paste(folder_path, 'us_population_by_state_2020.csv', sep='/')) %>%
+  rename(state=US_States)
+population
 ```
 
 ```{r}
-state_all_breweries <- cleaned_all_breweries %>% left_join(y=state_political, by=c("state"))
-state_all_breweries
-```
-
-```{r}
-state_all_breweries %>%
-  group_by(state, political_tendency) %>%
-  summarise(
-    freq = n(),
-    state_mean_rating = mean(average_rating),
-    state_num_of_ratings = mean(num_of_ratings)
-  ) %>%
-  ungroup() %>%
-ggplot(aes(state_mean_rating, state_num_of_ratings)) +
-  geom_point(aes(color = political_tendency)) +
-  scale_color_manual(values = c(
-    "Red" = "#FF4646",
-    "Blue" = "#4176FB"))
+weighted_average_rating_by_state %>% 
+  left_join(population, by=c("state")) %>%
+ggplot(aes(total_num_of_breweries, Population_2020)) +
+  geom_point()
 ```
 
 ### Geoplot
@@ -214,7 +206,6 @@ ggplot() +
                  x = long,
                  y = lat,
                  group = group,
-                 fill = region,
                  color = 'white'
                )) +
   geom_point(
@@ -237,7 +228,6 @@ ggplot() +
 ```
 
 ```{r}
-
 # data frame must contain "region" and "value" columns
 df_brewery_count <-
   cleaned_all_breweries %>% group_by(state) %>% summarise(no_of_breweries = n()) %>%
@@ -249,12 +239,62 @@ state_choropleth(df_brewery_count,
 ```
 
 ```{r}
-average_brewery_rating <- cleaned_all_breweries %>%
-  group_by(state) %>%
-  summarise(average_rating_per_state = mean(average_rating)) %>%
-  transmute(region = tolower(`state`), value = average_rating_per_state)
+cleaned_all_breweries %>% 
+  select(brewery_id, state, average_rating, num_of_beers, num_of_ratings) %>%
+  unique() %>%
+  arrange(desc(average_rating))
 
-state_choropleth(average_brewery_rating,
-                 title = "Average ratings per State in 2021",
-                 legend = "Rating")
+top_20_beers_average_rating <- cleaned_all_beers %>%
+  group_by(brewery) %>%
+  summarise(top_beer_average_rating=mean(beer_average_rating)) %>%
+  drop_na()
+
+popular_breweries_by_state <- cleaned_all_breweries %>%
+  inner_join(top_20_beers_average_rating, on='brewery') %>%
+  select(brewery_id, state, average_rating, num_of_beers, num_of_ratings, top_beer_average_rating) %>%
+  unique() %>%
+  drop_na(average_rating) %>%
+  arrange(desc(average_rating)) %>%
+  slice(1:100) %>%
+  group_by(state) %>%
+  summarise(average_rating=num_of_beers * average_rating / sum(num_of_beers)) %>%
+  summarise(num=n(), state_average_rating=sum(average_rating)) %>%
+  arrange(desc(num)) %>%
+  ungroup() %>%
+  transmute(region=tolower(state), value=num)
+
+state_choropleth(popular_breweries_by_state,
+                 title = "No of Breweries per State in 2021",
+                 legend = "count")
 ```
+```{r}
+top_most_popular_beer_styles
+```
+
+
+
+```{r}
+new_england_by_state <- most_popular_beer_ratings %>%
+  filter(beer_style %in% c("New England IPA", "Double New England IPA")) %>%
+  group_by(state) %>%
+  summarise(freq=n()) %>%
+  transmute(region=tolower(gsub('[_]', ' ', state)), value=freq)
+
+state_choropleth(new_england_by_state,
+                 num_colors = 1,
+                 title = "No of Breweries per State in 2021",
+                 legend = "count")
+```
+```{r}
+new_england_by_state <- most_popular_beer_ratings %>%
+  filter(grepl('Sour', beer_style)) %>%
+  group_by(state) %>%
+  summarise(freq=n()) %>%
+  transmute(region=tolower(gsub('[_]', ' ', state)), value=freq)
+
+state_choropleth(new_england_by_state,
+                 num_colors = 1,
+                 title = "No of Breweries per State in 2021",
+                 legend = "count")
+```
+
