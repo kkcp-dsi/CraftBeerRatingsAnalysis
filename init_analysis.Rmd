@@ -258,3 +258,19 @@ state_choropleth(average_brewery_rating,
                  title = "Average ratings per State in 2021",
                  legend = "Rating")
 ```
+
+```{r}
+us_temperatures <- read_csv(paste(folder_path, 'us_avg_temperature_by_state.csv', sep='/'))
+us_temperatures
+```
+
+```{r}
+temperature_all_beers <- cleaned_all_beers %>% left_join(y=us_temperatures, by=c("state"))
+temperature_all_beers
+```
+
+```{r}
+temperature_all_beers %>% 
+  group_by(state, beer_style) %>%
+  summarise(no_of_beer = n())
+```
