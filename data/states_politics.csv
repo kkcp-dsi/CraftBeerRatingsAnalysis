@@ -1,4 +1,4 @@
-﻿State,political_tendency
+state,political_tendency
 Arizona,Blue
 California,Blue
 Colorado,Blue
@@ -48,3 +48,5 @@ Tennessee,Red
 Texas,Red
 Utah,Red
 West Virginia,Red
+District of Columbia,Blue
+Wyoming,Red
