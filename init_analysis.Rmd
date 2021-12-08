@@ -172,19 +172,52 @@ state_all_breweries %>%
   summarise(
     freq = n(),
     state_mean_rating = mean(average_rating),
-    state_mean_num_of_ratings = mean(num_of_ratings)
+    state_num_of_ratings = mean(num_of_ratings)
   ) %>%
   ungroup() %>%
-ggplot(aes(state_mean_rating, state_mean_num_of_ratings)) +
-  geom_point(aes(colour = factor(political_tendency)))
+ggplot(aes(state_mean_rating, state_num_of_ratings)) +
+  geom_point(aes(color = political_tendency)) +
+  scale_color_manual(values = c(
+    "Red" = "#FF4646",
+    "Blue" = "#4176FB"))
+```
+
+### Geoplot
+
+```{r}
+coordinate_all_breweries <- cleaned_all_breweries %>%
+  filter(!is.na(longitude) | !is.na(latitude))
 ```
 
 ```{r}
-view(state_all_breweries %>%
-  group_by(state, political_tendency) %>%
-  summarise(
-    freq = n(),
-    state_mean_rating = mean(average_rating),
-    state_mean_num_of_ratings = mean(num_of_ratings)) %>%
-  ungroup())
+library(ggplot2)
+library(maps)
+library(mapdata)
+usa <- map_data('state')
+ggplot() +
+  geom_polygon(data = usa,
+               aes(
+                 x = long,
+                 y = lat,
+                 group = group,
+                 fill = region,
+                 color = 'white'
+               )) +
+  geom_point(
+    data = coordinate_all_breweries,
+    aes(x = longitude, y = latitude),
+    color = "black",
+    alpha = 0.1
+  ) +
+  guides(fill = FALSE) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  ) +
+  ggtitle('U.S. Map') +
+  coord_fixed(1.3)
 ```
