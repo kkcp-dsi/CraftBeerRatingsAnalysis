@@ -273,19 +273,22 @@ top_most_popular_beer_styles
 ```
 
 ```{r}
+top_5_beers_produced_each_state <- cleaned_all_beers %>%
+  group_by(state, beer_style) %>%
+  summarise(no_of_beers = n()) %>%
+  arrange(desc(no_of_beers)) %>%
+  slice(1:5)
+top_5_beers_produced_each_state
+```
+
+```{r}
 us_temperatures <- read_csv(paste(folder_path, 'us_avg_temperature_by_state.csv', sep='/'))
 us_temperatures
 ```
 
 ```{r}
-temperature_all_beers <- cleaned_all_beers %>% left_join(y=us_temperatures, by=c("state"))
-temperature_all_beers
-```
-
-```{r}
-temperature_all_beers %>% 
-  group_by(state, beer_style) %>%
-  summarise(no_of_beer = n())
+temperature_top_5_beers <- top_5_beers_produced_each_state %>% left_join(y=us_temperatures, by=c("state"))
+temperature_top_5_beers
 ```
 
 ```{r}
