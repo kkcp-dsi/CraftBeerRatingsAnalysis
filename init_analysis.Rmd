@@ -292,6 +292,11 @@ temperature_top_5_beers
 ```
 
 ```{r}
+ggplot(temperature_top_5_beers, aes(fahrenheit_avg, state)) + 
+  geom_point(aes(color = beer_style))
+```
+
+```{r}
 new_england_by_state <- most_popular_beer_ratings %>%
   filter(beer_style %in% c("New England IPA", "Double New England IPA")) %>%
   group_by(state) %>%
@@ -316,6 +321,7 @@ state_choropleth(new_england_by_state,
                  title = "No of Breweries per State in 2021",
                  legend = "count")
 ```
+
 ```{r, fig.height=8, fig.width=10}
 most_popular_beer_ratings %>%
   filter(rn <= 10) %>%
@@ -334,4 +340,3 @@ ggplot(aes(fct_reorder(beer_style, rn), fct_rev(fct_infreq(state)), fill=freq)) 
   ) + 
   scale_x_discrete(labels = abbreviate)
 ```
-
