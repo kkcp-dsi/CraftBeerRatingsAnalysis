@@ -27,16 +27,32 @@ Clean up the data
 Below we cleaned up the beer_abv column by removing the characters % ABV.
 
 ```{r}
-cleaned_all_beers <- all_beers %>% 
-  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
-  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
-  mutate(beer_dated=as.Date(beer_added, format = "%m/%d/%y")) %>%
-  mutate(year=format(beer_dated, format="%Y"))
+clean_up_beer_style <- function(beer_style_name){
+  if (beer_style_name == "IPA - Imperial / Double New England / Hazy"){
+    return ("Double New England IPA")
+  } else if (beer_style_name == "Red Ale - American Amber / Red"){
+    return ("Red American Amber")
+  } else if (beer_style_name == "IPA - New England / Hazy"){
+    return ("New England IPA")
+  } else if (beer_style_name == "IPA - Imperial / Double"){
+    return ("Double IPA")
+  } else if (beer_style_name == "Farmhouse Ale - Saison"){
+    return ("Farmhouse Ale")
+  } else if (beer_style_name == "Stout - Imperial / Double"){
+    return ("Imperial Stout")
+  }
+  
+  return (beer_style_name)
+}
 ```
 
 ```{r}
-ggplot(cleaned_all_beers, aes(x=beer_average_rating)) +
-  geom_histogram(bins = 50)
+cleaned_all_beers <- all_beers %>% 
+  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
+  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
+  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
+  mutate(year=format(beer_added, format="%Y")) %>%
+  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
 ```
 
 ```{r}
@@ -87,25 +103,6 @@ pairs(cleaned_all_beers %>%
 ```
 
 ```{r}
-cleaned_all_beers %>% 
-  inner_join(top_most_popular_beer_styles, on=beer_style) %>%
-  drop_na(c(beer_average_rating, year)) %>%
-  select(beer_style, year) %>%
-  group_by(beer_style, year) %>%
-  summarise(freq=n()) %>%
-  ungroup() %>%
-  ggplot( aes(year, freq)) + 
-  geom_point() +
-  facet_wrap(~beer_style, scales="free_y")
-```
-
-```{r}
-test <- top_most_popular_beer_styles %>%
-  mutate(beer_style=fct_reorder(factor(beer_style), rn))
-  
-```
-
-```{r}
 facted_hist_input <- cleaned_all_beers %>% 
   inner_join(top_most_popular_beer_styles, on=beer_style) %>%
   drop_na(c(beer_average_rating, year)) %>%
@@ -116,6 +113,22 @@ facted_hist_input <- cleaned_all_beers %>%
 ggplot(facted_hist_input, aes(year)) + 
   geom_bar()  + 
   facet_wrap(~fct_reorder(facted_hist_input$beer_style, facted_hist_input$rn))
+```
+
+```{r}
+heatmap_input <- most_popular_beer_ratings %>%
+  select(beer_style, beer_abv, beer_ibu, beer_average_rating, beer_num_ratings, year) %>%
+  mutate(year=as.integer(year)) %>%
+  drop_na() %>% 
+  filter(beer_abv <= 20) %>%
+  filter(beer_ibu <= 400)
+  
+
+GGally::ggparcoord(heatmap_input, 
+                   columns=2:5, 
+                   scale='uniminmax', 
+                   alphaLines = 0.2, 
+                   groupColumn = 1)
 ```
 
 ```{r}
