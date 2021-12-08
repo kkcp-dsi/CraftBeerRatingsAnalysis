@@ -40,7 +40,7 @@ that were given out to the beers from all the independent breweries in
 the country because we've always suspected the ratings in different
 regions of the country may not follow the same pattern.
 
-### To formulate our questions below,
+## To formulate our questions below,
 
 1.  Find out if there is any correlation between the location of the
     brewery and the ratings that a brewery is getting
