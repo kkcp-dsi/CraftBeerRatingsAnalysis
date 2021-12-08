@@ -11,6 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(maps)
+library(mapdata)
+library(choroplethr)
 ```
 
 ```{r}
@@ -186,13 +189,11 @@ ggplot(aes(state_mean_rating, state_num_of_ratings)) +
 
 ```{r}
 coordinate_all_breweries <- cleaned_all_breweries %>%
-  filter(!is.na(longitude) | !is.na(latitude))
+  filter(!is.na(longitude) | !is.na(latitude)) %>%
+  filter(!state %in% c('Alaska', 'Hawaii'))
 ```
 
 ```{r}
-library(ggplot2)
-library(maps)
-library(mapdata)
 usa <- map_data('state')
 ggplot() +
   geom_polygon(data = usa,
@@ -209,7 +210,7 @@ ggplot() +
     color = "black",
     alpha = 0.1
   ) +
-  guides(fill = FALSE) +
+  guides(fill = "none") +
   theme(
     axis.title.x = element_blank(),
     axis.text.x = element_blank(),
@@ -220,4 +221,27 @@ ggplot() +
   ) +
   ggtitle('U.S. Map') +
   coord_fixed(1.3)
+```
+
+```{r}
+
+# data frame must contain "region" and "value" columns
+df_brewery_count <-
+  cleaned_all_breweries %>% group_by(state) %>% summarise(no_of_breweries = n()) %>%
+  transmute(region = tolower(`state`), value = no_of_breweries)
+
+state_choropleth(df_brewery_count,
+                 title = "No of Breweries per State in 2021",
+                 legend = "count")
+```
+
+```{r}
+average_brewery_rating <- cleaned_all_breweries %>%
+  group_by(state) %>%
+  summarise(average_rating_per_state = mean(average_rating)) %>%
+  transmute(region = tolower(`state`), value = average_rating_per_state)
+
+state_choropleth(average_brewery_rating,
+                 title = "Average ratings per State in 2021",
+                 legend = "Rating")
 ```
