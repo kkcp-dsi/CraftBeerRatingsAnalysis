@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Vertical Bar Chart</title>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  </head>
+  <body>
+    <div id="select_state">
+      <select id="states"></select>
+    </div>
+  	<div id="state_hist"></div>
+  	<div id="state_weighted_hist"></div>
+  </body>
+  <script>
+  
+    var brewery_data = "https://raw.githubusercontent.com/kkcp-dsi/CraftBeerRatingsAnalysis/main/data/all_breweries.csv"
+    var rowConverter = function (d) {
+      return {
+        state: d.state,
+        average_rating: +d.average_rating,
+        num_of_beers: +d.num_of_beers
+        }
+    };
+    // set the dimensions and margins of the graph
+    var margin = {top: 10, right: 30, bottom: 30, left: 40},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+    
+    // append the svg object to the body of the page
+    var svg = d3.select("#state_hist")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+      // X axis: scale and draw:
+    var x = d3.scaleLinear()
+      .domain([2.0, 5.0]) 
+      .range([0, width]);
+
+    var y = d3.scaleLinear()
+      .range([height, 0]);
+    
+    var xAxis = d3.axisBottom()
+      .scale(x);
+    
+    var yAxis = d3.axisLeft()
+      .scale(y);
+            
+    var myColor =  d3.scaleOrdinal()
+      .range(d3.schemeSet3);
+    
+    // set the parameters for the histogram
+    var histogram = d3.histogram()
+        .value(function(d) { return d;})   // I need to give the vector of value
+        .domain(x.domain())  // then the domain of the graphic
+        .thresholds(x.ticks(30)); // then the numbers of bins
+    
+      svg.append('g')
+        .attr("class", "hist")
+          
+      svg.append("g")
+        .attr("class", "xAxis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+                  
+      svg.append("g")
+        .attr("class", "yAxis")
+        .call(yAxis);
+    
+    d3.csv(brewery_data, rowConverter).then(function(data){
+        //Process the data
+        var state_average_beers = {};
+        for (var i = 0; i < data.length; i++) {
+          if (!(data[i].state in state_average_beers))
+          {
+            state_average_beers[data[i].state] = [];
+          }
+          state_average_beers[data[i].state].push(data[i].average_rating); 
+        }
+        
+        myColor.domain(Object.keys(state_average_beers));
+        
+        var mySelect = $('#states');
+        $.each(state_average_beers, function(key, val) {
+            mySelect.append(
+                $('<option></option>').val(key).html(key)
+            );
+        });
+        
+        var stateSelect = $("#states").select2({multiple: true});
+        stateSelect.on("change", function (e) { 
+          var all_bins = [];
+          var selections = $(e.currentTarget).val();
+          for (var i = 0; i < selections.length; i++){
+            var currentState = selections[i] 
+            var size_per_state = state_average_beers[currentState].length;
+            var bins = histogram(state_average_beers[currentState]);
+            bins = d3.map(bins, function(d, j){
+              d["key"] = currentState + j;
+              d["color"] = currentState;
+              return d;
+            });
+            state_bins = {
+              'size_per_state' : size_per_state, 
+              'bins': bins
+            }
+            all_bins.push(state_bins);
+          }
+          all_bins = all_bins.sort(function(x, y){
+             return d3.descending(x.size_per_state, y.size_per_state);
+          }).map(function(d) { return d.bins; }).flat()
+          //all_bins = d3.map(all_bins, d=>d.bins).flat();
+          update(all_bins);
+        });
+        
+        $("#states").change();
+      });
+      
+      function update(bins){
+        // Scale the range of the data in the y domain
+        y.domain([0, d3.max(bins, function(d) { return d.length;})]);
+        
+        // append the bar rectangles to the svg element
+        var all_recs = svg.select('.hist')
+          .selectAll("rect")
+          .data(bins, d => d.key);
+        
+        all_recs.enter().append("rect")
+            .attr("class", "bar")
+            .attr("fill", (d, i) => myColor(d.color))
+            .merge(all_recs)
+            .attr("transform", function(d) {
+      		    return "translate(" + x(d.x0) + "," + y(d.length) + ")"; 
+            })
+            .transition()
+            .duration(2000)
+      		  .attr("width", function(d) { return d3.max([x(d.x1) - x(d.x0) - 1, 0]); })
+            .attr("height", function(d) { return height - y(d.length); })
+            .style('opacity', 0.8)
+        
+        all_recs
+          .exit()
+          .transition()
+          .duration(2000)
+          .ease(d3.easeLinear)
+          .attr("height", 0)
+          .remove();
+        
+        svg.select(".xAxis")
+          .transition()
+          .duration(2000)
+          .ease(d3.easeLinear)
+          .call(xAxis);
+  
+        svg.select(".yAxis")
+          .transition()
+          .duration(2000)
+          .ease(d3.easeLinear)
+          .call(yAxis);
+      }
+    </script>
+</html>

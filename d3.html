@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Vertical Bar Chart</title>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  </head>
+  <body>
+  </body>
+  <script>
+  
+    var brewery_data = "https://raw.githubusercontent.com/kkcp-dsi/CraftBeerRatingsAnalysis/main/data/all_breweries.csv"
+    var rowConverter = function (d) {
+      return {
+        state: d.state,
+        average_rating: +d.average_rating
+        }
+    };
+    
+    var margin = {top: 10, right: 10, bottom: 10, left: 10},
+        width = 120 - margin.left - margin.right,
+        height = 80 - margin.top - margin.bottom;
+    // X axis: scale and draw:
+    var x = d3.scaleLinear()
+      .domain([2.0, 5.0]) 
+      .range([0, width]);
+
+    var y = d3.scaleLinear()
+      .range([height, 0])
+      .domain([0, 200])
+    
+    var myColor = d3.scaleOrdinal()
+      .domain([0, 50])
+      .range(d3.schemeSet3);
+    
+    // set the parameters for the histogram
+    var histogram = d3.histogram()
+        .value(function(d) { return d;})   // I need to give the vector of value
+        .domain(x.domain())  // then the domain of the graphic
+        .thresholds(x.ticks(30)); // then the numbers of bins
+    
+    d3.csv(brewery_data, rowConverter).then(function(data){
+        //Process the data
+        var state_average_beers = {};
+        for (var i = 0; i < data.length; i++) {
+          if (!(data[i].state in state_average_beers))
+          {
+            state_average_beers[data[i].state] = [];
+          }
+          state_average_beers[data[i].state].push(data[i].average_rating);
+        }
+        // Scale the range of the data in the y domain
+        // y.domain([0, d3.max(bins, function(d) { return d.length;})]);
+        
+        // append the bar rectangles to the svg element
+        for (const state in state_average_beers) {
+          
+          var bins = histogram(state_average_beers[state]);
+            bins = d3.map(bins, function(d, j){
+              d["key"] = state + j;
+              d["color"] = state;
+              return d;
+            });
+          
+          // append the svg object to the body of the page
+          var svg = d3.select('body')
+            .append('svg')
+            .attr('id', state)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          
+          var all_recs = svg
+            .selectAll("rect")
+            .data(bins, d => d.key);
+          
+          all_recs.enter().append("rect")
+            .attr("class", "bar")
+            .attr("fill", (d, i) => myColor(d.color))
+            .merge(all_recs)
+            .attr("transform", function(d) {
+      		    return "translate(" + x(d.x0) + "," + y(d.length) + ")"; 
+            })
+            .transition()
+            .duration(2000)
+      		  .attr("width", function(d) { return d3.max([x(d.x1) - x(d.x0) - 1, 0]); })
+            .attr("height", function(d) { return height - y(d.length); })
+            
+            var xAxis = d3.axisBottom()
+              .scale(x);
+            
+            var yAxis = d3.axisLeft()
+              .scale(y);
+            
+            svg.append("g")
+              .attr("class", "xAxis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+                        
+            svg.append("g")
+              .attr("class", "yAxis")
+              .call(yAxis);
+        }
+      });
+    </script>
+</html>
