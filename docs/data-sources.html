@@ -145,11 +145,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span><strong>OpenBreweryDB</strong></span> </a></li>
 <li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span><strong>Untappd</strong></span></a></li>
-<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#web-scrapper"><i class="fa fa-check"></i><b>2.3</b> <span>Web Scrapper</span></a>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#web-scrapper"><i class="fa fa-check"></i><b>2.3</b> <span><strong>Web Scrapper</strong></span></a>
 <ul>
 <li class="chapter" data-level="2.3.1" data-path="data-sources.html"><a href="data-sources.html#merge-beer-ratings-data"><i class="fa fa-check"></i><b>2.3.1</b> Merge Beer ratings data</a></li>
 <li class="chapter" data-level="2.3.2" data-path="data-sources.html"><a href="data-sources.html#merge-brewery-info-data"><i class="fa fa-check"></i><b>2.3.2</b> Merge Brewery Info data</a></li>
 </ul></li>
+<li class="chapter" data-level="2.4" data-path="data-sources.html"><a href="data-sources.html#sample-beer-ratings-data"><i class="fa fa-check"></i><b>2.4</b> <strong>Sample Beer Ratings Data:</strong></a></li>
+<li class="chapter" data-level="2.5" data-path="data-sources.html"><a href="data-sources.html#sample-brewery-info-data"><i class="fa fa-check"></i><b>2.5</b> Sample Brewery Info Data:</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
@@ -181,24 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="openbrewerydb" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> <a href="https://openbrewerydb.org"><strong>OpenBreweryDB</strong></a> </h2>
 <p>Open Brewery DB is a free dataset and API with public information on breweries, cideres, brewpubs, and bottle shops. We downloaded lists of breweries per state using the <code>OpenBreweryDB</code> API.</p>
-<p><a href="https://www.openbrewerydb.org/documentation/01-listbreweries">List Breweries API</a></p>
-<p><strong>Sample Data:</strong></p>
-<pre><code>## # A tibble: 10 × 25
-##    obdb_id   name    brewery_type street  address_2 address_3 city  state county_province postal_code website_url phone
-##    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;lgl&gt;     &lt;lgl&gt;     &lt;chr&gt; &lt;chr&gt; &lt;lgl&gt;           &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;
-##  1 the-hop-… The Ho… brewpub      203 W … NA        NA        Chri… Illi… NA              62822       http://www… 8667…
-##  2 blackroc… Blackr… micro        424 N … NA        NA        Marq… Mich… NA              49855-3555  http://www… 9062…
-##  3 iron-hil… Iron H… brewpub      3 West… NA        NA        West… Penn… NA              19380-3010  http://www… 6107…
-##  4 tombston… Tombst… micro        107 E … NA        NA        Tomb… Ariz… NA              85638       http://www… 5202…
-##  5 green-fl… Green … brewpub      1630 P… NA        NA        Linc… Nebr… NA              68508-1644  &lt;NA&gt;        &lt;NA&gt; 
-##  6 ruba-bre… Ruba B… micro        3310 B… NA        NA        Hous… Texas NA              77063       &lt;NA&gt;        &lt;NA&gt; 
-##  7 wynkoop-… Wynkoo… brewpub      1634 1… NA        NA        Denv… Colo… NA              80202-1212  http://www… 3032…
-##  8 3-freaks… 3 Frea… micro        7140 E… NA        NA        High… Colo… NA              80126-3926  http://www… 7202…
-##  9 apex-bre… Apex B… planning     &lt;NA&gt;    NA        NA        Cent… New … NA              10917-3708  http://www… 8455…
-## 10 ramskell… Ramske… planning     &lt;NA&gt;    NA        NA        Fort… Colo… NA              80523-0001  &lt;NA&gt;        9704…
-## # … with 13 more variables: country &lt;chr&gt;, longitude &lt;dbl&gt;, latitude &lt;dbl&gt;, tags &lt;lgl&gt;, brewery_id &lt;chr&gt;,
-## #   average_rating &lt;dbl&gt;, num_of_ratings &lt;dbl&gt;, num_of_beers &lt;dbl&gt;, total_check_ins &lt;chr&gt;,
-## #   unique_user_check_ins &lt;chr&gt;, last_four_week_check_ins &lt;dbl&gt;, brewery_desc &lt;chr&gt;, brewery &lt;chr&gt;</code></pre>
+<p><a href="https://www.openbrewerydb.org/documentation/01-listbreweries"><strong>List Breweries API</strong></a></p>
 <p>We used the brewery names downloaded from OpenBreweryDB as queries to get the list of beers and their corresponding aggregated rating information from the Untappd.</p>
 </div>
 <div id="untappd" class="section level2" number="2.2">
@@ -206,14 +191,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Untappd is a social network for beer enthusiasts that allows its users to check-in as they drink beers, share these check-ins, and option to rate the beer they are consuming, earn badges, share pictures of their beers, comment on checked-in beers. It also allows Breweries to officially post the beers that they produce. (paraphrased the definition from Wikipedia).</p>
 </div>
 <div id="web-scrapper" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> <a href="https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py">Web Scrapper</a></h2>
+<h2><span class="header-section-number">2.3</span> <a href="https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py"><strong>Web Scrapper</strong></a></h2>
 <p>We built a parser to get the list of beers from untappd using Python as we started scrapping data earlier than when we were introduced to web scrapping in R.</p>
 <p>To use the web scrapper and download the data try following the below steps:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="data-sources.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd brewery_beer_parser</span>
-<span id="cb2-2"><a href="data-sources.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="data-sources.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install <span class="at">-r</span> requirements.txt</span>
-<span id="cb2-4"><a href="data-sources.html#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="data-sources.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 beer_scraping.py <span class="at">-i</span> data/breweries.csv <span class="at">-o</span> brewery_beers/ <span class="at">-s</span> <span class="st">&quot;New York&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="data-sources.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd brewery_beer_parser</span>
+<span id="cb1-2"><a href="data-sources.html#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="data-sources.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-4"><a href="data-sources.html#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="data-sources.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 beer_scraping.py <span class="at">-i</span> data/breweries.csv <span class="at">-o</span> brewery_beers/ <span class="at">-s</span> <span class="st">&quot;New York&quot;</span></span></code></pre></div>
 <p><strong>Once the scrapping is done the data for New York outputs as following</strong></p>
 <p>All the beers per brewery will be exported to -&gt; <code>brewery_beer_parser/brewery_beers/New_York/*brewery_name.csv</code></p>
 <p>All the breweries that the parser could find the beers for will be exported to -&gt; <code>brewery_beer_parser/brewery_beers/New_York_brewery_info.csv</code></p>
@@ -221,67 +206,88 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>we used following python code to merge all the beer data and brewery data.</p>
 <div id="merge-beer-ratings-data" class="section level3" number="2.3.1">
 <h3><span class="header-section-number">2.3.1</span> Merge Beer ratings data</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="data-sources.html#cb3-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="vs">r&#39;brewery_beers&#39;</span></span>
-<span id="cb3-2"><a href="data-sources.html#cb3-2" aria-hidden="true" tabindex="-1"></a>extension <span class="op">=</span> <span class="st">&#39;.csv&#39;</span></span>
-<span id="cb3-3"><a href="data-sources.html#cb3-3" aria-hidden="true" tabindex="-1"></a>csv_list <span class="op">=</span> []</span>
-<span id="cb3-4"><a href="data-sources.html#cb3-4" aria-hidden="true" tabindex="-1"></a>       </span>
-<span id="cb3-5"><a href="data-sources.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> root, dirs, files <span class="kw">in</span> os.walk(path):</span>
-<span id="cb3-6"><a href="data-sources.html#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> filename <span class="kw">in</span> files:</span>
-<span id="cb3-7"><a href="data-sources.html#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> os.path.splitext(filename)[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> extension:</span>
-<span id="cb3-8"><a href="data-sources.html#cb3-8" aria-hidden="true" tabindex="-1"></a>            csv_list.append(os.path.join(root, filename))</span>
-<span id="cb3-9"><a href="data-sources.html#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="data-sources.html#cb3-10" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
-<span id="cb3-11"><a href="data-sources.html#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> csv_list:</span>
-<span id="cb3-12"><a href="data-sources.html#cb3-12" aria-hidden="true" tabindex="-1"></a>    state_and_brewery <span class="op">=</span> <span class="bu">file</span>.split(<span class="st">&#39;/&#39;</span>)</span>
-<span id="cb3-13"><a href="data-sources.html#cb3-13" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(<span class="bu">file</span>, index_col<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb3-14"><a href="data-sources.html#cb3-14" aria-hidden="true" tabindex="-1"></a>    df.insert(<span class="dv">1</span>, <span class="st">&#39;brewery&#39;</span>, state_and_brewery[<span class="dv">2</span>].split(<span class="st">&#39;.&#39;</span>)[<span class="dv">0</span>])</span>
-<span id="cb3-15"><a href="data-sources.html#cb3-15" aria-hidden="true" tabindex="-1"></a>    df.insert(<span class="dv">2</span>, <span class="st">&#39;state&#39;</span>, state_and_brewery[<span class="dv">2</span>])</span>
-<span id="cb3-16"><a href="data-sources.html#cb3-16" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">&#39;state&#39;</span>] <span class="op">=</span> state_and_brewery[<span class="dv">1</span>]</span>
-<span id="cb3-17"><a href="data-sources.html#cb3-17" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">&#39;brewery&#39;</span>] <span class="op">=</span> state_and_brewery[<span class="dv">2</span>].split(<span class="st">&#39;.&#39;</span>)[<span class="dv">0</span>]</span>
-<span id="cb3-18"><a href="data-sources.html#cb3-18" aria-hidden="true" tabindex="-1"></a>    df.drop(df.columns[df.columns.<span class="bu">str</span>.contains(<span class="st">&#39;unnamed&#39;</span>,case <span class="op">=</span> <span class="va">False</span>)],axis <span class="op">=</span> <span class="dv">1</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb3-19"><a href="data-sources.html#cb3-19" aria-hidden="true" tabindex="-1"></a>    frames.append(df)</span>
-<span id="cb3-20"><a href="data-sources.html#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="data-sources.html#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># exports to csv file</span></span>
-<span id="cb3-22"><a href="data-sources.html#cb3-22" aria-hidden="true" tabindex="-1"></a>pd.concat(frames).to_csv(<span class="st">&#39;all_beers.csv&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="data-sources.html#cb2-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="vs">r&#39;brewery_beers&#39;</span></span>
+<span id="cb2-2"><a href="data-sources.html#cb2-2" aria-hidden="true" tabindex="-1"></a>extension <span class="op">=</span> <span class="st">&#39;.csv&#39;</span></span>
+<span id="cb2-3"><a href="data-sources.html#cb2-3" aria-hidden="true" tabindex="-1"></a>csv_list <span class="op">=</span> []</span>
+<span id="cb2-4"><a href="data-sources.html#cb2-4" aria-hidden="true" tabindex="-1"></a>       </span>
+<span id="cb2-5"><a href="data-sources.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> root, dirs, files <span class="kw">in</span> os.walk(path):</span>
+<span id="cb2-6"><a href="data-sources.html#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> filename <span class="kw">in</span> files:</span>
+<span id="cb2-7"><a href="data-sources.html#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> os.path.splitext(filename)[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> extension:</span>
+<span id="cb2-8"><a href="data-sources.html#cb2-8" aria-hidden="true" tabindex="-1"></a>            csv_list.append(os.path.join(root, filename))</span>
+<span id="cb2-9"><a href="data-sources.html#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="data-sources.html#cb2-10" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
+<span id="cb2-11"><a href="data-sources.html#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> csv_list:</span>
+<span id="cb2-12"><a href="data-sources.html#cb2-12" aria-hidden="true" tabindex="-1"></a>    state_and_brewery <span class="op">=</span> <span class="bu">file</span>.split(<span class="st">&#39;/&#39;</span>)</span>
+<span id="cb2-13"><a href="data-sources.html#cb2-13" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(<span class="bu">file</span>, index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-14"><a href="data-sources.html#cb2-14" aria-hidden="true" tabindex="-1"></a>    df.insert(<span class="dv">1</span>, <span class="st">&#39;brewery&#39;</span>, state_and_brewery[<span class="dv">2</span>].split(<span class="st">&#39;.&#39;</span>)[<span class="dv">0</span>])</span>
+<span id="cb2-15"><a href="data-sources.html#cb2-15" aria-hidden="true" tabindex="-1"></a>    df.insert(<span class="dv">2</span>, <span class="st">&#39;state&#39;</span>, state_and_brewery[<span class="dv">2</span>])</span>
+<span id="cb2-16"><a href="data-sources.html#cb2-16" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">&#39;state&#39;</span>] <span class="op">=</span> state_and_brewery[<span class="dv">1</span>]</span>
+<span id="cb2-17"><a href="data-sources.html#cb2-17" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">&#39;brewery&#39;</span>] <span class="op">=</span> state_and_brewery[<span class="dv">2</span>].split(<span class="st">&#39;.&#39;</span>)[<span class="dv">0</span>]</span>
+<span id="cb2-18"><a href="data-sources.html#cb2-18" aria-hidden="true" tabindex="-1"></a>    df.drop(df.columns[df.columns.<span class="bu">str</span>.contains(<span class="st">&#39;unnamed&#39;</span>,case <span class="op">=</span> <span class="va">False</span>)],axis <span class="op">=</span> <span class="dv">1</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb2-19"><a href="data-sources.html#cb2-19" aria-hidden="true" tabindex="-1"></a>    frames.append(df)</span>
+<span id="cb2-20"><a href="data-sources.html#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="data-sources.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># exports to csv file</span></span>
+<span id="cb2-22"><a href="data-sources.html#cb2-22" aria-hidden="true" tabindex="-1"></a>pd.concat(frames).to_csv(<span class="st">&#39;all_beers.csv&#39;</span>)</span></code></pre></div>
 </div>
 <div id="merge-brewery-info-data" class="section level3" number="2.3.2">
 <h3><span class="header-section-number">2.3.2</span> Merge Brewery Info data</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="data-sources.html#cb4-1" aria-hidden="true" tabindex="-1"></a>brewery_frames <span class="op">=</span> []</span>
-<span id="cb4-2"><a href="data-sources.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> breweries_list:</span>
-<span id="cb4-3"><a href="data-sources.html#cb4-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(<span class="bu">file</span>, index_col<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb4-4"><a href="data-sources.html#cb4-4" aria-hidden="true" tabindex="-1"></a>    df.drop(df.columns[df.columns.<span class="bu">str</span>.contains(<span class="st">&#39;unnamed&#39;</span>,case <span class="op">=</span> <span class="va">False</span>)],axis <span class="op">=</span> <span class="dv">1</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb4-5"><a href="data-sources.html#cb4-5" aria-hidden="true" tabindex="-1"></a>    brewery_frames.append(df)</span>
-<span id="cb4-6"><a href="data-sources.html#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="data-sources.html#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#exports to csv file    </span></span>
-<span id="cb4-8"><a href="data-sources.html#cb4-8" aria-hidden="true" tabindex="-1"></a>pd.concat(brewery_frames).to_csv(<span class="st">&#39;all_breweries.csv&#39;</span>)</span></code></pre></div>
-<p>We web scraped the rating information for the top 24 most popular beers for each brewery on Untappd for all the states in US. Because the brewery name downloaded from OpenBreweryDB is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, then retrieved the top 24 most popular beers associated with that brewery. We Added State and Brewery name to beer dataset ion order to make it easy for us to join brewery data to beer data.</p>
-<p><strong>Sample Data:</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="data-sources.html#cb3-1" aria-hidden="true" tabindex="-1"></a>brewery_frames <span class="op">=</span> []</span>
+<span id="cb3-2"><a href="data-sources.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> breweries_list:</span>
+<span id="cb3-3"><a href="data-sources.html#cb3-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(<span class="bu">file</span>, index_col<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-4"><a href="data-sources.html#cb3-4" aria-hidden="true" tabindex="-1"></a>    df.drop(df.columns[df.columns.<span class="bu">str</span>.contains(<span class="st">&#39;unnamed&#39;</span>,case <span class="op">=</span> <span class="va">False</span>)],axis <span class="op">=</span> <span class="dv">1</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb3-5"><a href="data-sources.html#cb3-5" aria-hidden="true" tabindex="-1"></a>    brewery_frames.append(df)</span>
+<span id="cb3-6"><a href="data-sources.html#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="data-sources.html#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#exports to csv file    </span></span>
+<span id="cb3-8"><a href="data-sources.html#cb3-8" aria-hidden="true" tabindex="-1"></a>pd.concat(brewery_frames).to_csv(<span class="st">&#39;all_breweries.csv&#39;</span>)</span></code></pre></div>
+<p>We web scraped the rating information for the top 24 most popular beers for each brewery on Untappd for all the states in US. Because the brewery name downloaded from OpenBreweryDB is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, then retrieved the top 24 most popular beers associated with that brewery. We Added State and Brewery name to beer dataset in order to make it easy for us to join brewery data to beer data.</p>
+<p>** We did check <a href="https://untapped.com/robots.txt" class="uri">https://untapped.com/robots.txt</a> to see if scrapping is permitted. They do not have any restrictions under user agents. And we also checked their user agreement. There weren’t any rules about getting data for the list of beers. They only mentioned rules about obtaining user data.</p>
+</div>
+</div>
+<div id="sample-beer-ratings-data" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> <strong>Sample Beer Ratings Data:</strong></h2>
 <pre><code>## # A tibble: 20 × 11
 ##    brewery state beer_url beer_name beer_style beer_desc beer_abv beer_ibu beer_average_ra… beer_num_ratings beer_added
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;               &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;     
-##  1 18th_S… Indi… https:/… Chasing … Pale Ale … &quot;Coming … 6.2% ABV N/A IBU              3.94             5227 08/15/17  
-##  2 Flying… Wash… https:/… Weizenbo… Bock - We… &quot;Brewed … 7.2% ABV 21 IBU               3.67              116 03/12/18  
-##  3 Gypsy_… Mary… https:/… Mystical… Sour - Fr… &quot;Introdu… 4.3% ABV N/A IBU              3.79               73 08/13/20  
-##  4 Tight_… Nort… https:/… Small Cr… Stout - A… &quot;Oak age… 7.7% ABV N/A IBU              3.95               68 03/16/19  
-##  5 Zydeco… Flor… https:/… Spicoli   IPA - Ses… &quot;You’re … 5.2% ABV N/A IBU              3.63              173 06/08/18  
-##  6 Mobtow… Mary… https:/… Moonligh… IPA - Imp… &quot;The nex… 8% ABV   40 IBU               3.86              307 04/29/21  
-##  7 Grain_… Oreg… https:/… Haystack… Lager - A… &quot;Very li… 4.5% ABV 15 IBU               3.34              414 10/26/13  
-##  8 Huss_B… Ariz… https:/… Copper S… IPA - Ame… &quot;Our fla… 6.5% ABV 69 IBU               3.61             6774 07/16/17  
-##  9 Great_… New_… https:/… Soundche… IPA - New… &quot;Malted … 6.8% ABV N/A IBU              3.97              600 02/18/21  
-## 10 Free_S… Kans… https:/… Copperhe… Pale Ale … &quot;Our fla… 6% ABV   52 IBU               3.48            15371 10/03/10  
-## 11 Devil_… New_… https:/… Black Eye IPA - Bla… &quot;Dark an… 6.4% ABV 70 IBU               3.55              351 02/24/17  
-## 12 The_Ph… Texas https:/… Nice And… Blonde Ale &quot;An appr… 5.5% ABV N/A IBU              3.44               52 08/07/16  
-## 13 Strap_… Utah  https:/… Laser Sh… Pale Ale … &quot;This is… 4% ABV   30 IBU               3.66               92 06/12/19  
-## 14 Lakes_… Minn… https:/… Alberta … Porter - … &quot;Winter … 7.5% ABV 40 IBU               3.76            26417 02/14/11  
-## 15 Eris_B… Illi… https:/… Sacred C… IPA - Mil… &quot;Hazy Mi… 7% ABV   N/A IBU              3.98              299 09/28/18  
-## 16 Headwo… Wash… https:/… Experime… IPA - Ame… &quot;NW IPA … 6.1% ABV 83 IBU               3.75               51 12/26/20  
-## 17 2_Witc… Virg… https:/… Witchbac… Pale Ale … &quot;Named f… 5% ABV   34 IBU               3.6               181 05/17/14  
-## 18 Charle… Sout… https:/… Mudlark   Stout - I…  &lt;NA&gt;     4% ABV   N/A IBU              3.81             1401 12/19/16  
-## 19 Big_Ro… Mich… https:/… Platinum… Lager - P… &quot;This la… &lt;NA&gt;     &lt;NA&gt;                 3.38               NA &lt;NA&gt;      
-## 20 Hidden… Penn… https:/… Storytel… IPA - Ame… &quot;Hopped … 6.2% ABV N/A IBU              3.8                85 07/03/19</code></pre>
-<p>** We did check <a href="https://untapped.com/robots.txt" class="uri">https://untapped.com/robots.txt</a> to see if scrapping is permitted. They do not have any restrictions under user agents. And we also checked their user agreement. There weren’t any rules about getting data for the list of beers. They only mentioned rules about obtaining user data.</p>
-
+##  1 Off_Co… Illi… https:/… Growl     Belgian Q… &quot;A big o… 8.5% ABV 28 IBU               3.81             3562 10/01/16  
+##  2 Cellar… Cali… https:/… Coffee &amp;… Porter - … &quot;A light… 7.7% ABV 45 IBU               4.12             7511 12/20/13  
+##  3 Wind_S… Miss… https:/… Dank Ski… IPA - Ame… &quot;This we… 6.5% ABV 80 IBU               4.05              107 01/14/20  
+##  4 Vernal… Utah  https:/… Mama&#39;s M… Stout - I… &quot;Sweet, … 8.5% ABV 46 IBU               3.95             1790 11/22/15  
+##  5 Mickey… Illi… https:/… Choka We… IPA - Ame… &quot;\&quot;choka… 7.4% ABV 50 IBU               3.64              433 04/25/13  
+##  6 Last_C… Cali… https:/… Squeezew… IPA - Imp… &quot;Double … 7.5% ABV 40 IBU               3.68               51 05/19/19  
+##  7 S_S_Fa… New_… https:/… Stone Am… Stout - I… &quot;The cof… 8.7% ABV 65 IBU               3.96            42481 12/18/15  
+##  8 Last_C… Cali… https:/… Street C… Sour - Fr… &quot;Sour al… 7.5% ABV N/A IBU              4.31               57 07/11/20  
+##  9 Foolpr… Rhod… https:/… Tatou     Farmhouse… &quot;Rose sa… 5.9% ABV 30 IBU               3.49              607 03/22/19  
+## 10 High_H… Colo… https:/… Barrel A… Red Ale -…  &lt;NA&gt;     6.5% ABV 20 IBU               3.75              460 04/06/14  
+## 11 Paw_Pa… Mich… https:/… Sleeping… Stout - O… &quot;A smoot… 5.7% ABV 37 IBU               3.59             1320 07/12/15  
+## 12 Railho… Nort… https:/… Pomegran… Fruit      &quot;This Po… 5.5% ABV N/A IBU              3.5               181 06/04/15  
+## 13 Granit… Mary… https:/… Ukulele … IPA - Ame… &quot;Tropica… 6.5% ABV 70 IBU               3.64             4047 08/02/17  
+## 14 Small_… Nort… https:/… Castle B… IPA - Bla…  &lt;NA&gt;     6.3% ABV N/A IBU              3.72              288 01/25/14  
+## 15 Shakop… Minn… https:/… Hard Hea… Schwarzbi… &quot;Enjoy a… 5.3% ABV 26 IBU               3.73              192 11/01/19  
+## 16 South_… Cali… https:/… Glacier … Pale Ale … &quot;A class… 5.6% ABV 40 IBU               3.72              917 05/27/13  
+## 17 Deschu… Oreg… https:/… Neon Day… Pale Ale … &quot;Let the… 4.8% ABV 35 IBU               3.65            14195 06/17/19  
+## 18 Wellsp… Miss… https:/… On the B… Sour - Ot… &quot;The OTB… 4% ABV   N/A IBU              3.8               179 07/07/18  
+## 19 Northe… Maine https:/… Tail Gun… Brown Ale… &quot;Nutty a… &lt;NA&gt;     &lt;NA&gt;                NA                  NA &lt;NA&gt;      
+## 20 Snowbe… Mich… https:/… Margarit… Sour - Tr… &quot;Flavors… 4.7% ABV 8 IBU                3.66              207 05/05/18</code></pre>
 </div>
+<div id="sample-brewery-info-data" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span> Sample Brewery Info Data:</h2>
+<pre><code>## # A tibble: 10 × 25
+##    obdb_id   name    brewery_type street  address_2 address_3 city  state county_province postal_code website_url phone
+##    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;lgl&gt;     &lt;lgl&gt;     &lt;chr&gt; &lt;chr&gt; &lt;lgl&gt;           &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;
+##  1 pollyann… Pollya… micro        431 Ta… NA        NA        Lemo… Illi… NA              60439-3744  http://www… 6309…
+##  2 reach-br… Reach … micro        1343 D… NA        NA        Asto… Oreg… NA              97103-3917  &lt;NA&gt;        5034…
+##  3 gallery-… Galler… brewpub      143 Ke… NA        NA        Port… Mich… NA              48875-1456  http://www… 5175…
+##  4 the-vine… The Vi… micro        1327 N… NA        NA        Brun… Ohio  NA              44212       http://www… 3306…
+##  5 lucky-ow… Lucky … micro        8660 T… NA        NA        Chag… Ohio  NA              44023-1876  http://www… 4408…
+##  6 trim-tab… Trim T… micro        2721 5… NA        NA        Birm… Alab… NA              35233-3401  http://www… 2057…
+##  7 saint-bo… Saint … brewpub      1701 W… NA        NA        Ephr… Penn… NA              17522-1106  &lt;NA&gt;        7177…
+##  8 moerlein… Moerle… brewpub      115 Jo… NA        NA        Cinc… Ohio  NA              45202-4143  http://www… 5134…
+##  9 pike-bre… Pike B… micro        1415 1… NA        NA        Seat… Wash… NA              98101-2017  http://www… 2066…
+## 10 max-lage… Max La… brewpub      320 Pe… NA        NA        Atla… Geor… NA              30308-3210  http://www… 4045…
+## # … with 13 more variables: country &lt;chr&gt;, longitude &lt;dbl&gt;, latitude &lt;dbl&gt;, tags &lt;lgl&gt;, brewery_id &lt;chr&gt;,
+## #   average_rating &lt;dbl&gt;, num_of_ratings &lt;dbl&gt;, num_of_beers &lt;dbl&gt;, total_check_ins &lt;chr&gt;,
+## #   unique_user_check_ins &lt;chr&gt;, last_four_week_check_ins &lt;dbl&gt;, brewery_desc &lt;chr&gt;, brewery &lt;chr&gt;</code></pre>
+
 </div>
 </div>
             </section>

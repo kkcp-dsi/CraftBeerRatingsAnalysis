@@ -6,16 +6,7 @@ To answer these questions, we've obtained data from two sources `OpenBreweryDB` 
 
 Open Brewery DB is a free dataset and API with public information on breweries, cideres, brewpubs, and bottle shops. We downloaded lists of breweries per state using the `OpenBreweryDB` API.
 
-[List Breweries API](https://www.openbrewerydb.org/documentation/01-listbreweries)
-
-**Sample Data:**
-
-```{r}
-require(tidyverse)
-folder_path <- paste(getwd(), 'data', sep='/')
-all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
-sample_n(all_breweries, 10)
-```
+[**List Breweries API**](https://www.openbrewerydb.org/documentation/01-listbreweries)
 
 We used the brewery names downloaded from OpenBreweryDB as queries to get the list of beers and their corresponding aggregated rating information from the Untappd.
 
@@ -23,7 +14,7 @@ We used the brewery names downloaded from OpenBreweryDB as queries to get the li
 
 Untappd is a social network for beer enthusiasts that allows its users to check-in as they drink beers, share these check-ins, and option to rate the beer they are consuming, earn badges, share pictures of their beers, comment on checked-in beers. It also allows Breweries to officially post the beers that they produce. (paraphrased the definition from Wikipedia).
 
-## [Web Scrapper](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py)
+## [**Web Scrapper**](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py)
 
 We built a parser to get the list of beers from untappd using Python as we started scrapping data earlier than when we were introduced to web scrapping in R.
 
@@ -87,13 +78,22 @@ for file in breweries_list:
 pd.concat(brewery_frames).to_csv('all_breweries.csv')
 ```
 
-We web scraped the rating information for the top 24 most popular beers for each brewery on Untappd for all the states in US. Because the brewery name downloaded from OpenBreweryDB is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, then retrieved the top 24 most popular beers associated with that brewery. We Added State and Brewery name to beer dataset ion order to make it easy for us to join brewery data to beer data.
+We web scraped the rating information for the top 24 most popular beers for each brewery on Untappd for all the states in US. Because the brewery name downloaded from OpenBreweryDB is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, then retrieved the top 24 most popular beers associated with that brewery. We Added State and Brewery name to beer dataset in order to make it easy for us to join brewery data to beer data.
 
-**Sample Data:**
+\*\* We did check <https://untapped.com/robots.txt> to see if scrapping is permitted. They do not have any restrictions under user agents. And we also checked their user agreement. There weren't any rules about getting data for the list of beers. They only mentioned rules about obtaining user data.
+
+## **Sample Beer Ratings Data:**
 
 ```{r}
+require(tidyverse)
 all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
 sample_n(all_beers, 20)
 ```
 
-\*\* We did check <https://untapped.com/robots.txt> to see if scrapping is permitted. They do not have any restrictions under user agents. And we also checked their user agreement. There weren't any rules about getting data for the list of beers. They only mentioned rules about obtaining user data.
+## Sample Brewery Info Data:
+
+```{r}
+folder_path <- paste(getwd(), 'data', sep='/')
+all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
+sample_n(all_breweries, 10)
+```

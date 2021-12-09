@@ -6,6 +6,8 @@ untappd
 web-scrapper
 merge-beer-ratings-data
 merge-brewery-info-data
+sample-beer-ratings-data
+sample-brewery-info-data
 data-transformation
 missing-values
 results
