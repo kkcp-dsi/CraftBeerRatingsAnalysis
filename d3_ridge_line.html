@@ -77,10 +77,15 @@
       var allDensity = [];
       for (i in states){
         var state = states[i]
-        var density = kde(epanechnikov(0.3), ticks, state_data[state])
+        var density = kde(epanechnikov(0.3), ticks, state_data[state]);
         allDensity.push({
           key: state,
+          median: d3.median(state_data[state]),
           density: density
+        });
+        
+        allDensity = allDensity.sort(function(x, y){
+           return d3.descending(x.median, y.median);
         });
       }
       return allDensity;
@@ -133,7 +138,7 @@
       
     var yName = d3.scaleBand()
       .range([0, height])
-      .paddingInner(1)
+      .paddingInner(1);
 
     var yAxis = d3.axisLeft()
       .scale(yName);
@@ -182,9 +187,13 @@
         $('#select_all_states').change(function() {
             if(this.checked) {
               $('#states').prop('disabled', true);
-              yName.domain(allStates);
-              update(svg, compute_density(allStates, state_average_beers, xScale.ticks(20)));
-              update(svg_popular, compute_density(allStates, state_popular_average_beers, xScale.ticks(20)));
+              var sortedDensity = compute_density(allStates, state_average_beers, xScale.ticks(20));
+              yName.domain($.map(sortedDensity, d => d.key));
+              update(svg, sortedDensity);
+              
+              sortedDensity = compute_density(allStates, state_popular_average_beers, xScale.ticks(20));
+              yName.domain($.map(sortedDensity, d => d.key));
+              update(svg_popular, sortedDensity);
             }else{
                $('#states').prop('disabled', false);
                $("#states").change();
@@ -194,9 +203,13 @@
         var stateSelect = $("#states").select2({multiple: true});
         stateSelect.on("change", function (e) {
           var selections = $(e.currentTarget).val();
-          yName.domain(selections);
-          update(svg, compute_density(selections, state_average_beers, xScale.ticks(20)));
-          update(svg_popular, compute_density(selections, state_popular_average_beers, xScale.ticks(20)));
+          var sortedDensity = compute_density(selections, state_average_beers, xScale.ticks(20));
+          yName.domain($.map(sortedDensity, d => d.key));
+          update(svg, sortedDensity);
+          
+          sortedDensity = compute_density(selections, state_popular_average_beers, xScale.ticks(20));
+          yName.domain($.map(sortedDensity, d => d.key));
+          update(svg_popular, sortedDensity);
         });
         $("#states").change();
       });
