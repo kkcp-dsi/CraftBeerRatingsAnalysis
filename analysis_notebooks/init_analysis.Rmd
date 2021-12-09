@@ -17,6 +17,7 @@ library(choroplethr)
 ```
 
 ```{r}
+setwd('..')
 folder_path <- paste(getwd(), 'data', sep='/')
 all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
 all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
@@ -339,4 +340,42 @@ ggplot(aes(fct_reorder(beer_style, rn), fct_rev(fct_infreq(state)), fill=freq)) 
     axis.line = element_line(colour = "black")
   ) + 
   scale_x_discrete(labels = abbreviate)
+```
+
+```{r}
+library("tmap")
+library("tmaptools")
+library("sf")
+library("leaflet")
+library("tigris")
+#devtools::install_github('walkerke/tigris')
+us_geo <- states(class = "sf")
+```
+
+```{r}
+state_avg_rating <- cleaned_all_breweries %>%
+  group_by(state) %>%
+  summarise(BreweryCount= n(),
+            AverageRating = mean(average_rating)) %>%
+  rename(NAME = state)
+```
+
+```{r}
+
+mean_rating_map <- inner_join(us_geo, state_avg_rating) %>% select(NAME, AverageRating, BreweryCount,  geometry)
+
+mean_rating_map <- subset(mean_rating_map, !(NAME %in% c("Alaska", "Hawaii", "Puerto Rico")))
+
+tmap_mode("view")
+
+my_interactive_map <- tm_shape(mean_rating_map) +
+  tm_polygons("BreweryCount", popup.vars=c(
+                    "No Of Breweries in state: "="BreweryCount",
+                    "Average Ratings in State: " = "AverageRating"), id = "NAME", border.col = "white",
+              palette="Greens")
+
+my_interactive_map <- tmap_leaflet(my_interactive_map)
+#library(htmlwidgets)
+#saveWidget(my_interactive_map, "state_avg_rating.html")
+my_interactive_map
 ```
