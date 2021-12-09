@@ -11,6 +11,7 @@ Open Brewery DB is a free dataset and API with public information on breweries, 
 **Sample Data:**
 
 ```{r}
+require(tidyverse)
 folder_path <- paste(getwd(), 'data', sep='/')
 all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
 sample_n(all_breweries, 10)
@@ -22,11 +23,71 @@ We used the brewery names downloaded from OpenBreweryDB as queries to get the li
 
 Untappd is a social network for beer enthusiasts that allows its users to check-in as they drink beers, share these check-ins, and option to rate the beer they are consuming, earn badges, share pictures of their beers, comment on checked-in beers. It also allows Breweries to officially post the beers that they produce. (paraphrased the definition from Wikipedia).
 
-[Beer Data Web Scrapper](./brewery_beer_parser/beer_scrapping.py)
-
-We web scraped the rating information for the top 24 most popular beers for each brewery on Untappd for all the states in US. Because the brewery name downloaded from OpenBreweryDB is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, then retrieved the top 24 most popular beers associated with that brewery. We Added State and Brewery name to beer dataset ion order to make it easy for us to join brewery data to beer data.
+## [Web Scrapper](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py)
 
 We built a parser to get the list of beers from untappd using Python as we started scrapping data earlier than when we were introduced to web scrapping in R.
+
+To use the web scrapper and download the data try following the below steps:
+
+``` {.bash}
+$ cd brewery_beer_parser
+
+$ pip install -r requirements.txt
+
+$ python3 beer_scraping.py -i data/breweries.csv -o brewery_beers/ -s "New York"
+```
+
+**Once the scrapping is done the data for New York outputs as following**
+
+All the beers per brewery will be exported to -\> `brewery_beer_parser/brewery_beers/New_York/*brewery_name.csv`
+
+All the breweries that the parser could find the beers for will be exported to -\> `brewery_beer_parser/brewery_beers/New_York_brewery_info.csv`
+
+Once we repeated this step for all the states we manually copied the `state`\_brewery_info.csv to `brewery_beer_parser/Breweries/`
+
+we used following python code to merge all the beer data and brewery data.
+
+### Merge Beer ratings data
+
+``` {.python}
+path = r'brewery_beers'
+extension = '.csv'
+csv_list = []
+       
+for root, dirs, files in os.walk(path):
+    for filename in files:
+        if os.path.splitext(filename)[-1] == extension:
+            csv_list.append(os.path.join(root, filename))
+
+frames = []
+for file in csv_list:
+    state_and_brewery = file.split('/')
+    df = pd.read_csv(file, index_col=False)
+    df.insert(1, 'brewery', state_and_brewery[2].split('.')[0])
+    df.insert(2, 'state', state_and_brewery[2])
+    df['state'] = state_and_brewery[1]
+    df['brewery'] = state_and_brewery[2].split('.')[0]
+    df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+    frames.append(df)
+
+# exports to csv file
+pd.concat(frames).to_csv('all_beers.csv')
+```
+
+### Merge Brewery Info data
+
+``` {.python}
+brewery_frames = []
+for file in breweries_list:
+    df = pd.read_csv(file, index_col=False)
+    df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+    brewery_frames.append(df)
+
+#exports to csv file    
+pd.concat(brewery_frames).to_csv('all_breweries.csv')
+```
+
+We web scraped the rating information for the top 24 most popular beers for each brewery on Untappd for all the states in US. Because the brewery name downloaded from OpenBreweryDB is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, then retrieved the top 24 most popular beers associated with that brewery. We Added State and Brewery name to beer dataset ion order to make it easy for us to join brewery data to beer data.
 
 **Sample Data:**
 

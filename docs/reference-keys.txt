@@ -3,6 +3,9 @@ to-formulate-our-questions-below
 data-sources
 openbrewerydb
 untappd
+web-scrapper
+merge-beer-ratings-data
+merge-brewery-info-data
 data-transformation
 missing-values
 results
