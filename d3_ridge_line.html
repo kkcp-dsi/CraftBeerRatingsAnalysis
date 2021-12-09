@@ -36,7 +36,7 @@
     var margin = {top: 100, right: 30, bottom: 20, left:110},
         width = 800 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
-        hist_height = 300
+    
     // append the svg object to the body of the page
     var svg = d3.select("#state_hist")
       .append("svg")
@@ -44,6 +44,45 @@
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+       // X axis: scale and draw:
+      var x = d3.scaleLinear()
+        .domain([2.0, 5.0]) 
+        .range([0, width]);
+  
+      var y = d3.scaleLinear()
+        .domain([0.0, 6.0])
+        .range([ height, 0]);
+      
+      var xAxis = d3.axisBottom()
+        .scale(x);
+        
+      var yName = d3.scaleBand()
+        .range([0, height])
+        .paddingInner(1)
+
+      var yAxis = d3.axisLeft()
+        .scale(yName);
+              
+      var myColor =  d3.scaleOrdinal()
+        .range(d3.schemeSet3);
+      
+      var lineGenerator = d3.line()
+        .curve(d3.curveBasis)
+        .x(d=>x(d[0]))
+        .y(d=>y(d[1]));
+      
+      svg.append("g")
+        .attr("class", "density")
+      
+      svg.append("g")
+        .attr("class", "xAxis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+                  
+      svg.append("g")
+        .attr("class", "yAxis")
+        .call(yAxis);
     
     d3.csv(brewery_data, rowConverter).then(function(data){
         //Process the data
@@ -58,121 +97,54 @@
         
         var allStates = Object.keys(state_average_beers);
         
-        //var allStates = ["California", "New York", "Iowa", "New Jersey"];
+        myColor.domain(allStates);
         
-         // X axis: scale and draw:
-        var x = d3.scaleLinear()
-          .domain([2.0, 5.0]) 
-          .range([0, width]);
-    
-        var y = d3.scaleLinear()
-          .domain([0.0, 6.0])
-          .range([ height, 0]);
+        var mySelect = $('#states');
+        $.each(state_average_beers, function(key, val) {
+            mySelect.append(
+                $('<option></option>').val(key).html(key)
+            );
+        });
         
-        var xAxis = d3.axisBottom()
-          .scale(x);
+        var stateSelect = $("#states").select2({multiple: true});
+        stateSelect.on("change", function (e) {
+          var all_bins = [];
+          var selections = $(e.currentTarget).val();
           
-        var yName = d3.scaleBand()
-          .domain(allStates)
-          .range([0, height])
-          .paddingInner(1)
-
-        var yAxis = d3.axisLeft()
-          .scale(yName);
-                
-        var myColor =  d3.scaleOrdinal()
-          .domain(allStates)
-          .range(d3.schemeSet3);
-        
-        var allDensity = [];
-        var allMeans = [];
-        for (key in allStates){
-          var state = allStates[key]
-          allMeans.push(d3.mean(state_average_beers[state]));
-          var density = kde(epanechnikov(0.3), x.ticks(20), state_average_beers[state])
-          allDensity.push({key: state, density: density});
-        }
-        
-        svg.append("g")
-          .attr("class", "xAxis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
-                    
-        svg.append("g")
-          .attr("class", "yAxis")
-          .call(yAxis);
-        
+          var allDensity = [];
+          for (i in selections){
+            var state = selections[i]
+            var density = kde(epanechnikov(0.3), x.ticks(20), state_average_beers[state])
+            allDensity.push({
+              key: state,
+              density: density
+            });
+          }
+          yName.domain(selections);
+          
+          update(allDensity);
+        });
+        $("#states").change();
+      });
+      
+      function update(allDensity){
         // Add areas
-        svg.append("g")
-          .selectAll("areas")
-          .data(allDensity)
-          .join("path")
-            .attr("transform", function(d){return("translate(0," + (yName(d.key)-height) +")" )})
-            .attr("fill", function(d){
-              grp = d.key ;
-              index = allStates.indexOf(grp)
-              value = allMeans[index]
-              return myColor(grp)
-            })
-            .datum(function(d){
-              return(d.density)
-            })
+        var all_density_curves = svg.select(".density")
+          .selectAll("path")
+          .data(allDensity, d=>d.key);
+        
+          all_density_curves.join("path")
+            .attr("transform", function(d){return("translate(0," + (yName(d.key)-height) +")")})
+            .attr("fill", d=>myColor(d.key))
+            .datum(d=>d.density)
+            .transition()
+            .duration(500)
             .attr("opacity", 0.5)
             .attr("stroke", "#000")
             .attr("stroke-width", 0.1)
-            .attr("d",  d3.line()
-                .curve(d3.curveBasis)
-                .x(function(d) { 
-                  return x(d[0]); 
-                  
-                })
-                .y(function(d) { 
-                  return y(d[1]); 
-                })
-            )
-      });
-      
-      function update(bins){
-        // Scale the range of the data in the y domain
-        y.domain([0, d3.max(bins, function(d) { return d.length;})]);
+            .attr("d",  lineGenerator)
         
-        // append the bar rectangles to the svg element
-        var all_recs = svg.select('.hist')
-          .selectAll("rect")
-          .data(bins, d => d.key);
-        
-        all_recs.enter().append("rect")
-            .attr("class", "bar")
-            .attr("fill", (d, i) => myColor(d.color))
-            .merge(all_recs)
-            .attr("transform", function(d) {
-      		    return "translate(" + x(d.x0) + "," + y(d.length) + ")"; 
-            })
-            .transition()
-            .duration(2000)
-      		  .attr("width", function(d) { return d3.max([x(d.x1) - x(d.x0) - 1, 0]); })
-            .attr("height", function(d) { return height - y(d.length); })
-            .style('opacity', 0.8)
-        
-        all_recs
-          .exit()
-          .transition()
-          .duration(2000)
-          .ease(d3.easeLinear)
-          .attr("height", 0)
-          .remove();
-        
-        svg.select(".xAxis")
-          .transition()
-          .duration(2000)
-          .ease(d3.easeLinear)
-          .call(xAxis);
-  
-        svg.select(".yAxis")
-          .transition()
-          .duration(2000)
-          .ease(d3.easeLinear)
-          .call(yAxis);
+        svg.select('.yAxis').call(yAxis);
       }
     </script>
 </html>
