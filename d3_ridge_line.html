@@ -152,8 +152,8 @@
       .y(d=>yScale(d[1]));
     
     // append the svg object to the body of the page
-    var svg = create_svg(d3.select("#state_hist"), height, width,  xAxis, yAxis, "Average rating");
-    var svg_popular = create_svg(d3.select("#state_hist_popular"), height, width,  xAxis, yAxis, "Top 20 brewery average rating");
+    var svg = create_svg(d3.select("#state_hist"), height, width,  xAxis, yAxis, "All breweries average rating");
+    var svg_popular = create_svg(d3.select("#state_hist_popular"), height, width,  xAxis, yAxis, "Top 20 breweries average rating");
     
     d3.csv(brewery_data, rowConverter).then(function(data){
         //Process the data
