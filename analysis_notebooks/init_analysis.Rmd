@@ -28,20 +28,21 @@ Clean up the data
 Below we cleaned up the beer_abv column by removing the characters % ABV.
 
 ```{r}
-clean_up_beer_style <- function(beer_style_name){
-  if (beer_style_name == "IPA - Imperial / Double New England / Hazy"){
+clean_up_beer_style <- function(beer_style_name) {
+  if (beer_style_name == "IPA - Imperial / Double New England / Hazy") {
     return ("Double New England IPA")
-  } else if (beer_style_name == "Red Ale - American Amber / Red"){
+  } else if (beer_style_name == "Red Ale - American Amber / Red") {
     return ("Red American Amber")
-  } else if (beer_style_name %in% c("IPA - New England / Hazy", "IPA - New England")){
+  } else if (beer_style_name %in% c("IPA - New England / Hazy", "IPA - New England")) {
     return ("New England IPA")
-  } else if (beer_style_name == "IPA - Imperial / Double"){
+  } else if (beer_style_name == "IPA - Imperial / Double") {
     return ("Double IPA")
-  } else if (beer_style_name == "Farmhouse Ale - Saison"){
+  } else if (beer_style_name == "Farmhouse Ale - Saison") {
     return ("Farmhouse Ale")
-  } else if (beer_style_name == "Stout - Imperial / Double"){
+  } else if (beer_style_name == "Stout - Imperial / Double") {
     return ("Imperial Stout")
-  } else if (beer_style_name == "Sour - Fruited Gose"){
+  } else if (beer_style_name %in% c("Sour - Fruited Gose",
+                                    "Sour - Fruited Berliner Weisse")) {
     return ("Sour - Fruited")
   }
   
@@ -494,16 +495,25 @@ beer_style_production_by_year
 library(ggalluvial)
 library(ggthemes)
 library(RColorBrewer)
-ggplot(beer_style_production_by_year, mapping = aes(
-  alluvium = beer_style,
-  x = year,
-  stratum = factor(production_rank)
-)) +
+library(randomcoloR)
+beer_style_palette <- distinctColorPalette(25)
+ggplot(
+  beer_style_production_by_year,
+  mapping = aes(
+    alluvium = beer_style,
+    x = year,
+    stratum = factor(production_rank)
+  )
+) +
   geom_flow(aes(fill = beer_style), color = "black") +
   geom_stratum(aes(fill = beer_style)) +
-  geom_text(stat = "alluvium", aes(label = beer_style_production_by_year$production_rank), size = 2) +
-  scale_fill_manual(values = brewer.pal(n = 12, name = "Paired")) +
-  # scale_fill_wsj(palette = "Paired") +
-  theme_wsj() +
+  geom_text(
+    stat = "alluvium",
+    aes(label = beer_style_production_by_year$production_rank),
+    size = 4
+  ) +
+  scale_fill_manual(values = beer_style_palette) +
+  guides(y = "none") +
+  theme_wsj(color="gray") +
   ggtitle("Beer styles Production Increases over years in America")
 ```
