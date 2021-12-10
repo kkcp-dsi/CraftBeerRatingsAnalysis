@@ -10,23 +10,21 @@ editor_options:
 
 # Introduction
 
-we can define **craft beer** as a beer made by a brewer that is small,
-independent, and traditional. According to the [Brewers
-Association](https://www.brewersassociation.org/statistics-and-data/craft-brewer-definition/)
-(BA), an industry group of mostly small, independent brewers, there are
-more than 8,000 craft breweries in the U.S. Nearly 4,000 of them opened
-between
-[2015--2020](https://www.brewersassociation.org/statistics-and-data/national-beer-stats/).
+About 5 years ago, neither of us enjoyed drinking beer, and the 
+is much bitter compared to other available alcoholic beverages. 
 
-At first We didn't have a good opinion on Beers, We used to think Beers
-is much bitter compared to other available alcoholic beverages. Given we
+Given we
 did not get to try different Beers from Craft brewers as they are not
-easily available when compared to Mass produced beers. With gradual
-incline in craft beer community craft brewers started organizing Beer
+easily available when compared to Mass produced beers.
+
+With gradual incline in craft beer community craft brewers started organizing Beer
 Festivals and started making craft beers available in multiple
 locations, that's when got to try different styles of beers and it
 changed our perception altogether. we began to try more craft beers and
 see that those around us were drinking them too.
+
+
+
 
 As the community started to grow and we were trying different kinda of
 beers bunch of mobile applications were released which will let you
@@ -35,7 +33,20 @@ beer. This kind of helped the community to grow and also help fellow
 craft beer enthusiast to find new styles of beers from different
 breweries and identify new breweries.
 
-As we both are Craft Beer Enthusiasts, we decided to analyze ratings
+
+As we both are craft beer enthusiasts, we are on a mission of drinking the best craft beers in the US. 
+
+
+A **craft beer** is defined as a beer made by a brewer that is small, independent, and traditional. According to the [Brewers
+Association](https://www.brewersassociation.org/statistics-and-data/craft-brewer-definition/)
+(BA), an industry group of mostly small, independent brewers, there are
+more than 8,000 craft breweries in the U.S. Nearly 4,000 of them opened
+between
+[2015--2020](https://www.brewersassociation.org/statistics-and-data/national-beer-stats/). Due to the sheer large number of breweries and beers available nowadays, it would be impossible to try every one of them, therefore we would have to apply some data driven approach to help us identify good beers more efficiently. Although "what is a good beer" is a highly subjective question, there is some census among the beer geeks in terms of what beer styles are preferred and what beers tend to get higher ratings. 
+
+We have been wanting to conduct some beer analyses to understand the landscape of the craft beer industry. Doing so will allow us better understand our own tastes, and enable us to apply a data driven approach for beer hunting. And this final project gives us an opportunity to do just that. In this project, we are going to apply the EDAV techniques to the beer rating data (will be discussed later in data source) in conjunction with our beer knowledge, hopefully we will gain some new insights that we didn't previously know. 
+
+Specifically, we decided to analyze ratings
 that were given out to the beers from all the independent breweries in
 the country because we've always suspected the ratings in different
 regions of the country may not follow the same pattern.

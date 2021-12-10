@@ -33,7 +33,7 @@ clean_up_beer_style <- function(beer_style_name){
     return ("Double New England IPA")
   } else if (beer_style_name == "Red Ale - American Amber / Red"){
     return ("Red American Amber")
-  } else if (beer_style_name == "IPA - New England / Hazy"){
+  } else if (beer_style_name %in% c("IPA - New England / Hazy", "IPA - New England")){
     return ("New England IPA")
   } else if (beer_style_name == "IPA - Imperial / Double"){
     return ("Double IPA")
@@ -41,6 +41,8 @@ clean_up_beer_style <- function(beer_style_name){
     return ("Farmhouse Ale")
   } else if (beer_style_name == "Stout - Imperial / Double"){
     return ("Imperial Stout")
+  } else if (beer_style_name == "Sour - Fruited Gose"){
+    return ("Sour - Fruited")
   }
   
   return (beer_style_name)
@@ -483,7 +485,7 @@ beer_style_production_by_year <- cleaned_all_beers %>%
     fun      = row_number,
     x        = desc(num_of_beers)
   )) %>%
-  filter(production_rank <= 20)
+  filter(production_rank <= 10)
 
 beer_style_production_by_year
 ```
@@ -499,9 +501,9 @@ ggplot(beer_style_production_by_year, mapping = aes(
 )) +
   geom_flow(aes(fill = beer_style), color = "black") +
   geom_stratum(aes(fill = beer_style)) +
-  geom_text(stat = "alluvium", aes(label = beer_style_production_by_year$beer_style), size = 2) +
-  #scale_fill_manual(values = brewer.pal(n = 50, name = "Set1")) +
-  # scale_fill_wsj(palette = "colors6") +
+  geom_text(stat = "alluvium", aes(label = beer_style_production_by_year$production_rank), size = 2) +
+  scale_fill_manual(values = brewer.pal(n = 12, name = "Paired")) +
+  # scale_fill_wsj(palette = "Paired") +
   theme_wsj() +
   ggtitle("Beer styles Production Increases over years in America")
 ```
