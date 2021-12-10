@@ -355,27 +355,153 @@ us_geo <- states(class = "sf")
 ```{r}
 state_avg_rating <- cleaned_all_breweries %>%
   group_by(state) %>%
-  summarise(BreweryCount= n(),
-            AverageRating = mean(average_rating)) %>%
+  summarise(
+    BreweryCount = n(),
+    AverageRating = mean(average_rating),
+    NumRatings = sum(as.numeric(num_of_ratings), na.rm = TRUE),
+    NumOfBeers = sum(num_of_beers, na.rm = TRUE),
+    NumOfCheckins = sum(as.numeric(total_check_ins), na.rm = TRUE),
+    NumOfUniqueCheckins = sum(as.numeric(unique_user_check_ins), na.rm =
+                                TRUE)
+  ) %>%
   rename(NAME = state)
+
+top_brewery_per_state <-
+ cleaned_all_breweries %>% group_by(state) %>%
+  mutate(brewery_rank = with_order(
+order_by = average_rating,
+    fun      = row_number,
+    x        = desc(average_rating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(brewery_rank == 1) %>%
+  select(NAME, brewery, average_rating)
+
+top_beer_per_state <-
+ cleaned_all_beers %>% filter(beer_num_ratings > 2000) %>% group_by(state) %>%
+  mutate(beer_rank = with_order(
+order_by = beer_average_rating,
+    fun      = row_number,
+    x        = desc(beer_average_rating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(beer_rank == 1) %>%
+  select(NAME, beer_name, beer_average_rating)
+
+top_beer_style_per_state <-
+ cleaned_all_beers %>% group_by(state, beer_style) %>%
+  summarise(AvgBeerStyleRating = mean(beer_average_rating, na.rm =
+                                TRUE)) %>%
+  mutate(beer_style_rank = with_order(
+order_by = AvgBeerStyleRating,
+    fun      = row_number,
+    x        = desc(AvgBeerStyleRating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(beer_style_rank == 1) %>%
+  select(NAME, beer_style, AvgBeerStyleRating)
+
+
+beer_style_beer <-
+ inner_join(top_beer_per_state, top_beer_style_per_state)
+
+beer_style_beer$NAME <- gsub('_', ' ', beer_style_beer$NAME)
+
+beer_style_beer_brewery <-
+ inner_join(top_brewery_per_state, beer_style_beer)
+
+beer_style_beer_brewery$brewery = gsub('_', ' ', beer_style_beer_brewery$brewery)
+
+state_beer_summary_info <-
+ inner_join(state_avg_rating, beer_style_beer_brewery)
+
+state_beer_summary_info
+
+#state_beer_summary_info <- 
+#  inner_join(state_avg_rating, inner_join(top_brewery_per_state, inner_join#(top_beer_per_state, top_beer_style_per_state)))
+
+
+#brewery_summary_info <- inner_join(state_avg_rating, top_brewery_per_state)
+#brewery_summary_info
 ```
 
 ```{r}
 
-mean_rating_map <- inner_join(us_geo, state_avg_rating) %>% select(NAME, AverageRating, BreweryCount,  geometry)
+mean_rating_map <- inner_join(us_geo, state_beer_summary_info) %>% select(
+  NAME,
+  AverageRating,
+  BreweryCount,
+  NumRatings,
+  NumOfBeers,
+  NumOfCheckins,
+  NumOfUniqueCheckins,
+  brewery,
+  average_rating,
+  beer_name,
+  beer_average_rating,
+  beer_style,
+  AvgBeerStyleRating,
+  geometry
+)
 
-mean_rating_map <- subset(mean_rating_map, !(NAME %in% c("Alaska", "Hawaii", "Puerto Rico")))
+mean_rating_map <-
+  subset(mean_rating_map, !(NAME %in% c("Alaska", "Hawaii", "Puerto Rico")))
 
 tmap_mode("view")
 
 my_interactive_map <- tm_shape(mean_rating_map) +
-  tm_polygons("BreweryCount", popup.vars=c(
-                    "No Of Breweries in state: "="BreweryCount",
-                    "Average Ratings in State: " = "AverageRating"), id = "NAME", border.col = "white",
-              palette="Greens")
+  tm_polygons(
+    "BreweryCount",
+    popup.vars = c(
+      "No.of Breweries: " = "BreweryCount",
+      "Beers Produced: " = 'NumOfBeers',
+      "Average Rating in State: " = "AverageRating",
+      "Popular Brewery: " = "brewery",
+      "Average Ratings for Popular Brewery :" = "average_rating",
+      "Popular Beer Style :" = "beer_style",
+      "Popular Beer :" = "beer_name"
+    ),
+    id = "NAME",
+    border.col = "white",
+    palette = "Greens"
+  )
 
 my_interactive_map <- tmap_leaflet(my_interactive_map)
 #library(htmlwidgets)
 #saveWidget(my_interactive_map, "state_avg_rating.html")
 my_interactive_map
+```
+
+```{r}
+beer_style_production_by_year <- cleaned_all_beers %>%
+  group_by(year, beer_style) %>%
+  summarise(num_of_beers = n()) %>%
+  filter(!is.na(year)) %>%
+  filter(num_of_beers >= 50)%>%
+  mutate(production_rank = with_order(
+    order_by = num_of_beers,
+    fun      = row_number,
+    x        = desc(num_of_beers)
+  )) %>%
+  filter(production_rank <= 20)
+
+beer_style_production_by_year
+```
+
+```{r}
+library(ggalluvial)
+library(ggthemes)
+library(RColorBrewer)
+ggplot(beer_style_production_by_year, mapping = aes(
+  alluvium = beer_style,
+  x = year,
+  stratum = factor(production_rank)
+)) +
+  geom_flow(aes(fill = beer_style), color = "black") +
+  geom_stratum(aes(fill = beer_style)) +
+  geom_text(stat = "alluvium", aes(label = beer_style_production_by_year$beer_style), size = 2) +
+  #scale_fill_manual(values = brewer.pal(n = 50, name = "Set1")) +
+  # scale_fill_wsj(palette = "colors6") +
+  theme_wsj() +
+  ggtitle("Beer styles Production Increases over years in America")
 ```
