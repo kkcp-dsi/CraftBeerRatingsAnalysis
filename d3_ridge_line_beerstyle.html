@@ -333,7 +333,7 @@
             topItems.map(d => topItemsBeerABV[d[0]] = d[1].beer_abv.filter(d=>!isNaN(d)));
             topItems.map(d => topItemsBeerIBU[d[0]] = d[1].beer_ibu.filter(d=>!isNaN(d)));
             
-            sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(20));
+            sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(30));
             yName.domain($.map(sortedDensity, d => d.key));
             update(svg, sortedDensity, lineGenerator);
             
@@ -341,10 +341,10 @@
               .map(d=>d.bins).flat();
             update_hist(svg_popularity, bins);
             
-            sortedDensity = compute_density(Object.keys(topItemsBeerABV), topItemsBeerABV, xScaleABV.ticks(20));
+            sortedDensity = compute_density(Object.keys(topItemsBeerABV), topItemsBeerABV, xScaleABV.ticks(30));
             update(svg_abv, sortedDensity, abvLineGenerator);
             
-            sortedDensity = compute_density(Object.keys(topItemsBeerIBU), topItemsBeerIBU, xScaleIBU.ticks(20));
+            sortedDensity = compute_density(Object.keys(topItemsBeerIBU), topItemsBeerIBU, xScaleIBU.ticks(30));
             update(svg_ibu, sortedDensity, ibuLineGenerator);
             
           }else{
@@ -368,7 +368,7 @@
           topItemsBeerABV[style] = beer_style_data[style].beer_abv.filter(d=>!isNaN(d));
           topItemsBeerIBU[style] = beer_style_data[style].beer_ibu.filter(d=>!isNaN(d));
         }
-        sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(20));
+        sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(30));
         yName.domain($.map(sortedDensity, d => d.key));
         update(svg, sortedDensity, lineGenerator);
         
@@ -376,10 +376,10 @@
           .map(d=>d.bins).flat();
         update_hist(svg_popularity, bins);
         
-        sortedDensity = compute_density(Object.keys(topItemsBeerABV), topItemsBeerABV, xScaleABV.ticks(10));
+        sortedDensity = compute_density(Object.keys(topItemsBeerABV), topItemsBeerABV, xScaleABV.ticks(30));
         update(svg_abv, sortedDensity, abvLineGenerator);
         
-        sortedDensity = compute_density(Object.keys(topItemsBeerIBU), topItemsBeerIBU, xScaleIBU.ticks(20));
+        sortedDensity = compute_density(Object.keys(topItemsBeerIBU), topItemsBeerIBU, xScaleIBU.ticks(30));
         update(svg_ibu, sortedDensity, ibuLineGenerator);
       });
       $("#states").change();
