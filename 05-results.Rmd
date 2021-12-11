@@ -1,1 +1,211 @@
 # Results
+
+In the results section, we are going to start with exploring the brewery data. There are a few angles that we can go about this. Firstly, we will explore the distribution of the breweries across the US?; Secondly we will look at what styles of beer are most popular in different states because we think different states tend to brew or specialize in different styles. Last but not the least, we will investigate whether there is a difference in terms of the user rating behaviors across states because we suspect that people from different states might have different rating behaviors.
+
+After exploring the brewery data, we will look at the beer data, and the specific traits of the beers we are going after include beer style, beer alcohol by volume (ABU), beer international bitterness units (IBU), and average user ratings, the big question is that why are certain beer styles getting attention and better ratings than others? We will aim to answer this question using a series of plots to understand different aspects of the beer data.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(maps)
+library(mapdata)
+library(choroplethr)
+
+library(tmap)
+library(tmaptools)
+library(sf)
+library(leaflet)
+library(tigris)
+
+source("utility/utility.R")
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+us_geo <- states(class = "sf")
+```
+
+```{r, echo=FALSE}
+folder_path <- paste(getwd(), 'data', sep='/')
+all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
+all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
+```
+
+```{r, echo=FALSE}
+cleaned_all_breweries <- all_breweries %>%
+  filter(num_of_beers >= 10) %>%
+  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+cleaned_all_beers <- all_beers %>% 
+  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
+  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
+  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
+  mutate(year=format(beer_added, format="%Y")) %>%
+  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+top_most_popular_beer_styles <- cleaned_all_beers %>%
+  drop_na(beer_average_rating) %>%
+  group_by(beer_style) %>%
+  summarise(freq=n(), style_average_rating=mean(beer_average_rating)) %>%
+  ungroup() %>%
+  arrange(desc(freq)) %>%
+  mutate(rn=row_number()) %>%
+  filter(rn <= 20) %>%
+  mutate(beer_style=fct_reorder(factor(beer_style), rn))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+most_popular_beer_ratings <- top_most_popular_beer_styles %>% 
+  inner_join(cleaned_all_beers, on = beer_style) %>%
+  drop_na(beer_average_rating)
+```
+
+Let's first take a look at a sample of the the brewery data below. The dataset contains the brewery name, description, address, geo coordinates, average user ratings of the brewery (calculated by the average rating of all beer ratings), the number of beers, the number of ratings given the brewery received in total, and etc.
+
+```{r, echo=FALSE}
+rmarkdown::paged_table(head(all_breweries))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=600}
+state_avg_rating <- cleaned_all_breweries %>%
+  group_by(state) %>%
+  summarise(
+    BreweryCount = n(),
+    AverageRating = mean(average_rating),
+    NumRatings = sum(as.numeric(num_of_ratings), na.rm = TRUE),
+    NumOfBeers = sum(num_of_beers, na.rm = TRUE),
+    NumOfCheckins = sum(as.numeric(total_check_ins), na.rm = TRUE),
+    NumOfUniqueCheckins = sum(as.numeric(unique_user_check_ins), na.rm =
+                                TRUE)
+  ) %>%
+  rename(NAME = state)
+
+top_brewery_per_state <-
+ cleaned_all_breweries %>% group_by(state) %>%
+  mutate(brewery_rank = with_order(
+order_by = average_rating,
+    fun      = row_number,
+    x        = desc(average_rating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(brewery_rank == 1) %>%
+  select(NAME, brewery, average_rating)
+
+top_beer_per_state <-
+ cleaned_all_beers %>% filter(beer_num_ratings > 2000) %>% group_by(state) %>%
+  mutate(beer_rank = with_order(
+order_by = beer_average_rating,
+    fun      = row_number,
+    x        = desc(beer_average_rating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(beer_rank == 1) %>%
+  select(NAME, beer_name, beer_average_rating)
+
+top_beer_style_per_state <-
+ cleaned_all_beers %>% group_by(state, beer_style) %>%
+  summarise(AvgBeerStyleRating = mean(beer_average_rating, na.rm =
+                                TRUE)) %>%
+  mutate(beer_style_rank = with_order(
+order_by = AvgBeerStyleRating,
+    fun      = row_number,
+    x        = desc(AvgBeerStyleRating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(beer_style_rank == 1) %>%
+  select(NAME, beer_style, AvgBeerStyleRating)
+
+
+beer_style_beer <-
+ inner_join(top_beer_per_state, top_beer_style_per_state)
+
+beer_style_beer$NAME <- gsub('_', ' ', beer_style_beer$NAME)
+
+beer_style_beer_brewery <-
+ inner_join(top_brewery_per_state, beer_style_beer)
+
+beer_style_beer_brewery$brewery = gsub('_', ' ', beer_style_beer_brewery$brewery)
+
+state_beer_summary_info <- 
+  inner_join(state_avg_rating, beer_style_beer_brewery)
+```
+
+We used [tigris](https://rdocumentation.org/packages/tigris/versions/1.5) for generating an interactive map to show the number of breweries across the US. When you click on each state, a popup window will appear to show the additional information such as the number of breweries, number of beers made, the average brewery rating for that state. Based on this map, it's clearly to see that most of the breweries are located in the northeast region, west coast, and Texas and Colorado. In particular, California has the most breweries (547 in total), which surpasses the runner-up Washington state (274 in total). If you want to have a full craft beer experience, I guess California would be the place to go!
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+mean_rating_map <- inner_join(us_geo, state_beer_summary_info) %>% select(
+  NAME,
+  AverageRating,
+  BreweryCount,
+  NumRatings,
+  NumOfBeers,
+  NumOfCheckins,
+  NumOfUniqueCheckins,
+  brewery,
+  average_rating,
+  beer_name,
+  beer_average_rating,
+  beer_style,
+  AvgBeerStyleRating,
+  geometry
+)
+
+mean_rating_map <-
+  subset(mean_rating_map, !(NAME %in% c("Alaska", "Hawaii", "Puerto Rico")))
+
+tmap_mode("view")
+
+my_interactive_map <- tm_shape(mean_rating_map) +
+  tm_polygons(
+    "BreweryCount",
+    popup.vars = c(
+      "No.of Breweries: " = "BreweryCount",
+      "Beers Produced: " = 'NumOfBeers',
+      "Average Rating in State: " = "AverageRating",
+      "Popular Brewery: " = "brewery",
+      "Average Ratings for Popular Brewery :" = "average_rating",
+      "Popular Beer Style :" = "beer_style",
+      "Popular Beer :" = "beer_name"
+    ),
+    id = "NAME",
+    border.col = "white",
+    palette = "Greens"
+  )
+
+my_interactive_map <- tmap_leaflet(my_interactive_map)
+my_interactive_map
+```
+
+Now that we know which states are producing more beers than other, let's find out what beer styles are popular in each state. For this we will need to look at the beer dataset, so let's take a look at the sample of the data first. Although there are quite a few columns in the data, we will focus on ***state*** and ***beer style*** columns to answer this question.
+
+```{r, echo=FALSE}
+rmarkdown::paged_table(head(all_beers))
+```
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+most_popular_beer_ratings %>%
+  filter(rn <= 10) %>%
+  mutate(state=gsub('[_]', ' ', state)) %>%
+  group_by(state, beer_style) %>%
+  summarise(freq=n(), rn=min(rn)) %>%
+  mutate(freq=scale(freq)) %>%
+
+ggplot(aes(fct_reorder(beer_style, rn), fct_rev(fct_infreq(state)), fill=freq)) +
+  geom_tile(color="white") + 
+  theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(), 
+    axis.line = element_line(colour = "black")
+  ) + 
+  scale_x_discrete(labels = abbreviate) + 
+  ggtitle("Number of beer styles calculated per state") + 
+  xlab("State") + 
+  ylab("Beer style")
+```
