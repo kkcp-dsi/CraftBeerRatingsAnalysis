@@ -10,53 +10,80 @@ editor_options:
 
 # Introduction
 
-About 5 years ago, neither of us enjoyed drinking beer, and the 
-is much bitter compared to other available alcoholic beverages. 
-
-Given we
-did not get to try different Beers from Craft brewers as they are not
-easily available when compared to Mass produced beers.
-
-With gradual incline in craft beer community craft brewers started organizing Beer
-Festivals and started making craft beers available in multiple
-locations, that's when got to try different styles of beers and it
-changed our perception altogether. we began to try more craft beers and
-see that those around us were drinking them too.
-
-
-
-
-As the community started to grow and we were trying different kinda of
-beers bunch of mobile applications were released which will let you
-check in a beer you are having and lets you give you rating for that
-beer. This kind of helped the community to grow and also help fellow
-craft beer enthusiast to find new styles of beers from different
-breweries and identify new breweries.
-
-
-As we both are craft beer enthusiasts, we are on a mission of drinking the best craft beers in the US. 
-
-
-A **craft beer** is defined as a beer made by a brewer that is small, independent, and traditional. According to the [Brewers
+Beer is a everyday drink that we are all familiar with, the classic
+impression of a beer such as Heineken and Budweiser is that it has a
+light body, a refreshing and slightly bitter taste. I believe all of us
+share a similar experience where we tried a sip of beer for the first
+time and only got disappointed by it. Every since that trauma, the
+question would automatically pop up whenever we see other people consume
+beer with delight, why would people love it? Beer is normally portrayed
+as a cheap, easy to access, and down to the earth type of beverage, it
+never received the attention that wine has been enjoying in the past
+decades. Both of us felt the same way when we first started drinking
+beer, it's more of a way to get you into the party mood and sometimes we
+would drink for effect rather than the taste. That changed about 5 years
+ago when we first got exposed to craft beer and we fell in love with it
+immediately, our beer journey started since then. Before we dive into
+the investigation of the craft beer, let's us get the definition of
+craft beer out of the way first. A **craft beer** is defined as a beer
+made by a brewer that is small, independent, and traditional. According
+to the [Brewers
 Association](https://www.brewersassociation.org/statistics-and-data/craft-brewer-definition/)
 (BA), an industry group of mostly small, independent brewers, there are
 more than 8,000 craft breweries in the U.S. Nearly 4,000 of them opened
 between
-[2015--2020](https://www.brewersassociation.org/statistics-and-data/national-beer-stats/). Due to the sheer large number of breweries and beers available nowadays, it would be impossible to try every one of them, therefore we would have to apply some data driven approach to help us identify good beers more efficiently. Although "what is a good beer" is a highly subjective question, there is some census among the beer geeks in terms of what beer styles are preferred and what beers tend to get higher ratings. 
+[2015--2020](https://www.brewersassociation.org/statistics-and-data/national-beer-stats/).
+With steady growth in in craft beer community, craft brewers started
+organizing beer festivals and making craft beers available at multiple
+locations, that's when people got to try different styles of beers and
+this changed our perception altogether.
 
-We have been wanting to conduct some beer analyses to understand the landscape of the craft beer industry. Doing so will allow us better understand our own tastes, and enable us to apply a data driven approach for beer hunting. And this final project gives us an opportunity to do just that. In this project, we are going to apply the EDAV techniques to the beer rating data (will be discussed later in data source) in conjunction with our beer knowledge, hopefully we will gain some new insights that we didn't previously know. 
+Until a few years ago, a few online websites and phone apps were
+developed for people to share the experience and knowledge about craft
+beers. Specifically, there are a few well-known beer websites that
+motivate for social drinking such as Untappd and BeerAdvocate (similar
+to IMDB), where people could find the information on beers, give their
+own ratings to the beers and also leave comments, and this actually
+generated a lot of valuable data. For example, the beer apps could
+leverage this data for developing beer recommendation systems and
+predict what is going to be the next popular beer? Despite the data is
+being collected by those organizations and companies, this data is still
+publicly available on their websites or through their own API end point.
 
-Specifically, we decided to analyze ratings
-that were given out to the beers from all the independent breweries in
-the country because we've always suspected the ratings in different
-regions of the country may not follow the same pattern.
+As we both are craft beer enthusiasts and on a mission of drinking the
+best craft beers in the US. Due to the sheer large number of breweries
+and beers available nowadays, it would be impossible to try every one of
+them, therefore we would have to apply some data driven approach to help
+us identify good beers more efficiently. Although "what is a good beer"
+is a highly subjective question, there is some census among the beer
+geeks in terms of what beer styles are preferred and what beers tend to
+get higher ratings.
 
-## To formulate our questions below,
+We have been wanting to conduct some beer analyses to understand the
+landscape of the craft beer industry. Doing so will allow us better
+understand our own tastes, and enable us to apply a data driven approach
+for beer hunting. And this final project gives us an opportunity to do
+just that. In this project, we are going to apply the EDAV techniques to
+the beer rating data (will be discussed later in data source) in
+conjunction with our beer knowledge, hopefully we will gain some new
+insights that we didn't previously know. Specifically, we decided to
+analyze the beer styles, beer characteristics, regional origins, and the
+corresponding ratings given out by users, we have designed a few starter
+questions to get us started shown below, however, as we dive into the
+data deeper, the questions will definitely go beyond the scope defined
+here in the later chapters.
 
-1.  Find out if there is any correlation between the location of the
-    brewery and the ratings that a brewery is getting
-2.  Find out the correlation between beer styles and the kind of ratings
-    they receive.
-3.  As a bonus question, it would be nice to find out the highly rated
-    styles of beers in each state because it would guide us in hunting
-    the best beers in the future.
+**To formulate the starter questions,**
+
+1.  Where are the breweries located across the US? Which of the states
+    have the most breweries?
+
+2.  Is there any correlation between the region of the brewery and the
+    user rating?
+
+3.  Do different states tend to brew certain beer styles?
+
+4.  Is there a correlation between beer styles and user ratings? Do
+    certain beer styles tend to be rated higher than other styles?
+
+5.  What traits of the beers tend to receive higher ratings?
