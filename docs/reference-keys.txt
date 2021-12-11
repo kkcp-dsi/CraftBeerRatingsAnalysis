@@ -1,14 +1,14 @@
 introduction
-to-formulate-our-questions-below
 data-sources
 openbrewerydb
 untappd
+data-transformation
 web-scrapper
 merge-beer-ratings-data
 merge-brewery-info-data
+data-cleaning
 sample-beer-ratings-data
 sample-brewery-info-data
-data-transformation
 missing-values
 results
 interactive-component
