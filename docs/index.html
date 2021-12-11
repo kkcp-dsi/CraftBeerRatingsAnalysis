@@ -24,7 +24,7 @@
 <meta name="author" content="Krishna Kalluri, Chao Pang" />
 
 
-<meta name="date" content="2021-12-08" />
+<meta name="date" content="2021-12-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -137,23 +137,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">CraftBeer</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
-<ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#to-formulate-our-questions-below"><i class="fa fa-check"></i><b>1.1</b> To formulate our questions below,</a></li>
-</ul></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span><strong>OpenBreweryDB</strong></span> </a></li>
 <li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span><strong>Untappd</strong></span></a></li>
-<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#web-scrapper"><i class="fa fa-check"></i><b>2.3</b> <span><strong>Web Scrapper</strong></span></a>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a>
 <ul>
-<li class="chapter" data-level="2.3.1" data-path="data-sources.html"><a href="data-sources.html#merge-beer-ratings-data"><i class="fa fa-check"></i><b>2.3.1</b> Merge Beer ratings data</a></li>
-<li class="chapter" data-level="2.3.2" data-path="data-sources.html"><a href="data-sources.html#merge-brewery-info-data"><i class="fa fa-check"></i><b>2.3.2</b> Merge Brewery Info data</a></li>
+<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#web-scrapper"><i class="fa fa-check"></i><b>3.1</b> <span>Web Scrapper</span></a></li>
+<li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#merge-beer-ratings-data"><i class="fa fa-check"></i><b>3.2</b> Merge Beer ratings data</a></li>
+<li class="chapter" data-level="3.3" data-path="data-transformation.html"><a href="data-transformation.html#merge-brewery-info-data"><i class="fa fa-check"></i><b>3.3</b> Merge Brewery Info data</a></li>
+<li class="chapter" data-level="3.4" data-path="data-transformation.html"><a href="data-transformation.html#data-cleaning"><i class="fa fa-check"></i><b>3.4</b> Data Cleaning</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="data-transformation.html"><a href="data-transformation.html#sample-beer-ratings-data"><i class="fa fa-check"></i><b>3.4.1</b> Sample Beer Ratings Data:</a></li>
+<li class="chapter" data-level="3.4.2" data-path="data-transformation.html"><a href="data-transformation.html#sample-brewery-info-data"><i class="fa fa-check"></i><b>3.4.2</b> Sample Brewery Info Data:</a></li>
 </ul></li>
-<li class="chapter" data-level="2.4" data-path="data-sources.html"><a href="data-sources.html#sample-beer-ratings-data"><i class="fa fa-check"></i><b>2.4</b> <strong>Sample Beer Ratings Data:</strong></a></li>
-<li class="chapter" data-level="2.5" data-path="data-sources.html"><a href="data-sources.html#sample-brewery-info-data"><i class="fa fa-check"></i><b>2.5</b> Sample Brewery Info Data:</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
@@ -180,49 +180,81 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Craft Beer Ratings Analysis</h1>
 <p class="author"><em>Krishna Kalluri, Chao Pang</em></p>
-<p class="date"><em>2021-12-08</em></p>
+<p class="date"><em>2021-12-11</em></p>
 </div>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
-<p>we can define <strong>craft beer</strong> as a beer made by a brewer that is small,
-independent, and traditional. According to the <a href="https://www.brewersassociation.org/statistics-and-data/craft-brewer-definition/">Brewers
+<p>Beer is a everyday drink that we are all familiar with, the classic
+impression of a beer such as Heineken and Budweiser is that it has a
+light body, a refreshing and slightly bitter taste. I believe all of us
+share a similar experience where we tried a sip of beer for the first
+time and only got disappointed by it. Every since that trauma, the
+question would automatically pop up whenever we see other people consume
+beer with delight, why would people love it? Beer is normally portrayed
+as a cheap, easy to access, and down to the earth type of beverage, it
+never received the attention that wine has been enjoying in the past
+decades. Both of us felt the same way when we first started drinking
+beer, it’s more of a way to get you into the party mood and sometimes we
+would drink for effect rather than the taste. That changed about 5 years
+ago when we first got exposed to craft beer and we fell in love with it
+immediately, our beer journey started since then. Before we dive into
+the investigation of the craft beer, let’s us get the definition of
+craft beer out of the way first. A <strong>craft beer</strong> is defined as a beer
+made by a brewer that is small, independent, and traditional. According
+to the <a href="https://www.brewersassociation.org/statistics-and-data/craft-brewer-definition/">Brewers
 Association</a>
 (BA), an industry group of mostly small, independent brewers, there are
 more than 8,000 craft breweries in the U.S. Nearly 4,000 of them opened
 between
-<a href="https://www.brewersassociation.org/statistics-and-data/national-beer-stats/">2015–2020</a>.</p>
-<p>At first We didn’t have a good opinion on Beers, We used to think Beers
-is much bitter compared to other available alcoholic beverages. Given we
-did not get to try different Beers from Craft brewers as they are not
-easily available when compared to Mass produced beers. With gradual
-incline in craft beer community craft brewers started organizing Beer
-Festivals and started making craft beers available in multiple
-locations, that’s when got to try different styles of beers and it
-changed our perception altogether. we began to try more craft beers and
-see that those around us were drinking them too.</p>
-<p>As the community started to grow and we were trying different kinda of
-beers bunch of mobile applications were released which will let you
-check in a beer you are having and lets you give you rating for that
-beer. This kind of helped the community to grow and also help fellow
-craft beer enthusiast to find new styles of beers from different
-breweries and identify new breweries.</p>
-<p>As we both are Craft Beer Enthusiasts, we decided to analyze ratings
-that were given out to the beers from all the independent breweries in
-the country because we’ve always suspected the ratings in different
-regions of the country may not follow the same pattern.</p>
-<div id="to-formulate-our-questions-below" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> To formulate our questions below,</h2>
+<a href="https://www.brewersassociation.org/statistics-and-data/national-beer-stats/">2015–2020</a>.
+With steady growth in in craft beer community, craft brewers started
+organizing beer festivals and making craft beers available at multiple
+locations, that’s when people got to try different styles of beers and
+this changed our perception altogether.</p>
+<p>Until a few years ago, a few online websites and phone apps were
+developed for people to share the experience and knowledge about craft
+beers. Specifically, there are a few well-known beer websites that
+motivate for social drinking such as Untappd and BeerAdvocate (similar
+to IMDB), where people could find the information on beers, give their
+own ratings to the beers and also leave comments, and this actually
+generated a lot of valuable data. For example, the beer apps could
+leverage this data for developing beer recommendation systems and
+predict what is going to be the next popular beer? Despite the data is
+being collected by those organizations and companies, this data is still
+publicly available on their websites or through their own API end point.</p>
+<p>As we both are craft beer enthusiasts and on a mission of drinking the
+best craft beers in the US. Due to the sheer large number of breweries
+and beers available nowadays, it would be impossible to try every one of
+them, therefore we would have to apply some data driven approach to help
+us identify good beers more efficiently. Although “what is a good beer”
+is a highly subjective question, there is some census among the beer
+geeks in terms of what beer styles are preferred and what beers tend to
+get higher ratings.</p>
+<p>We have been wanting to conduct some beer analyses to understand the
+landscape of the craft beer industry. Doing so will allow us better
+understand our own tastes, and enable us to apply a data driven approach
+for beer hunting. And this final project gives us an opportunity to do
+just that. In this project, we are going to apply the EDAV techniques to
+the beer rating data (will be discussed later in data source) in
+conjunction with our beer knowledge, hopefully we will gain some new
+insights that we didn’t previously know. Specifically, we decided to
+analyze the beer styles, beer characteristics, regional origins, and the
+corresponding ratings given out by users, we have designed a few starter
+questions to get us started shown below, however, as we dive into the
+data deeper, the questions will definitely go beyond the scope defined
+here in the later chapters.</p>
+<p><strong>To formulate the starter questions,</strong></p>
 <ol style="list-style-type: decimal">
-<li>Find out if there is any correlation between the location of the
-brewery and the ratings that a brewery is getting</li>
-<li>Find out the correlation between beer styles and the kind of ratings
-they receive.</li>
-<li>As a bonus question, it would be nice to find out the highly rated
-styles of beers in each state because it would guide us in hunting
-the best beers in the future.</li>
+<li><p>Where are the breweries located across the US? Which of the states
+have the most breweries?</p></li>
+<li><p>Is there any correlation between the region of the brewery and the
+user rating?</p></li>
+<li><p>Do different states tend to brew certain beer styles?</p></li>
+<li><p>Is there a correlation between beer styles and user ratings? Do
+certain beer styles tend to be rated higher than other styles?</p></li>
+<li><p>What traits of the beers tend to receive higher ratings?</p></li>
 </ol>
 
-</div>
 </div>
             </section>
 
