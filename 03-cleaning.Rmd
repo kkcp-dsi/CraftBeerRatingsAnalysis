@@ -1,1 +1,222 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
 # Data transformation
+
+## [Web Scrapper](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py)
+
+We built a parser to get the list of beers from untappd using Python as
+we started scrapping data earlier than when we were introduced to web
+scrapping in R.
+
+The web scraper uses beautiful soup a library in python to scrape the
+data from web pages.
+
+The process workflow in the web scrapper:
+
+We used the downloaded a csv file from [**List Breweries
+API**](https://www.openbrewerydb.org/documentation/01-listbreweries)then
+filter the breweries list from the csv for the state we are trying to
+download the data for.
+
+Then the scraper opens [untappd search
+bar](https://untappd.com/search?q=) to find each breweries page on
+untappd and opens a brewery page once the brewery page is opened it goes
+to page source and searches for div class `beer-list` and
+`distinct-list` once it finds the div class it expands the div class
+looks for another div class `beer-item` and gets `beer_url`,
+`beer_name`, `beer_style`, `beer_desc`, `beer_abv`, `beer_ibu`,
+`beer_average_rating`, `beer_num_ratings`, `beer_added` and adds
+everything to a csv.
+
+For the Brewery data we run a similar scrapper to get `brewery_id`,
+`average_rating`, `num_of_ratings`, `num_of_beers`, `total_check_ins`,
+`unique_user_check_ins`, `last_four_week_check_ins`, `brewery_desc` and
+adds everything to a csv.
+
+Using this web scrapper we scraped the rating information for the top 24
+most popular beers for each brewery on untappd for all the states in US.
+Because the brewery name downloaded from OpenBreweryDB is not the same
+as the one used in untappd, we used the untappd search function to
+resolve the brewery name first, then retrieved the top 24 most popular
+beers associated with that brewery.
+
+To use the web scrapper and download the data try following the below
+steps:
+
+``` {.bash}
+$ cd brewery_beer_parser
+
+$ pip install -r requirements.txt
+
+$ python3 beer_scraping.py -i data/breweries.csv -o brewery_beers/ -s "New York"
+```
+
+**Once the scrapping is done the data for New York outputs as
+following**
+
+All the beers per brewery will be exported to -\>
+`brewery_beer_parser/brewery_beers/New_York/*brewery_name.csv`
+
+All the breweries that the parser could find the beers for will be
+exported to -\>
+`brewery_beer_parser/brewery_beers/New_York_brewery_info.csv`
+
+Once we repeated this step for all the states we manually copied the
+`state`\_brewery_info.csv to `brewery_beer_parser/Breweries/`
+
+we used following python code to merge all the beer data and brewery
+data.
+
+## Merge Beer ratings data
+
+``` {.python}
+path = r'brewery_beers'
+extension = '.csv'
+csv_list = []
+       
+for root, dirs, files in os.walk(path):
+    for filename in files:
+        if os.path.splitext(filename)[-1] == extension:
+            csv_list.append(os.path.join(root, filename))
+
+frames = []
+for file in csv_list:
+    state_and_brewery = file.split('/')
+    df = pd.read_csv(file, index_col=False)
+    df.insert(1, 'brewery', state_and_brewery[2].split('.')[0])
+    df.insert(2, 'state', state_and_brewery[2])
+    df['state'] = state_and_brewery[1]
+    df['brewery'] = state_and_brewery[2].split('.')[0]
+    df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+    frames.append(df)
+
+# exports to csv file
+pd.concat(frames).to_csv('all_beers.csv')
+```
+
+We Added State and Brewery name to beer dataset in order to make it easy
+for us to join brewery data to beer data.
+
+## Merge Brewery Info data
+
+``` {.python}
+breweries_list = []
+       
+for root, dirs, files in os.walk(path):
+    for filename in files:
+        if os.path.splitext(filename)[-1] == extension:
+            breweries_list.append(os.path.join(root, filename))
+
+brewery_frames = []
+for file in breweries_list:
+    df = pd.read_csv(file, index_col=False)
+    df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+    brewery_frames.append(df)
+
+#exports to csv file    
+pd.concat(brewery_frames).to_csv('all_breweries.csv')
+```
+
+\*\* We did check <https://untapped.com/robots.txt> to see if scrapping
+is permitted. They do not have any restrictions under user agents. And
+we also checked their user agreement. There weren't any rules about
+getting data for the list of beers. They only mentioned rules about
+obtaining user data.
+
+## Data Cleaning
+
+```{r}
+library(tidyverse)
+folder_path <- paste(getwd(), 'data', sep='/')
+all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
+all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
+```
+
+### Sample Beer Ratings Data:
+
+```{r}
+sample_n(all_beers, 20)
+```
+
+### Sample Brewery Info Data:
+
+```{r}
+sample_n(all_breweries, 10)
+```
+
+We cleaned up the beer_abv column by removing the characters `% ABV` and
+beer_ibu column by removing the characters `IBU` .
+
+```{r}
+cleaned_all_beers <- all_beers %>%
+  mutate(beer_abv = as.double(str_trim(gsub(
+    "%\\s+ABV", "", beer_abv
+  )))) %>%
+  mutate(beer_ibu = as.double(str_trim(gsub(
+    "\\s+IBU", "", beer_ibu
+  ))))
+```
+
+Cleaned up date values to same format and added a new column named year.
+
+```{r}
+cleaned_all_beers <- cleaned_all_beers %>%
+  mutate(beer_added = as.Date(beer_added, format = "%m/%d/%y")) %>%
+  mutate(year = format(beer_added, format = "%Y"))
+```
+
+Generalized known similar types of beer styles
+
+```{r}
+clean_up_beer_style <- function(beer_style_name) {
+  if (beer_style_name == "IPA - Imperial / Double New England / Hazy") {
+    return ("Double New England IPA")
+  } else if (beer_style_name == "Red Ale - American Amber / Red") {
+    return ("Red American Amber")
+  } else if (beer_style_name %in% c("IPA - New England / Hazy", "IPA - New England")) {
+    return ("New England IPA")
+  } else if (beer_style_name == "IPA - Imperial / Double") {
+    return ("Double IPA")
+  } else if (beer_style_name == "Farmhouse Ale - Saison") {
+    return ("Farmhouse Ale")
+  } else if (beer_style_name == "Stout - Imperial / Double") {
+    return ("Imperial Stout")
+  } else if (beer_style_name %in% c("Sour - Fruited Gose",
+                                    "Sour - Fruited Berliner Weisse")) {
+    return ("Sour - Fruited")
+  }
+  
+  return (beer_style_name)
+}
+
+cleaned_all_beers <-
+  cleaned_all_beers %>% mutate(beer_style = sapply(beer_style, clean_up_beer_style))
+
+```
+
+Cleaned up state name in cleaned_all_beers to remove `_` 's
+
+```{r}
+cleaned_all_beers$state <- gsub('_', ' ', cleaned_all_beers$state)
+```
+
+Remove unusable columns in all_breweries data frame and rename name
+column
+
+```{r}
+cleaned_all_breweries <- all_breweries %>% select(name, brewery_type, city, state, longitude, latitude, average_rating, num_of_ratings, num_of_beers, total_check_ins, unique_user_check_ins, brewery) %>% rename(brewery_name = name)
+```
+
+Cleaned breweries with less than 10 beers total and the breweries which
+are closed, proprietor, bar as there are mostly useless for our
+question.
+
+```{r}
+cleaned_all_breweries <- cleaned_all_breweries %>%
+  filter(num_of_beers >= 10) %>%
+  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
+```

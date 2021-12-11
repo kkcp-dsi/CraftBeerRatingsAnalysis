@@ -17,49 +17,6 @@ library(choroplethr)
 ```
 
 ```{r}
-setwd('..')
-folder_path <- paste(getwd(), 'data', sep='/')
-all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
-all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
-```
-
-Clean up the data
-
-Below we cleaned up the beer_abv column by removing the characters % ABV.
-
-```{r}
-clean_up_beer_style <- function(beer_style_name) {
-  if (beer_style_name == "IPA - Imperial / Double New England / Hazy") {
-    return ("Double New England IPA")
-  } else if (beer_style_name == "Red Ale - American Amber / Red") {
-    return ("Red American Amber")
-  } else if (beer_style_name %in% c("IPA - New England / Hazy", "IPA - New England")) {
-    return ("New England IPA")
-  } else if (beer_style_name == "IPA - Imperial / Double") {
-    return ("Double IPA")
-  } else if (beer_style_name == "Farmhouse Ale - Saison") {
-    return ("Farmhouse Ale")
-  } else if (beer_style_name == "Stout - Imperial / Double") {
-    return ("Imperial Stout")
-  } else if (beer_style_name %in% c("Sour - Fruited Gose",
-                                    "Sour - Fruited Berliner Weisse")) {
-    return ("Sour - Fruited")
-  }
-  
-  return (beer_style_name)
-}
-```
-
-```{r}
-cleaned_all_beers <- all_beers %>% 
-  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
-  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
-  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
-  mutate(year=format(beer_added, format="%Y")) %>%
-  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
-```
-
-```{r}
 top_most_popular_beer_styles <- cleaned_all_beers %>%
   drop_na(beer_average_rating) %>%
   group_by(beer_style) %>%
@@ -148,12 +105,6 @@ weighted_average_rating_by_state <- cleaned_all_breweries %>%
 
 ggplot(weighted_average_rating_by_state, aes(weighted_average_rating, average_rating)) +
   geom_point()
-```
-
-```{r}
-cleaned_all_breweries <- all_breweries %>%
-  filter(num_of_beers >= 10) %>%
-  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
 ```
 
 ```{r}
@@ -370,20 +321,20 @@ state_avg_rating <- cleaned_all_breweries %>%
   rename(NAME = state)
 
 top_brewery_per_state <-
- cleaned_all_breweries %>% group_by(state) %>%
+  cleaned_all_breweries %>% group_by(state) %>%
   mutate(brewery_rank = with_order(
-order_by = average_rating,
+    order_by = average_rating,
     fun      = row_number,
     x        = desc(average_rating)
   )) %>%
   rename(NAME = state) %>%
   filter(brewery_rank == 1) %>%
-  select(NAME, brewery, average_rating)
+  select(NAME, brewery_name, average_rating)
 
 top_beer_per_state <-
- cleaned_all_beers %>% filter(beer_num_ratings > 2000) %>% group_by(state) %>%
+  cleaned_all_beers %>% filter(beer_num_ratings > 2000) %>% group_by(state) %>%
   mutate(beer_rank = with_order(
-order_by = beer_average_rating,
+    order_by = beer_average_rating,
     fun      = row_number,
     x        = desc(beer_average_rating)
   )) %>%
@@ -391,12 +342,11 @@ order_by = beer_average_rating,
   filter(beer_rank == 1) %>%
   select(NAME, beer_name, beer_average_rating)
 
-top_beer_style_per_state <-
- cleaned_all_beers %>% group_by(state, beer_style) %>%
+top_beer_style_per_state <- cleaned_all_beers %>% group_by(state, beer_style) %>%
   summarise(AvgBeerStyleRating = mean(beer_average_rating, na.rm =
-                                TRUE)) %>%
+                                        TRUE)) %>%
   mutate(beer_style_rank = with_order(
-order_by = AvgBeerStyleRating,
+    order_by = AvgBeerStyleRating,
     fun      = row_number,
     x        = desc(AvgBeerStyleRating)
   )) %>%
@@ -404,31 +354,18 @@ order_by = AvgBeerStyleRating,
   filter(beer_style_rank == 1) %>%
   select(NAME, beer_style, AvgBeerStyleRating)
 
-
-beer_style_beer <-
- inner_join(top_beer_per_state, top_beer_style_per_state)
-
-beer_style_beer$NAME <- gsub('_', ' ', beer_style_beer$NAME)
-
-beer_style_beer_brewery <-
- inner_join(top_brewery_per_state, beer_style_beer)
-
-beer_style_beer_brewery$brewery = gsub('_', ' ', beer_style_beer_brewery$brewery)
-
 state_beer_summary_info <-
- inner_join(state_avg_rating, beer_style_beer_brewery)
+  inner_join(state_avg_rating,
+             inner_join(
+               top_brewery_per_state,
+               inner_join(top_beer_per_state, top_beer_style_per_state)
+             ))
 
 state_beer_summary_info
-
-#state_beer_summary_info <- 
-#  inner_join(state_avg_rating, inner_join(top_brewery_per_state, inner_join#(top_beer_per_state, top_beer_style_per_state)))
-
-
-#brewery_summary_info <- inner_join(state_avg_rating, top_brewery_per_state)
-#brewery_summary_info
 ```
 
 ```{r}
+library("tmap")
 
 mean_rating_map <- inner_join(us_geo, state_beer_summary_info) %>% select(
   NAME,
@@ -438,7 +375,7 @@ mean_rating_map <- inner_join(us_geo, state_beer_summary_info) %>% select(
   NumOfBeers,
   NumOfCheckins,
   NumOfUniqueCheckins,
-  brewery,
+  brewery_name,
   average_rating,
   beer_name,
   beer_average_rating,
@@ -459,7 +396,7 @@ my_interactive_map <- tm_shape(mean_rating_map) +
       "No.of Breweries: " = "BreweryCount",
       "Beers Produced: " = 'NumOfBeers',
       "Average Rating in State: " = "AverageRating",
-      "Popular Brewery: " = "brewery",
+      "Popular Brewery: " = "brewery_name",
       "Average Ratings for Popular Brewery :" = "average_rating",
       "Popular Beer Style :" = "beer_style",
       "Popular Beer :" = "beer_name"
