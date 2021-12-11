@@ -208,7 +208,7 @@ Remove unusable columns in all_breweries data frame and rename name
 column
 
 ```{r}
-cleaned_all_breweries <- all_breweries %>% select(name, brewery_type, city, state, longitude, latitude, average_rating, num_of_ratings, num_of_beers, total_check_ins, unique_user_check_ins, brewery) %>% rename(brewery_name = name)
+cleaned_all_breweries <- all_breweries %>% select(brewery_id, name, brewery_type, city, state, longitude, latitude, average_rating, num_of_ratings, num_of_beers, total_check_ins, unique_user_check_ins, brewery) %>% rename(brewery_name = name)
 ```
 
 Cleaned breweries with less than 10 beers total and the breweries which
