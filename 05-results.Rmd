@@ -13,6 +13,7 @@ library(tidyverse)
 library(maps)
 library(mapdata)
 library(choroplethr)
+library(ggridges)
 
 library(tmap)
 library(tmaptools)
@@ -65,6 +66,8 @@ most_popular_beer_ratings <- top_most_popular_beer_styles %>%
   inner_join(cleaned_all_beers, on = beer_style) %>%
   drop_na(beer_average_rating)
 ```
+
+## Where are the breweries located?
 
 Let's first take a look at a sample of the the brewery data below. The dataset contains the brewery name, description, address, geo coordinates, average user ratings of the brewery (calculated by the average rating of all beer ratings), the number of beers, the number of ratings given the brewery received in total, and etc.
 
@@ -182,6 +185,8 @@ my_interactive_map <- tmap_leaflet(my_interactive_map)
 my_interactive_map
 ```
 
+## What kind of beer styles are most popular across the US? 
+
 Now that we know which states are making more beers than other, let's find out what beer styles are popular in each state. For this we will need to look at the beer dataset, so let's take a look at the sample of the data first. Although there are quite a few columns in the data, we will focus on ***state*** and ***beer style*** columns to answer this question. Due to a large number of beer styles in the dataset (1353 in total), we decided to only focus on the top 20 most popular beer styles across the country to avoid overplotting. Another reason is that a lot of values in the beer style columns are not actually beer styles, those values are either very specific type of a beer style such as Kali's Kolsch or a beer name that is misplaced in the beer style column such as Crimes of Calculations Fermented In Tempernillo Barrels.
 
 ```{r, echo=FALSE}
@@ -225,4 +230,49 @@ ggplot(heatmap_input, aes(fct_reorder(beer_style, rn), fct_rev(fct_reorder(state
   scale_shape_manual(name = "Labels", values = levels(fct_reorder(factor(heatmap_input$beer_style), heatmap_input$rn)))
 ```
 
-The x-axis is ordered by the popularity of the beer style and y-axis is order by the number of breweries in the state. This heatmap clearly shows that IPAs are the most popular beers across the country with American IPA and New England IPA (NE IPA) and Double IPA (DIPA) leading on the popularity list. In particular, American IPA is the most dominant beer style in most of the states with a few exceptions. For example, breweries in Massachusetts and Connecticut tend to brew more New England IPAs, whereas Vermont and Rhode Island focus more on Double IPAs. In addition, it seems that states with more breweries tend to brew the popular kind of beers such as IPAs and the states with less breweries do not follow the trend and brew all kinds of styles. What stood out to us is that **Fruited Sour** is the most popular beer style in both North Dakota and South Dakota. What the heatmap has revealed actually corroborates with our experience, for instance, New England IPA first took off in the east coast such as in Massachusetts, in which the two of the best breweries [TreeHouse](https://treehousebrew.com/) and [Trillium](https://www.trilliumbrewing.com/) are located, it's not too surprising for us to see NE IPA is the most dominant beer style there.
+The x-axis is ordered by the popularity of the beer style and y-axis is order by the number of breweries in the state. This heatmap clearly shows that IPAs are the most popular beers across the country with American IPA and New England IPA (NE IPA) and Double IPA (DIPA) leading on the popularity list. In particular, American IPA is the most dominant beer style in most of the states with a few exceptions. For example, breweries in Massachusetts and Connecticut tend to brew more New England IPAs, whereas Vermont and Rhode Island focus more on Double IPAs. In addition, it seems that states with more breweries tend to brew the popular kind of beers such as IPAs and the states with less breweries do not follow the trend and brew all kinds of styles. What stood out to us is that Fruited Sour is the most popular beer style in both North Dakota and South Dakota. What the heatmap has revealed actually corroborates with our experience, for instance, New England IPA first took off in the east coast such as in Massachusetts, in which the two of the best breweries [TreeHouse](https://treehousebrew.com/) and [Trillium](https://www.trilliumbrewing.com/) are located, it's not too surprising for us to see NE IPA is the most dominant beer style there.
+
+## Do people rate beers/breweries differently across the US? 
+
+One of the questions we have long suspected is that people have different rating behaviors across regions, and this question was actually motivated by a conversation with our beer friends in the Netherlands, where our Dutch friends criticized that Americans always give high ratings to beers whereas Dutch people are more objective when it comes to beer rating, as a consequence, American beers tend to receive high ratings than the Dutch/European beers. It was quite an accusation and at the same time an interesting hypothesis, so this idea has been stuck with us for a long time, now it's time to put it to test! Unfortunately the data we've collected is only limited to the US, but the good news is that the same idea still applies to this data, therefore we decided to check whether people across different states have slightly different beer rating behaviors. So are people from certain states more generous or strict with ratings?
+
+To answer this question, we will go back to our brewery data, where it contains the rating of every brewery (calculated as the average of all beer ratings) from every state, we could easily dump all of brewery ratings in ridgeline plot by state to look at rating behaviors across the country. To avoid overplotting, we will only show the top 20 states with the most breweries in this analysis.
+
+```{r, echo=FALSE}
+
+top_20_states <- cleaned_all_breweries %>% 
+  group_by(state) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  ungroup() %>%
+  top_n(20)
+
+cleaned_all_breweries %>%
+  inner_join(top_20_states, on=state) %>%
+  filter(average_rating > 3.0) %>%
+
+ggplot(aes(average_rating, fct_reorder(state, average_rating))) + 
+  geom_density_ridges(scale=4.0, alpha=0.5) + 
+  ggtitle("Distribution of brewery rating per state") + 
+  xlab("Brewery rating") + 
+  ylab("State")
+```
+
+Apparently most of the states follow a uni-modal distribution with a few exceptions, those states seem to have a spread-out distribution normally have less breweries, therefore it could be caused by the However all of them seem to peak at the same rating, so it is not very
+
+```{r, echo=FALSE, fig.height=7}
+cleaned_all_breweries %>%
+  inner_join(top_20_states, on=state) %>%
+  filter(average_rating > 3.0) %>%
+  group_by(state) %>% 
+  arrange(desc(average_rating)) %>% 
+  mutate(rn=row_number()) %>%
+  ungroup() %>%
+  filter(rn <= 50) %>%
+
+ggplot(aes(average_rating, fct_reorder(state, average_rating))) + 
+  geom_density_ridges(scale=4.0, alpha=0.5) + 
+  ggtitle("Distribution of brewery rating per state") + 
+  xlab("Brewery rating") + 
+  ylab("State")
+```
