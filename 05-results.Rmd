@@ -312,7 +312,7 @@ beer_style_production_by_year <- cleaned_all_beers %>%
   filter(production_rank <= 10)
 ```
 
-```{r, echo=FALSE, fig.width=12}
+```{r, echo=FALSE, fig.width = 12, fig.height= 6}
 beer_style_palette <- distinctColorPalette(25, runTsne = TRUE)
 ggplot(
   beer_style_production_by_year,
