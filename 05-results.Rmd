@@ -14,6 +14,11 @@ library(maps)
 library(mapdata)
 library(choroplethr)
 library(ggridges)
+library(patchwork)
+library(ggalluvial)
+library(ggthemes)
+library(RColorBrewer)
+library(randomcoloR)
 
 library(tmap)
 library(tmaptools)
@@ -278,3 +283,131 @@ ggplot(aes(average_rating, fct_reorder(state, average_rating))) +
 ```
 
 Now we can clearly see that there is a difference in terms of the distribution of the brewery ratings across the top 20 states. This confirmes our hypothesis about our friend's biased assessment towards the American beers, and we don't think there is a regional difference in terms of the beer rating behaviors.
+
+## What are the popular beer styles?
+
+
+
+```{r, echo=FALSE}
+top_most_popular_beer_styles <- cleaned_all_beers %>%
+  drop_na(beer_average_rating) %>%
+  group_by(beer_style) %>%
+  summarise(freq=n(), style_average_rating=mean(beer_average_rating)) %>%
+  ungroup() %>%
+  arrange(desc(freq)) %>%
+  mutate(rn=row_number()) %>%
+  filter(rn <= 20) %>%
+  mutate(beer_style=fct_reorder(factor(beer_style), rn))
+
+ggplot(top_most_popular_beer_styles, aes(x=freq, y=fct_reorder(beer_style, freq))) +
+  geom_point() + 
+  ggtitle("Top 20 most popular beer styles") + 
+  xlab("Num of beers") + 
+  ylab("Beer style")
+```
+```{r, echo=FALSE}
+facted_hist_input <- cleaned_all_beers %>% 
+  inner_join(top_most_popular_beer_styles, on=beer_style) %>%
+  drop_na(c(beer_average_rating, year)) %>%
+  select(beer_style, beer_added, year, rn) %>%
+  mutate(year=as.double(year)) %>%
+  mutate(beer_style=factor(beer_style))
+
+ggplot(facted_hist_input, aes(year, fct_rev(fct_infreq(beer_style)))) + 
+  geom_density_ridges(scale=3.0, alpha=0.5) + 
+  ggtitle("Popularity of beer styles over time") + 
+  xlab("Year") + 
+  ylab("Beer style")
+```
+```{r, echo=FALSE}
+beer_style_production_by_year <- cleaned_all_beers %>%
+  group_by(year, beer_style) %>%
+  summarise(num_of_beers = n()) %>%
+  filter(!is.na(year)) %>%
+  filter(num_of_beers >= 50)%>%
+  mutate(production_rank = with_order(
+    order_by = num_of_beers,
+    fun      = row_number,
+    x        = desc(num_of_beers)
+  )) %>%
+  filter(production_rank <= 10)
+```
+
+```{r, echo=FALSE, fig.width=12}
+beer_style_palette <- distinctColorPalette(25)
+ggplot(
+  beer_style_production_by_year,
+  mapping = aes(
+    alluvium = beer_style,
+    x = year,
+    stratum = factor(production_rank)
+  )
+) +
+  geom_flow(aes(fill = beer_style), color = "black") +
+  geom_stratum(aes(fill = beer_style)) +
+  geom_text(
+    stat = "alluvium",
+    aes(label = beer_style_production_by_year$production_rank),
+    size = 4
+  ) +
+  scale_fill_manual(values = beer_style_palette) +
+  guides(y = "none") +
+  theme_wsj(color="gray") +
+  ggtitle("Beer styles Production Increases over years in America")
+```
+
+## What are the highly rated beer styles and what makes a beer better rated? 
+```{r, echo=FALSE}
+most_popular_beer_ratings <- top_most_popular_beer_styles %>% 
+  inner_join(cleaned_all_beers, on = beer_style) %>%
+  drop_na(beer_average_rating)
+  
+ggplot(most_popular_beer_ratings, aes(x=beer_average_rating, y= fct_reorder(beer_style, beer_average_rating))) +
+  geom_boxplot() + 
+  ggtitle("Boxplots of beer ratings for the top 20 most popular beer styles") + 
+  xlab("Beer rating") + 
+  ylab("Beer style")
+```
+
+```{r, echo=FALSE}
+west_east_comparison <- cleaned_all_beers %>%
+  select(beer_style, state, beer_average_rating, beer_abv, beer_ibu) %>%
+  drop_na() %>%
+  filter(grepl("IPA", beer_style)) %>%
+  mutate(beer_abv_category = ifelse(beer_abv < 6, "low", ifelse(beer_abv < 8, "median", "high"))) %>%
+  mutate(beer_ibu_category = ifelse(beer_ibu < 30, "low", ifelse(beer_ibu < 50, "median", "high"))) %>%
+  mutate(beer_rating_category = ifelse(beer_average_rating < 3.6, "low", ifelse(beer_average_rating < 4.0, "median", "high"))) %>% 
+  mutate(beer_abv_category = fct_rev(fct_reorder(beer_abv_category, beer_abv))) %>%
+  mutate(beer_ibu_category = fct_rev(fct_reorder(beer_ibu_category, beer_ibu))) %>%
+  mutate(beer_rating_category = fct_reorder(beer_rating_category, beer_average_rating))
+```
+
+```{r, echo=FALSE}
+vcd::mosaic(beer_rating_category ~ beer_abv_category + beer_ibu_category, 
+            direction=c("v", "v", "h"), 
+            west_east_comparison,
+            highlighting_fill=brewer.pal(3, 'Reds'))
+```
+
+
+
+## Ratings for West Coast IPA and East Coast IPA
+
+```{r, echo=FALSE}
+west_east_comparison <- cleaned_all_beers %>%
+  filter(state %in% c("California", "Massachusetts", "New_York", "Connecticut")) %>%
+  mutate(region=ifelse(state %in% c("California", "Oregon", "Washington"), "West Coast", "East Coast")) %>%
+  select(beer_style, state, region, beer_average_rating, beer_abv, beer_ibu) %>%
+  drop_na() %>%
+  filter(beer_style == "IPA - American")
+```
+
+```{r, echo=FALSE}
+GGally::ggparcoord(west_east_comparison, 
+                   columns=4:6, 
+                   scale='uniminmax', 
+                   alphaLines = 0.5, 
+                   splineFactor = 5,
+                   groupColumn = 3)
+```
+
