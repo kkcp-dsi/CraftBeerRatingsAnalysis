@@ -1,1 +1,278 @@
 # Results
+
+In the results section, we are going to start with exploring the brewery data. There are a few angles that we can go about this. Firstly, we will explore the distribution of the breweries across the US?; Secondly we will look at what styles of beer are most popular in different states because we think different states tend to brew or specialize in different styles. Last but not the least, we will investigate whether there is a difference in terms of the user rating behaviors across states because we suspect that people from different states might have different rating behaviors.
+
+After exploring the brewery data, we will look at the beer data, and the specific traits of the beers we are going after include beer style, beer alcohol by volume (ABU), beer international bitterness units (IBU), and average user ratings, the big question is that why are certain beer styles getting attention and better ratings than others? We will aim to answer this question using a series of plots to understand different aspects of the beer data.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(maps)
+library(mapdata)
+library(choroplethr)
+library(ggridges)
+
+library(tmap)
+library(tmaptools)
+library(sf)
+library(leaflet)
+library(tigris)
+
+source("utility/utility.R")
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+us_geo <- states(class = "sf")
+```
+
+```{r, echo=FALSE}
+folder_path <- paste(getwd(), 'data', sep='/')
+all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
+all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
+```
+
+```{r, echo=FALSE}
+cleaned_all_breweries <- all_breweries %>%
+  filter(num_of_beers >= 10) %>%
+  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+cleaned_all_beers <- all_beers %>% 
+  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
+  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
+  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
+  mutate(year=format(beer_added, format="%Y")) %>%
+  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+top_most_popular_beer_styles <- cleaned_all_beers %>%
+  drop_na(beer_average_rating) %>%
+  group_by(beer_style) %>%
+  summarise(freq=n(), style_average_rating=mean(beer_average_rating)) %>%
+  ungroup() %>%
+  arrange(desc(freq)) %>%
+  mutate(rn=row_number()) %>%
+  filter(rn <= 20) %>%
+  mutate(beer_style=fct_reorder(factor(beer_style), rn))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+most_popular_beer_ratings <- top_most_popular_beer_styles %>% 
+  inner_join(cleaned_all_beers, on = beer_style) %>%
+  drop_na(beer_average_rating)
+```
+
+## Where are the breweries located?
+
+Let's first take a look at a sample of the the brewery data below. The dataset contains the brewery name, description, address, geo coordinates, average user ratings of the brewery (calculated by the average rating of all beer ratings), the number of beers, the number of ratings given the brewery received in total, and etc.
+
+```{r, echo=FALSE}
+rmarkdown::paged_table(head(all_breweries))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=600}
+state_avg_rating <- cleaned_all_breweries %>%
+  group_by(state) %>%
+  summarise(
+    BreweryCount = n(),
+    AverageRating = mean(average_rating),
+    NumRatings = sum(as.numeric(num_of_ratings), na.rm = TRUE),
+    NumOfBeers = sum(num_of_beers, na.rm = TRUE),
+    NumOfCheckins = sum(as.numeric(total_check_ins), na.rm = TRUE),
+    NumOfUniqueCheckins = sum(as.numeric(unique_user_check_ins), na.rm =
+                                TRUE)
+  ) %>%
+  rename(NAME = state)
+
+top_brewery_per_state <-
+ cleaned_all_breweries %>% group_by(state) %>%
+  mutate(brewery_rank = with_order(
+order_by = average_rating,
+    fun      = row_number,
+    x        = desc(average_rating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(brewery_rank == 1) %>%
+  select(NAME, brewery, average_rating)
+
+top_beer_per_state <-
+ cleaned_all_beers %>% filter(beer_num_ratings > 2000) %>% group_by(state) %>%
+  mutate(beer_rank = with_order(
+order_by = beer_average_rating,
+    fun      = row_number,
+    x        = desc(beer_average_rating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(beer_rank == 1) %>%
+  select(NAME, beer_name, beer_average_rating)
+
+top_beer_style_per_state <-
+ cleaned_all_beers %>% group_by(state, beer_style) %>%
+  summarise(AvgBeerStyleRating = mean(beer_average_rating, na.rm =
+                                TRUE)) %>%
+  mutate(beer_style_rank = with_order(
+order_by = AvgBeerStyleRating,
+    fun      = row_number,
+    x        = desc(AvgBeerStyleRating)
+  )) %>%
+  rename(NAME = state) %>%
+  filter(beer_style_rank == 1) %>%
+  select(NAME, beer_style, AvgBeerStyleRating)
+
+
+beer_style_beer <-
+ inner_join(top_beer_per_state, top_beer_style_per_state)
+
+beer_style_beer$NAME <- gsub('_', ' ', beer_style_beer$NAME)
+
+beer_style_beer_brewery <-
+ inner_join(top_brewery_per_state, beer_style_beer)
+
+beer_style_beer_brewery$brewery = gsub('_', ' ', beer_style_beer_brewery$brewery)
+
+state_beer_summary_info <- 
+  inner_join(state_avg_rating, beer_style_beer_brewery)
+```
+
+We used [tigris](https://rdocumentation.org/packages/tigris/versions/1.5) for generating an interactive map to show the number of breweries across the US. When you click on each state, a popup window will appear to show the additional information such as the number of breweries, number of beers made, the average brewery rating for that state. Based on this map, it's clearly to see that most of the breweries are located in the northeast region, west coast, and Texas and Colorado. In particular, California has the most breweries (547 in total), which surpasses the runner-up Washington state (274 in total). If you want to have a full craft beer experience, I guess California would be the place to go!
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+mean_rating_map <- inner_join(us_geo, state_beer_summary_info) %>% select(
+  NAME,
+  AverageRating,
+  BreweryCount,
+  NumRatings,
+  NumOfBeers,
+  NumOfCheckins,
+  NumOfUniqueCheckins,
+  brewery,
+  average_rating,
+  beer_name,
+  beer_average_rating,
+  beer_style,
+  AvgBeerStyleRating,
+  geometry
+)
+
+mean_rating_map <-
+  subset(mean_rating_map, !(NAME %in% c("Alaska", "Hawaii", "Puerto Rico")))
+
+tmap_mode("view")
+
+my_interactive_map <- tm_shape(mean_rating_map) +
+  tm_polygons(
+    "BreweryCount",
+    popup.vars = c(
+      "No.of Breweries: " = "BreweryCount",
+      "Beers Produced: " = 'NumOfBeers',
+      "Average Rating in State: " = "AverageRating",
+      "Popular Brewery: " = "brewery",
+      "Average Ratings for Popular Brewery :" = "average_rating",
+      "Popular Beer Style :" = "beer_style",
+      "Popular Beer :" = "beer_name"
+    ),
+    id = "NAME",
+    border.col = "white",
+    palette = "Greens"
+  )
+
+my_interactive_map <- tmap_leaflet(my_interactive_map)
+my_interactive_map
+```
+
+## What kind of beer styles are most popular across the US? 
+
+Now that we know which states are making more beers than other, let's find out what beer styles are popular in each state. For this we will need to look at the beer dataset, so let's take a look at the sample of the data first. Although there are quite a few columns in the data, we will focus on ***state*** and ***beer style*** columns to answer this question. Due to a large number of beer styles in the dataset (1353 in total), we decided to only focus on the top 20 most popular beer styles across the country to avoid overplotting. Another reason is that a lot of values in the beer style columns are not actually beer styles, those values are either very specific type of a beer style such as Kali's Kolsch or a beer name that is misplaced in the beer style column such as Crimes of Calculations Fermented In Tempernillo Barrels.
+
+```{r, echo=FALSE}
+most_popular_beer_ratings %>%
+  select(beer_style, state, beer_name, brewery, state, beer_desc) %>%
+  sample_n(20) %>%
+  rmarkdown::paged_table()
+```
+
+We decided not to compare the absolute frequencies across states due to the fact that states such as California and New York have way more breweries than states like Mississippi, the fills associated with those dominate states would overshadow the other states in a heatmap. To work around this issue, we calculated the relative frequency of the beer styles for each state and used it as the fill in the heatmap. And this is a reasonable decision because we just wanted to see what types of beer are more popular in different states.
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+heatmap_input <- most_popular_beer_ratings %>%
+  filter(rn <= 10) %>%
+  mutate(state=gsub('[_]', ' ', state)) %>%
+  group_by(state, beer_style) %>%
+  summarise(freq=n(), rn=min(rn)) %>%
+  mutate(scaled_freq=scale(freq))
+
+ggplot(heatmap_input, aes(fct_reorder(beer_style, rn), fct_rev(fct_reorder(state, freq, max)), fill=scaled_freq)) +
+  geom_tile(color="white") + 
+  theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(), 
+    axis.line = element_line(colour = "black")
+  ) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  ggtitle("Relative frequency of beer styles per state") + 
+  xlab("State") + 
+  ylab("Beer style") +
+  scale_fill_gradient(
+    breaks = c(-1.3, 0.8, 2.5),
+    labels = c("low", "median", "high"),
+    guide = guide_colourbar(nbin = 100, 
+                            draw.ulim = FALSE, 
+                            draw.llim = FALSE, 
+                            barheight = 5,
+                            title="Relative frequency")
+   ) + 
+  scale_shape_manual(name = "Labels", values = levels(fct_reorder(factor(heatmap_input$beer_style), heatmap_input$rn)))
+```
+
+The x-axis is ordered by the popularity of the beer style and y-axis is order by the number of breweries in the state. This heatmap clearly shows that IPAs are the most popular beers across the country with American IPA and New England IPA (NE IPA) and Double IPA (DIPA) leading on the popularity list. In particular, American IPA is the most dominant beer style in most of the states with a few exceptions. For example, breweries in Massachusetts and Connecticut tend to brew more New England IPAs, whereas Vermont and Rhode Island focus more on Double IPAs. In addition, it seems that states with more breweries tend to brew the popular kind of beers such as IPAs and the states with less breweries do not follow the trend and brew all kinds of styles. What stood out to us is that Fruited Sour is the most popular beer style in both North Dakota and South Dakota. What the heatmap has revealed actually corroborates with our experience, for instance, New England IPA first took off in the east coast such as in Massachusetts, in which the two of the best breweries [TreeHouse](https://treehousebrew.com/) and [Trillium](https://www.trilliumbrewing.com/) are located, it's not too surprising for us to see NE IPA is the most dominant beer style there.
+
+## Do people rate beers/breweries differently across the US? 
+
+One of the questions we have long suspected is that people have different rating behaviors across regions, and this question was actually motivated by a conversation with our beer friends in the Netherlands, where our Dutch friends criticized that Americans always give high ratings to beers whereas Dutch people are more objective when it comes to beer rating, as a consequence, American beers tend to receive high ratings than the Dutch/European beers. It was quite an accusation and at the same time an interesting hypothesis, so this idea has been stuck with us for a long time, now it's time to put it to test! Unfortunately the data we've collected is only limited to the US, but the good news is that the same idea still applies to this data, therefore we decided to check whether people across different states have slightly different beer rating behaviors. So are people from certain states more generous or strict with ratings?
+
+To answer this question, we will go back to our brewery data, where it contains the rating of every brewery (calculated as the average of all beer ratings) from every state, we could easily dump all of brewery ratings in ridgeline plot by state to look at rating behaviors across the country. To avoid overplotting, we will only show the top 20 states with the most breweries in this analysis.
+
+```{r, echo=FALSE}
+
+top_20_states <- cleaned_all_breweries %>% 
+  group_by(state) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  ungroup() %>%
+  top_n(20)
+
+cleaned_all_breweries %>%
+  inner_join(top_20_states, on=state) %>%
+  filter(average_rating > 3.0) %>%
+
+ggplot(aes(average_rating, fct_reorder(state, average_rating))) + 
+  geom_density_ridges(scale=4.0, alpha=0.5) + 
+  ggtitle("Distribution of brewery rating per state") + 
+  xlab("Brewery rating") + 
+  ylab("State")
+```
+
+Apparently most of the states follow a uni-modal distribution with a few exceptions, those states seem to have a spread-out distribution normally have less breweries, therefore it could be caused by the However all of them seem to peak at the same rating, so it is not very
+
+```{r, echo=FALSE, fig.height=7}
+cleaned_all_breweries %>%
+  inner_join(top_20_states, on=state) %>%
+  filter(average_rating > 3.0) %>%
+  group_by(state) %>% 
+  arrange(desc(average_rating)) %>% 
+  mutate(rn=row_number()) %>%
+  ungroup() %>%
+  filter(rn <= 50) %>%
+
+ggplot(aes(average_rating, fct_reorder(state, average_rating))) + 
+  geom_density_ridges(scale=4.0, alpha=0.5) + 
+  ggtitle("Distribution of brewery rating per state") + 
+  xlab("Brewery rating") + 
+  ylab("State")
+```
