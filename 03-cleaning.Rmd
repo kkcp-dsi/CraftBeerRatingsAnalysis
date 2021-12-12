@@ -59,13 +59,7 @@ for file in breweries_list:
 pd.concat(brewery_frames).to_csv('all_breweries.csv')
 ```
 
-\*\* We did check <https://untapped.com/robots.txt> to see if scrapping
-is permitted. They do not have any restrictions under user agents. And
-we also checked their user agreement. There weren't any rules about
-getting data for the list of beers. They only mentioned rules about
-obtaining user data.
-
-## Data Cleaning
+# Data Cleaning
 
 ```{r}
 library(tidyverse)
@@ -77,13 +71,13 @@ all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
 ### Sample Beer Ratings Data:
 
 ```{r}
-sample_n(all_beers, 20)
+rmarkdown::paged_table(sample_n(all_beers, 10))
 ```
 
 ### Sample Brewery Info Data:
 
 ```{r}
-sample_n(all_breweries, 10)
+rmarkdown::paged_table(sample_n(all_breweries, 10))
 ```
 
 ```{r}
