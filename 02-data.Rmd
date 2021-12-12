@@ -2,7 +2,7 @@
 
 To answer these questions, we've obtained data from two sources `OpenBreweryDB` and `Untappd`, which we will describe in detail in the following sections. We are still working on obtaining the ingredients of beers, depending on whether or not we will actually acquire the data, our questions may be subject to changes. 
 
-## [**OpenBreweryDB**](https://openbrewerydb.org) 
+## [OpenBreweryDB](https://openbrewerydb.org) 
 
 Open Brewery DB is a free dataset and API with public information on breweries, cideres, brewpubs, and bottle shops. We downloaded lists of breweries per state using the `OpenBreweryDB` API.
 
@@ -10,7 +10,7 @@ Open Brewery DB is a free dataset and API with public information on breweries, 
 
 We used the brewery names downloaded from OpenBreweryDB as queries to get the list of beers and their corresponding aggregated rating information from the Untappd.
 
-## [**Untappd**](https://untappd.com/)
+## [Untappd](https://untappd.com/)
 
 Untappd is a social network for beer enthusiasts that allows its users to check-in as they drink beers, share these check-ins, and option to rate the beer they are consuming, earn badges, share pictures of their beers, comment on checked-in beers. It also allows Breweries to officially post the beers that they produce. (paraphrased the definition from Wikipedia).
 

@@ -24,7 +24,7 @@
 <meta name="author" content="Krishna Kalluri, Chao Pang" />
 
 
-<meta name="date" content="2021-12-11" />
+<meta name="date" content="2021-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,18 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script>
 
 
 <style type="text/css">
@@ -140,22 +152,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span><strong>OpenBreweryDB</strong></span> </a></li>
-<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span><strong>Untappd</strong></span></a></li>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span>OpenBreweryDB</span> </a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span>Untappd</span></a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#web-scrapper"><i class="fa fa-check"></i><b>2.3</b> <span>Web Scrapper</span></a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#web-scrapper"><i class="fa fa-check"></i><b>3.1</b> <span>Web Scrapper</span></a></li>
-<li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#merge-beer-ratings-data"><i class="fa fa-check"></i><b>3.2</b> Merge Beer ratings data</a></li>
-<li class="chapter" data-level="3.3" data-path="data-transformation.html"><a href="data-transformation.html#merge-brewery-info-data"><i class="fa fa-check"></i><b>3.3</b> Merge Brewery Info data</a></li>
-<li class="chapter" data-level="3.4" data-path="data-transformation.html"><a href="data-transformation.html#data-cleaning"><i class="fa fa-check"></i><b>3.4</b> Data Cleaning</a>
+<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#data-cleaning"><i class="fa fa-check"></i><b>3.1</b> Data Cleaning</a>
 <ul>
-<li class="chapter" data-level="3.4.1" data-path="data-transformation.html"><a href="data-transformation.html#sample-beer-ratings-data"><i class="fa fa-check"></i><b>3.4.1</b> Sample Beer Ratings Data:</a></li>
-<li class="chapter" data-level="3.4.2" data-path="data-transformation.html"><a href="data-transformation.html#sample-brewery-info-data"><i class="fa fa-check"></i><b>3.4.2</b> Sample Brewery Info Data:</a></li>
+<li class="chapter" data-level="3.1.1" data-path="data-transformation.html"><a href="data-transformation.html#beer-ratings-data"><i class="fa fa-check"></i><b>3.1.1</b> Beer Ratings Data:</a></li>
+<li class="chapter" data-level="3.1.2" data-path="data-transformation.html"><a href="data-transformation.html#brewery-info-data"><i class="fa fa-check"></i><b>3.1.2</b> Brewery Info Data:</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#missing-values-in-beer-ratings-dataset"><i class="fa fa-check"></i><b>4.1</b> Missing Values in Beer Ratings Dataset</a></li>
+<li class="chapter" data-level="4.2" data-path="missing-values.html"><a href="missing-values.html#missing-values-in-brewery-ratings-dataset"><i class="fa fa-check"></i><b>4.2</b> Missing Values in Brewery Ratings Dataset</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#where-are-the-breweries-located"><i class="fa fa-check"></i><b>5.1</b> Where are the breweries located?</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#what-kind-of-beer-styles-are-most-popular-across-the-us"><i class="fa fa-check"></i><b>5.2</b> What kind of beer styles are most popular across the US?</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#do-people-rate-beersbreweries-differently-across-the-us"><i class="fa fa-check"></i><b>5.3</b> Do people rate beers/breweries differently across the US?</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#what-are-the-popular-beer-styles"><i class="fa fa-check"></i><b>5.4</b> What are the popular beer styles?</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#what-are-the-highly-rated-beer-styles-and-what-makes-a-beer-better-rated"><i class="fa fa-check"></i><b>5.5</b> What are the highly rated beer styles and what makes a beer better rated?</a></li>
+<li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#ratings-for-west-coast-ipa-and-east-coast-ipa"><i class="fa fa-check"></i><b>5.6</b> Ratings for West Coast IPA and East Coast IPA</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -179,164 +201,62 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-transformation" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
-<div id="web-scrapper" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> <a href="https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py">Web Scrapper</a></h2>
-<p>We built a parser to get the list of beers from untappd using Python as
-we started scrapping data earlier than when we were introduced to web
-scrapping in R.</p>
-<p>The web scraper uses beautiful soup a library in python to scrape the
-data from web pages.</p>
-<p>The process workflow in the web scrapper:</p>
-<p>We used the downloaded a csv file from <a href="https://www.openbrewerydb.org/documentation/01-listbreweries"><strong>List Breweries
-API</strong></a>then
-filter the breweries list from the csv for the state we are trying to
-download the data for.</p>
-<p>Then the scraper opens <a href="https://untappd.com/search?q=">untappd search
-bar</a> to find each breweries page on
-untappd and opens a brewery page once the brewery page is opened it goes
-to page source and searches for div class <code>beer-list</code> and
-<code>distinct-list</code> once it finds the div class it expands the div class
-looks for another div class <code>beer-item</code> and gets <code>beer_url</code>,
-<code>beer_name</code>, <code>beer_style</code>, <code>beer_desc</code>, <code>beer_abv</code>, <code>beer_ibu</code>,
-<code>beer_average_rating</code>, <code>beer_num_ratings</code>, <code>beer_added</code> and adds
-everything to a csv.</p>
-<p>For the Brewery data we run a similar scrapper to get <code>brewery_id</code>,
-<code>average_rating</code>, <code>num_of_ratings</code>, <code>num_of_beers</code>, <code>total_check_ins</code>,
-<code>unique_user_check_ins</code>, <code>last_four_week_check_ins</code>, <code>brewery_desc</code> and
-adds everything to a csv.</p>
-<p>Using this web scrapper we scraped the rating information for the top 24
-most popular beers for each brewery on untappd for all the states in US.
-Because the brewery name downloaded from OpenBreweryDB is not the same
-as the one used in untappd, we used the untappd search function to
-resolve the brewery name first, then retrieved the top 24 most popular
-beers associated with that brewery.</p>
-<p>To use the web scrapper and download the data try following the below
-steps:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="data-transformation.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd brewery_beer_parser</span>
-<span id="cb1-2"><a href="data-transformation.html#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="data-transformation.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install <span class="at">-r</span> requirements.txt</span>
-<span id="cb1-4"><a href="data-transformation.html#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="data-transformation.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 beer_scraping.py <span class="at">-i</span> data/breweries.csv <span class="at">-o</span> brewery_beers/ <span class="at">-s</span> <span class="st">&quot;New York&quot;</span></span></code></pre></div>
-<p><strong>Once the scrapping is done the data for New York outputs as
-following</strong></p>
-<p>All the beers per brewery will be exported to -&gt;
-<code>brewery_beer_parser/brewery_beers/New_York/*brewery_name.csv</code></p>
-<p>All the breweries that the parser could find the beers for will be
-exported to -&gt;
-<code>brewery_beer_parser/brewery_beers/New_York_brewery_info.csv</code></p>
-<p>Once we repeated this step for all the states we manually copied the
-<code>state</code>_brewery_info.csv to <code>brewery_beer_parser/Breweries/</code></p>
-<p>we used following python code to merge all the beer data and brewery
-data.</p>
+<p>To merge all the beer ratings data downloaded by the web scrapper into
+single csv file and brewery ratings data downloaded by the web scrapper
+into single csv, we used a python script data_merger.py located in the
+repository.</p>
+<p>To run the data merger and save the merged csv files into data folder
+follow below steps.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="data-transformation.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd CraftBeerRatingsAnalysis/brewery_beer_parser</span>
+<span id="cb2-2"><a href="data-transformation.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="data-transformation.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 data_merger.py</span></code></pre></div>
+<p>** We Added State and Brewery name to beer dataset using the in order
+to make it easy for us to join brewery data to beer data in case if we
+needed that in our further analysis.</p>
+<p>Merged data will be exported to <code>data</code> directory in the project.</p>
+<p><strong>Beer data:</strong> <code>CraftBeerRatingsAnalysis/data/all_beers.csv</code></p>
+<p><strong>Brewery Data:</strong> <code>CraftBeerRatingsAnalysis/data/all_breweries.csv</code></p>
+<div id="data-cleaning" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Data Cleaning</h2>
+<div id="beer-ratings-data" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Beer Ratings Data:</h3>
+<p><strong>Before Cleaning</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["brewery"],"name":[1],"type":["chr"],"align":["left"]},{"label":["state"],"name":[2],"type":["chr"],"align":["left"]},{"label":["beer_url"],"name":[3],"type":["chr"],"align":["left"]},{"label":["beer_name"],"name":[4],"type":["chr"],"align":["left"]},{"label":["beer_style"],"name":[5],"type":["chr"],"align":["left"]},{"label":["beer_desc"],"name":[6],"type":["chr"],"align":["left"]},{"label":["beer_abv"],"name":[7],"type":["chr"],"align":["left"]},{"label":["beer_ibu"],"name":[8],"type":["chr"],"align":["left"]},{"label":["beer_average_rating"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["beer_num_ratings"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["beer_added"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"Saint_Somewhere_Brewing_Co","2":"Florida","3":"https://untappd.com//b/saint-somewhere-brewing-company-fraternite/1440673","4":"Fraternité","5":"Farmhouse Ale - Saison","6":"NA","7":"5% ABV","8":"N/A IBU","9":"3.87","10":"472","11":"02/24/16"},{"1":"Animas_Brewing_Co","2":"Colorado","3":"https://untappd.com//b/animas-brewing-co-all-forward-farmhouse/1043538","4":"All Forward Farmhouse","5":"Farmhouse Ale - Saison","6":"Fruity but refreshing","7":"NA","8":"NA","9":"3.73","10":"NA","11":"NA"},{"1":"Black_Sands_Brewery","2":"California","3":"https://untappd.com//b/black-sand-brewery-lil-juicy-2-0/4572239","4":"Lil Juicy 2.0","5":"Golden Ale","6":"NA","7":"4.8% ABV","8":"20 IBU","9":"NA","10":"3","11":"10/30/21"},{"1":"Dead_Hippie_Brewing","2":"Colorado","3":"https://untappd.com//b/dead-hippie-brewing-lechuga-del-diablo/3330986","4":"Lechuga Del Diablo","5":"IPA - American","6":"NA","7":"7.02% ABV","8":"N/A IBU","9":"3.89","10":"176","11":"07/13/19"},{"1":"Obed_Isaac_s_Microbrewery_and_Eatery_Peoria","2":"Illinois","3":"https://untappd.com//b/obed-and-isaac-s-microbrewery-magical-unicorn-elixir/2609761","4":"Magical Unicorn Elixir","5":"IPA - New England","6":"A hazy New England style IPA brewed with Citra and Mosaic hops. Those bright tropical fruit flavors you're tasting are the result of a rediculous amount… Read More","7":"6.3% ABV","8":"30 IBU","9":"3.86","10":"1313","11":"04/20/18"},{"1":"BADSONS_Beer_Co","2":"Connecticut","3":"https://untappd.com//b/bad-sons-beer-co-loompa/3345377","4":"Loompa","5":"Sour - Fruited Gose","6":"Strawberry Gose","7":"4.5% ABV","8":"N/A IBU","9":"3.69","10":"414","11":"07/22/19"},{"1":"Celis_Brewery","2":"Texas","3":"https://untappd.com//b/celis-brewery-golden-pils/2956860","4":"Golden Pils","5":"Pilsner - Other","6":"NA","7":"5% ABV","8":"N/A IBU","9":"3.48","10":"197","11":"11/23/18"},{"1":"Ghost_Town_Brewing","2":"California","3":"https://untappd.com//b/ghost-town-brewing-scumbag/2567913","4":"Scumbag","5":"Cream Ale","6":"NA","7":"4.6% ABV","8":"12 IBU","9":"3.58","10":"706","11":"03/23/18"},{"1":"Village_Idiot_Brewing_Company","2":"New_Jersey","3":"https://untappd.com//b/village-idiot-brewing-company-the-hoptimizer-ipa/1064648","4":"The Hoptimizer IPA","5":"IPA - American","6":"A true West Coast style IPA full of citrus and tropical fruit hop flavor and aroma dominate combined with an assertive smooth bitter finish....maltiness?… Read More","7":"6.8% ABV","8":"70 IBU","9":"3.77","10":"2254","11":"04/27/15"},{"1":"Separatist_Beer_Project","2":"Pennsylvania","3":"https://untappd.com//b/separatist-beer-project-clink/980514","4":"CLINK!","5":"Pale Ale - American","6":"A creamy golden pale ale that is intensely cold-hopped late in fermentation to lend intense floral aromas and juicy flavors of citrus, melon and pine… Read More","7":"4.9% ABV","8":"42 IBU","9":"3.55","10":"3138","11":"02/16/15"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
-<div id="merge-beer-ratings-data" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> Merge Beer ratings data</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="data-transformation.html#cb2-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="vs">r&#39;brewery_beers&#39;</span></span>
-<span id="cb2-2"><a href="data-transformation.html#cb2-2" aria-hidden="true" tabindex="-1"></a>extension <span class="op">=</span> <span class="st">&#39;.csv&#39;</span></span>
-<span id="cb2-3"><a href="data-transformation.html#cb2-3" aria-hidden="true" tabindex="-1"></a>csv_list <span class="op">=</span> []</span>
-<span id="cb2-4"><a href="data-transformation.html#cb2-4" aria-hidden="true" tabindex="-1"></a>       </span>
-<span id="cb2-5"><a href="data-transformation.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> root, dirs, files <span class="kw">in</span> os.walk(path):</span>
-<span id="cb2-6"><a href="data-transformation.html#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> filename <span class="kw">in</span> files:</span>
-<span id="cb2-7"><a href="data-transformation.html#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> os.path.splitext(filename)[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> extension:</span>
-<span id="cb2-8"><a href="data-transformation.html#cb2-8" aria-hidden="true" tabindex="-1"></a>            csv_list.append(os.path.join(root, filename))</span>
-<span id="cb2-9"><a href="data-transformation.html#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="data-transformation.html#cb2-10" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
-<span id="cb2-11"><a href="data-transformation.html#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> csv_list:</span>
-<span id="cb2-12"><a href="data-transformation.html#cb2-12" aria-hidden="true" tabindex="-1"></a>    state_and_brewery <span class="op">=</span> <span class="bu">file</span>.split(<span class="st">&#39;/&#39;</span>)</span>
-<span id="cb2-13"><a href="data-transformation.html#cb2-13" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(<span class="bu">file</span>, index_col<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb2-14"><a href="data-transformation.html#cb2-14" aria-hidden="true" tabindex="-1"></a>    df.insert(<span class="dv">1</span>, <span class="st">&#39;brewery&#39;</span>, state_and_brewery[<span class="dv">2</span>].split(<span class="st">&#39;.&#39;</span>)[<span class="dv">0</span>])</span>
-<span id="cb2-15"><a href="data-transformation.html#cb2-15" aria-hidden="true" tabindex="-1"></a>    df.insert(<span class="dv">2</span>, <span class="st">&#39;state&#39;</span>, state_and_brewery[<span class="dv">2</span>])</span>
-<span id="cb2-16"><a href="data-transformation.html#cb2-16" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">&#39;state&#39;</span>] <span class="op">=</span> state_and_brewery[<span class="dv">1</span>]</span>
-<span id="cb2-17"><a href="data-transformation.html#cb2-17" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">&#39;brewery&#39;</span>] <span class="op">=</span> state_and_brewery[<span class="dv">2</span>].split(<span class="st">&#39;.&#39;</span>)[<span class="dv">0</span>]</span>
-<span id="cb2-18"><a href="data-transformation.html#cb2-18" aria-hidden="true" tabindex="-1"></a>    df.drop(df.columns[df.columns.<span class="bu">str</span>.contains(<span class="st">&#39;unnamed&#39;</span>,case <span class="op">=</span> <span class="va">False</span>)],axis <span class="op">=</span> <span class="dv">1</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb2-19"><a href="data-transformation.html#cb2-19" aria-hidden="true" tabindex="-1"></a>    frames.append(df)</span>
-<span id="cb2-20"><a href="data-transformation.html#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="data-transformation.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># exports to csv file</span></span>
-<span id="cb2-22"><a href="data-transformation.html#cb2-22" aria-hidden="true" tabindex="-1"></a>pd.concat(frames).to_csv(<span class="st">&#39;all_beers.csv&#39;</span>)</span></code></pre></div>
-<p>We Added State and Brewery name to beer dataset in order to make it easy
-for us to join brewery data to beer data.</p>
-</div>
-<div id="merge-brewery-info-data" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Merge Brewery Info data</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="data-transformation.html#cb3-1" aria-hidden="true" tabindex="-1"></a>breweries_list <span class="op">=</span> []</span>
-<span id="cb3-2"><a href="data-transformation.html#cb3-2" aria-hidden="true" tabindex="-1"></a>       </span>
-<span id="cb3-3"><a href="data-transformation.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> root, dirs, files <span class="kw">in</span> os.walk(path):</span>
-<span id="cb3-4"><a href="data-transformation.html#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> filename <span class="kw">in</span> files:</span>
-<span id="cb3-5"><a href="data-transformation.html#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> os.path.splitext(filename)[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> extension:</span>
-<span id="cb3-6"><a href="data-transformation.html#cb3-6" aria-hidden="true" tabindex="-1"></a>            breweries_list.append(os.path.join(root, filename))</span>
-<span id="cb3-7"><a href="data-transformation.html#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="data-transformation.html#cb3-8" aria-hidden="true" tabindex="-1"></a>brewery_frames <span class="op">=</span> []</span>
-<span id="cb3-9"><a href="data-transformation.html#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> breweries_list:</span>
-<span id="cb3-10"><a href="data-transformation.html#cb3-10" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(<span class="bu">file</span>, index_col<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb3-11"><a href="data-transformation.html#cb3-11" aria-hidden="true" tabindex="-1"></a>    df.drop(df.columns[df.columns.<span class="bu">str</span>.contains(<span class="st">&#39;unnamed&#39;</span>,case <span class="op">=</span> <span class="va">False</span>)],axis <span class="op">=</span> <span class="dv">1</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb3-12"><a href="data-transformation.html#cb3-12" aria-hidden="true" tabindex="-1"></a>    brewery_frames.append(df)</span>
-<span id="cb3-13"><a href="data-transformation.html#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="data-transformation.html#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#exports to csv file    </span></span>
-<span id="cb3-15"><a href="data-transformation.html#cb3-15" aria-hidden="true" tabindex="-1"></a>pd.concat(brewery_frames).to_csv(<span class="st">&#39;all_breweries.csv&#39;</span>)</span></code></pre></div>
-<p>** We did check <a href="https://untapped.com/robots.txt" class="uri">https://untapped.com/robots.txt</a> to see if scrapping
-is permitted. They do not have any restrictions under user agents. And
-we also checked their user agreement. There weren’t any rules about
-getting data for the list of beers. They only mentioned rules about
-obtaining user data.</p>
-</div>
-<div id="data-cleaning" class="section level2" number="3.4">
-<h2><span class="header-section-number">3.4</span> Data Cleaning</h2>
-<div id="sample-beer-ratings-data" class="section level3" number="3.4.1">
-<h3><span class="header-section-number">3.4.1</span> Sample Beer Ratings Data:</h3>
-<pre><code>## # A tibble: 20 × 11
-##    brewery   state  beer_url       beer_name beer_style  beer_desc       beer_abv beer_ibu beer_average_ra…
-##    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;          &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;           &lt;chr&gt;    &lt;chr&gt;               &lt;dbl&gt;
-##  1 Dry_Coun… North… https://untap… Bone Mus… Stout - Ru… &lt;NA&gt;            11.1% A… N/A IBU              4.12
-##  2 Off_Camb… Washi… https://untap… Imperial… Pumpkin / … &lt;NA&gt;            9% ABV   N/A IBU              4.02
-##  3 Chapel_B… Minne… https://untap… DDH Citr… IPA - Brut  &lt;NA&gt;            6% ABV   N/A IBU             NA   
-##  4 Noble_Ro… Wisco… https://untap… Cherry B… Pale Ale -… Brewed with br… 5.5% ABV 24 IBU               3.46
-##  5 Bluejack… Distr… https://untap… Darling … Pale Ale -… american pale … 6.4% ABV 50 IBU               3.64
-##  6 Beach_Ha… New_J… https://untap… Flannel   Red Ale - … A Carrot Cake … 6.3% ABV 26 IBU               3.67
-##  7 Lookingg… Oregon https://untap… T Minus … Pale Ale -… Combination of… 6% ABV   45 IBU               3.42
-##  8 Mia_and_… Oregon https://untap… Emmet &amp; … Pilsner - … &lt;NA&gt;            4.4% ABV N/A IBU              2.93
-##  9 Quaff_On… India… https://untap… McRyan O… Stout - Ir… &lt;NA&gt;            8% ABV   25 IBU               3.56
-## 10 Foggy_No… Washi… https://untap… Cease &amp; … IPA - Engl… Brewed in hono… 6.3% ABV 70 IBU               3.38
-## 11 Riggs_Be… Illin… https://untap… Black IPL IPA - Blac… Roast. Coffee.… 7.3% ABV 65 IBU               3.76
-## 12 Johnnie_… Nebra… https://untap… The Aven… Wheat  - A… Clean, easy dr… 5.51% A… 18 IBU               3.38
-## 13 Courthou… Wisco… https://untap… Patio Po… Shandy / R… A raspberry li… 4.8% ABV 12 IBU               3.7 
-## 14 Wind_Shi… Misso… https://untap… Dark Mild Mild - Oth… &lt;NA&gt;            4% ABV   18 IBU               4.01
-## 15 Skookum_… Washi… https://untap… Solitary… Stout - Im… Bourbon barrel… 10.5% A… 50 IBU               4.2 
-## 16 Bang_Bre… Minne… https://untap… Scratchy… IPA - Blac… &lt;NA&gt;            6% ABV   56 IBU               3.76
-## 17 Ten_Mile… Calif… https://untap… Sunnyside Pilsner - … &lt;NA&gt;            4.8% ABV N/A IBU              3.82
-## 18 BS_Brewi… Texas  https://untap… Tiki Tem… Sour - Ber… Tart with the … 4.3% ABV 5 IBU                3.55
-## 19 Stones_T… Washi… https://untap… Mickey&#39;s… Red Ale - … Mickey&#39;s Irish… 6% ABV   N/A IBU              3.55
-## 20 Amplifie… Calif… https://untap… Doc März… Märzen      Traditional mä… 5.3% ABV N/A IBU              3.68
-## # … with 2 more variables: beer_num_ratings &lt;dbl&gt;, beer_added &lt;chr&gt;</code></pre>
-</div>
-<div id="sample-brewery-info-data" class="section level3" number="3.4.2">
-<h3><span class="header-section-number">3.4.2</span> Sample Brewery Info Data:</h3>
-<pre><code>## # A tibble: 10 × 25
-##    obdb_id     name     brewery_type street   address_2 address_3 city   state  county_province postal_code
-##    &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;    &lt;lgl&gt;     &lt;lgl&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;lgl&gt;           &lt;chr&gt;      
-##  1 redhook-br… Redhook… regional     714 E P… NA        NA        Seatt… Washi… NA              98122-4697 
-##  2 railhouse-… Railhou… micro        105 E S… NA        NA        Aberd… North… NA              28315-     
-##  3 westtown-b… Westtow… micro        236 Sch… NA        NA        Westt… New Y… NA              10998-     
-##  4 spencer-br… Spencer… micro        167 N S… NA        NA        Spenc… Massa… NA              01562-1232 
-##  5 hair-of-th… Hair of… brewpub      61 SE Y… NA        NA        Portl… Oregon NA              97214-2134 
-##  6 swiftwater… Swiftwa… brewpub      378 Mou… NA        NA        Roche… New Y… NA              14620-1250 
-##  7 kinney-cre… Kinney … micro        1016 7t… NA        NA        Roche… Minne… NA              55901-2668 
-##  8 saugatuck-… Saugatu… micro        2948 Bl… NA        NA        Dougl… Michi… NA              49406-5195 
-##  9 1817-brewe… 1817 Br… micro        100 B S… NA        NA        okolo… Missi… NA              38860      
-## 10 solorio-br… Solorio… micro        9395 Fe… NA        NA        Ranch… Calif… NA              91730-4565 
-## # … with 15 more variables: website_url &lt;chr&gt;, phone &lt;chr&gt;, country &lt;chr&gt;, longitude &lt;dbl&gt;,
-## #   latitude &lt;dbl&gt;, tags &lt;lgl&gt;, brewery_id &lt;chr&gt;, average_rating &lt;dbl&gt;, num_of_ratings &lt;dbl&gt;,
-## #   num_of_beers &lt;dbl&gt;, total_check_ins &lt;chr&gt;, unique_user_check_ins &lt;chr&gt;,
-## #   last_four_week_check_ins &lt;dbl&gt;, brewery_desc &lt;chr&gt;, brewery &lt;chr&gt;</code></pre>
-<p>We cleaned up the beer_abv column by removing the characters <code>% ABV</code> and
-beer_ibu column by removing the characters <code>IBU</code> .</p>
+<p>Cleaned up the beer_abv column by removing the characters <code>% ABV</code> and
+beer_ibu column by removing the characters <code>IBU</code> and converted those
+columns to a double datatype.</p>
 <p>Cleaned up date values to same format and added a new column named year.</p>
-<p>Generalized known similar types of beer styles</p>
+<p>Generalized known duplicated beer styles.</p>
 <p>Cleaned up state name in cleaned_all_beers to remove <code>_</code> ’s</p>
-<p>Remove unusable columns in all_breweries data frame and rename name
-column</p>
+<p><strong>After Cleaning</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["brewery"],"name":[1],"type":["chr"],"align":["left"]},{"label":["state"],"name":[2],"type":["chr"],"align":["left"]},{"label":["beer_url"],"name":[3],"type":["chr"],"align":["left"]},{"label":["beer_name"],"name":[4],"type":["chr"],"align":["left"]},{"label":["beer_style"],"name":[5],"type":["chr"],"align":["left"]},{"label":["beer_desc"],"name":[6],"type":["chr"],"align":["left"]},{"label":["beer_abv"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["beer_ibu"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["beer_average_rating"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["beer_num_ratings"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["beer_added"],"name":[11],"type":["date"],"align":["right"]},{"label":["year"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"Cross_Keys_Brewing_Co","2":"New Jersey","3":"https://untappd.com//b/cross-keys-brewing-co-hopedemic/2579082","4":"Hopedemic","5":"Double IPA","6":"East Coast DIPA","7":"9.1","8":"NA","9":"3.61","10":"811","11":"2018-03-31","12":"2018"},{"1":"Burgeon_Beer_Company","2":"California","3":"https://untappd.com//b/burgeon-beer-company-fine-tuned/3016416","4":"Fine Tuned","5":"New England IPA","6":"Hazy IPA hopped up with Galaxy, Citra & Freestyle Farms hand selected Nelson!!","7":"7.0","8":"39","9":"4.03","10":"745","11":"2018-12-30","12":"2018"},{"1":"Arcadian_Moon","2":"Missouri","3":"https://untappd.com//b/arcadian-moon-2000-psi/1670882","4":"2000 PSI","5":"Double IPA","6":"NA","7":"9.4","8":"102","9":"3.87","10":"94","11":"2016-08-01","12":"2016"},{"1":"Old_Mill_Brewpub","2":"South Carolina","3":"https://untappd.com//b/old-mill-brewpub-and-grill-michigan-wooden-shoe-wheat/642913","4":"Wooden Shoe Wheat","5":"Wheat  - Hefeweizen","6":"Our Traditional German-style Hefeweizen is crafted with over 60% wheat for a light and spicy body, and fermented with the classic Hefeweizen Yeast for… Read More","7":"5.6","8":"15","9":"3.43","10":"219","11":"2014-04-09","12":"2014"},{"1":"Piney_River_Brewing_Company","2":"Missouri","3":"https://untappd.com//b/piney-river-brewing-company-masked-bandit-india-pale-ale/340907","4":"Masked Bandit India Pale Ale","5":"IPA - Black / Cascadian Dark Ale","6":"In the Ozarks, the masked bandit is notorious for raiding the corn patch. Or, for finding—and eating—the perfectly ripe watermelon in the garden just… Read More","7":"7.0","8":"70","9":"3.70","10":"1501","11":"2013-04-06","12":"2013"},{"1":"Man_Skirt_Brewing","2":"New Jersey","3":"https://untappd.com//b/man-skirt-brewing-pleated-wheat/1565681","4":"pleaTed wheaT","5":"Wheat  - Hefeweizen","6":"The perfect summer , this Hefeweizen is brewed with a bit of Yuzu and grapefruit peel, for just a hint of citrus. Brewed in collaboration with Two… Read More","7":"6.5","8":"13","9":"3.66","10":"512","11":"2016-05-21","12":"2016"},{"1":"Surly_Brewing_Company","2":"Minnesota","3":"https://untappd.com//b/surly-brewing-company-rocket-surgery/2786972","4":"Rocket Surgery","5":"New England IPA","6":"This juicy, hazy ale is brimming with Citra and Simcoe hops for a fruit-forward blast of hop flavor. Drink it. You’ll like it. It’s not rocket surgery,… Read More","7":"5.5","8":"NA","9":"3.77","10":"18998","11":"2018-08-07","12":"2018"},{"1":"Courthouse_Pub","2":"Wisconsin","3":"https://untappd.com//b/courthouse-pub-friends-wit-benefits/2477631","4":"Friends Wit Benefits","5":"Wheat  - Witbier / Blanche","6":"A golden wheat  with a bonus kiss of bitter coriander.","7":"5.6","8":"19","9":"3.28","10":"42","11":"2018-01-19","12":"2018"},{"1":"Red_Rock_Brewing_Co","2":"Utah","3":"https://untappd.com//b/red-rock-brewing-co-amber-ale/40790","4":"Amber Ale","5":"Red American Amber","6":"Caramelly-Dark Bread-Hoppy: Sometimes referred to as Red Ales, American Amber Ales bridge the gap between lighter American Pale Ales and the darker American… Read More","7":"5.0","8":"32","9":"3.47","10":"2345","11":"2011-04-01","12":"2011"},{"1":"Telluride_Brewing_Co","2":"Colorado","3":"https://untappd.com//b/telluride-brewing-company-greensky-an-american-lager/2705930","4":"Greensky: An American Lager","5":"Lager - American Light","6":"Collab  with the Bluegrass ban Greensky","7":"5.2","8":"39","9":"3.58","10":"542","11":"2018-06-17","12":"2018"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="brewery-info-data" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Brewery Info Data:</h3>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["obdb_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["brewery_type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["street"],"name":[4],"type":["chr"],"align":["left"]},{"label":["address_2"],"name":[5],"type":["lgl"],"align":["right"]},{"label":["address_3"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["city"],"name":[7],"type":["chr"],"align":["left"]},{"label":["state"],"name":[8],"type":["chr"],"align":["left"]},{"label":["county_province"],"name":[9],"type":["lgl"],"align":["right"]},{"label":["postal_code"],"name":[10],"type":["chr"],"align":["left"]},{"label":["website_url"],"name":[11],"type":["chr"],"align":["left"]},{"label":["phone"],"name":[12],"type":["chr"],"align":["left"]},{"label":["country"],"name":[13],"type":["chr"],"align":["left"]},{"label":["longitude"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["latitude"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["tags"],"name":[16],"type":["lgl"],"align":["right"]},{"label":["brewery_id"],"name":[17],"type":["chr"],"align":["left"]},{"label":["average_rating"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["num_of_ratings"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["num_of_beers"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["total_check_ins"],"name":[21],"type":["chr"],"align":["left"]},{"label":["unique_user_check_ins"],"name":[22],"type":["chr"],"align":["left"]},{"label":["last_four_week_check_ins"],"name":[23],"type":["dbl"],"align":["right"]},{"label":["brewery_desc"],"name":[24],"type":["chr"],"align":["left"]},{"label":["brewery"],"name":[25],"type":["chr"],"align":["left"]}],"data":[{"1":"smith-and-lentz-brewing-nashville","2":"Smith & Lentz Brewing","3":"micro","4":"903 Main St","5":"NA","6":"NA","7":"Nashville","8":"Tennessee","9":"NA","10":"37206-3609","11":"http://www.smithandlentz.com","12":"NA","13":"United States","14":"-86.75652","15":"36.17633","16":"NA","17":"https://untappd.com/brewery/2471","18":"3.982","19":"1177266","20":"453","21":"1.54M+","22":"394,494","23":"6516","24":"Founded in 1995, AleSmith Brewing Company\\nis a San Diego based artisanal craft brewery that\\nspecializes in handcrafted ales inspired by the\\nEuropean classics. Deeply rooted in the amateur\\nand craft brewing communities, AleSmith ales\\ncontinue to garner both national and international\\nrecognition. Show Less","25":"Smith_Lentz_Brewing"},{"1":"san-francisco-brewing-co-san-francisco","2":"San Francisco Brewing Co","3":"proprietor","4":"900 N Point St West Plaza","5":"NA","6":"NA","7":"San Francisco","8":"California","9":"NA","10":"94109","11":"http://www.sfbrewingco.com","12":"4154842337.0","13":"United States","14":"NA","15":"NA","16":"NA","17":"https://untappd.com/brewery/2197","18":"3.697","19":"28757","20":"185","21":"34622","22":"10981","23":"142","24":"Small-batch brewery in SF crafting original, innovative brews. 10-barrel brewery and beer bar on Bluxome Street in downtown San Francisco. Stop by for a pint and warm sando, or find our beers at some of the best beer bars and restos around the Bay Area. Show Less","25":"San_Francisco_Brewing_Co"},{"1":"bluebird-brasserie-sherman-oaks","2":"Bluebird Brasserie","3":"brewpub","4":"13730 Ventura Blvd","5":"NA","6":"NA","7":"Sherman Oaks","8":"California","9":"NA","10":"91423","11":"http://www.bluebirdbrasserie.com","12":"NA","13":"United States","14":"-118.43659","15":"34.14891","16":"NA","17":"https://untappd.com/brewery/387727","18":"3.718","19":"2870","20":"67","21":"3426","22":"1260","23":"1","24":"Bluebird Brasserie pays homage to the deep-rooted beer culture and culinary tastes of Belgium. Our seven-barrel brewhouse helps fill our 16 taps with Belgian-style house beers. Revel in a carefully curated bottle list, classic cocktails, and absinthe fountains coupled with a fresh, bright vegan-friendly menu. Our goal is to create an authentic experience that anyone and everyone can enjoy. Come by for a brew! We look forward to seeing you. Show Less","25":"Bluebird_Brasserie"},{"1":"rants-and-raves-brewery-moscow","2":"Rants And Raves Brewery","3":"brewpub","4":"308 N Jackson St","5":"NA","6":"NA","7":"Moscow","8":"Idaho","9":"NA","10":"83843-2065","11":"https://www.rantsravesbrewery.com","12":"2085964061.0","13":"United States","14":"-117.00278","15":"46.73450","16":"NA","17":"https://untappd.com/brewery/129240","18":"3.638","19":"3454","20":"39","21":"4143","22":"1602","23":"12","24":"Show Less","25":"Rants_And_Raves_Brewery"},{"1":"stony-lake-brewing-company-saline","2":"Stony Lake Brewing Company","3":"micro","4":"447 E Michigan Ave","5":"NA","6":"NA","7":"Saline","8":"Michigan","9":"NA","10":"48176-1547","11":"http://www.stonylakebrewing.com","12":"7343167919.0","13":"United States","14":"-83.77354","15":"42.17042","16":"NA","17":"https://untappd.com/brewery/236354","18":"3.692","19":"7459","20":"84","21":"9975","22":"1961","23":"42","24":"Show Less","25":"Stony_Lake_Brewing_Company"},{"1":"papa-marces-cerveceria-carlsbad","2":"Papa Marce's Cerveceria","3":"planning","4":"NA","5":"NA","6":"NA","7":"Carlsbad","8":"California","9":"NA","10":"92008","11":"http://www.papamarces.com","12":"8584146976.0","13":"United States","14":"-117.35060","15":"33.15809","16":"NA","17":"https://untappd.com/brewery/401361","18":"3.791","19":"1428","20":"0","21":"1655","22":"513","23":"0","24":"North San Diego County brewery specializing in Sours, Ales, Lagers and everything in between!\\nCome home to Papa. Salud! Show Less","25":"Papa_Marce_s_Cerveceria"},{"1":"trumer-brewery-berkeley","2":"Trumer Brewery","3":"regional","4":"1404 4th St","5":"NA","6":"NA","7":"Berkeley","8":"California","9":"NA","10":"94710-1323","11":"http://www.trumer-international.com","12":"5105261160.0","13":"United States","14":"-122.30303","15":"37.87687","16":"NA","17":"https://untappd.com/brewery/23682","18":"3.319","19":"62406","20":"47","21":"96581","22":"61974","23":"427","24":"Show Less","25":"Trumer_Brewery"},{"1":"old-690-brewing-co-purcellville","2":"Old 690 Brewing Co","3":"brewpub","4":"15670 Ashbury Church Rd","5":"NA","6":"NA","7":"Purcellville","8":"Virginia","9":"NA","10":"20132-2817","11":"http://www.old690.com","12":"5406687023.0","13":"United States","14":"NA","15":"NA","16":"NA","17":"https://untappd.com/brewery/149152","18":"3.495","19":"20931","20":"147","21":"25971","22":"4414","23":"88","24":"Old 690 Brewing Company is one of the first farm breweries to open in the state of Virginia in 2014. Our mission is to brew and serve a unique yet balanced variety of fresh craft beers including several seasonal ales that utilize crops grown on the 10 acre property. Come out to beautiful Loudoun County to see our hops and enjoy our unique tasting room Fridays, Saturdays, and Sundays where we serve tasting flights, pints and growlers to go. We always have food trucks on the weekends (Sat-Sun), but feel free to bring your own food. Show Less","25":"Old_690_Brewing_Co"},{"1":"rickety-cricket-brewing-kingman","2":"Rickety Cricket Brewing","3":"brewpub","4":"312 E Beale St","5":"NA","6":"NA","7":"Kingman","8":"Arizona","9":"NA","10":"86401-5832","11":"http://www.ricketycricketbrewing.com","12":"9287532337.0","13":"United States","14":"-114.06150","15":"35.19029","16":"NA","17":"https://untappd.com/brewery/325021","18":"3.696","19":"13169","20":"57","21":"15534","22":"4851","23":"220","24":"Show Less","25":"Rickety_Cricket_Brewing"},{"1":"stone-brewing-co-escondido","2":"Stone Brewing Co","3":"regional","4":"2120 Harmony Grove Rd","5":"NA","6":"NA","7":"Escondido","8":"California","9":"NA","10":"92029-2053","11":"http://www.stonebrewing.com","12":"7602947866.0","13":"United States","14":"-117.11565","15":"33.10997","16":"NA","17":"https://untappd.com/brewery/1204","18":"3.885","19":"7767723","20":"1186","21":"10.64M+","22":"1.19M+","23":"41834","24":"Founded by Greg Koch and Steve Wagner in 1996, San Diego-based Stone Brewing is the 9th largest craft brewer in the United States. Stone has been listed on the Inc. 500 | 5000 Fastest Growing Private Companies list 11 times, and has been called the “All-time Top Brewery on Planet Earth” by BeerAdvocate magazine twice.\\nThe multifaceted company will be the first American craft brewer to independently build, own and operate a brewery in Europe, and is also building a production brewery and destination restaurant in Richmond, Virginia. Brewing at both locations is anticipated to begin in spring 2016. Known for its bold, flavorful and largely hop-centric beers, Stone has earned a reputation for brewing outstanding, unique beers while maintaining an unwavering commitment to sustainability, business ethics, philanthropy and the art of brewing. Show Less","25":"Stone_Brewing_Co"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Removed un-necessary columns in all_breweries data frame and renamed
+<code>name</code> to <code>brewery_name</code> column.</p>
 <p>Cleaned breweries with less than 10 beers total and the breweries which
 are closed, proprietor, bar as there are mostly useless for our
 question.</p>
+<p><strong>After Cleaning</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["brewery_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["brewery_type"],"name":[2],"type":["chr"],"align":["left"]},{"label":["city"],"name":[3],"type":["chr"],"align":["left"]},{"label":["state"],"name":[4],"type":["chr"],"align":["left"]},{"label":["longitude"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["latitude"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["brewery_id"],"name":[7],"type":["chr"],"align":["left"]},{"label":["average_rating"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["num_of_ratings"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["num_of_beers"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["total_check_ins"],"name":[11],"type":["chr"],"align":["left"]},{"label":["unique_user_check_ins"],"name":[12],"type":["chr"],"align":["left"]},{"label":["brewery"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"47 Hills Brewing Co","2":"brewpub","3":"South San Francisco","4":"California","5":"-122.41362","6":"37.64426","7":"https://untappd.com/brewery/325256","8":"3.591","9":"4427","10":"12","11":"5351","12":"2469","13":"47_Hills_Brewing_Co"},{"1":"Stable 12 Brewing Company","2":"brewpub","3":"Phoenixville","4":"Pennsylvania","5":"-75.51952","6":"40.13358","7":"https://untappd.com/brewery/86311","8":"3.759","9":"89503","10":"40","11":"109584","12":"31406","13":"Stable_12_Brewing_Company"},{"1":"Bitter Sisters Brewing Company","2":"micro","3":"Addison","4":"Texas","5":"-96.84585","6":"32.95122","7":"https://untappd.com/brewery/72194","8":"3.706","9":"31863","10":"55","11":"42670.0","12":"18596","13":"Bitter_Sisters_Brewing_Company"},{"1":"EagleMonk Pub and Brewery","2":"brewpub","3":"Lansing","4":"Michigan","5":"-84.66205","6":"42.71205","7":"https://untappd.com/brewery/23159","8":"3.542","9":"13158","10":"130","11":"17754","12":"3550","13":"EagleMonk_Pub_and_Brewery"},{"1":"Central Standard Brewing","2":"micro","3":"Wichita","4":"Kansas","5":"-97.31842","6":"37.68462","7":"https://untappd.com/brewery/147228","8":"4.022","9":"42448","10":"141","11":"58955","12":"9557","13":"Central_Standard_Brewing"},{"1":"Nocterra Brewing Co","2":"micro","3":"Powell","4":"Ohio","5":"-83.07850","6":"40.15963","7":"https://untappd.com/brewery/408082","8":"3.856","9":"37035","10":"80","11":"48997","12":"9610","13":"Nocterra_Brewing_Co"},{"1":"Black Warrior Brewing Co.","2":"micro","3":"Tuscaloosa","4":"Alabama","5":"-87.56592","6":"33.21062","7":"https://untappd.com/brewery/90040","8":"3.606","9":"15968","10":"113","11":"21331","12":"7517","13":"Black_Warrior_Brewing_Co_"},{"1":"Cerberus Brewing Company","2":"brewpub","3":"Colorado Springs","4":"Colorado","5":"-104.83741","6":"38.83306","7":"https://untappd.com/brewery/265964","8":"3.870","9":"31959","10":"261","11":"38380","12":"9923","13":"Cerberus_Brewing_Company"},{"1":"Cognition Brewing Company","2":"micro","3":"Ishpeming","4":"Michigan","5":"-87.66820","6":"46.49168","7":"https://untappd.com/brewery/191118","8":"3.817","9":"10034","10":"340","11":"11979","12":"3347","13":"Cognition_Brewing_Company"},{"1":"Maxline Brewing","2":"micro","3":"Fort Collins","4":"Colorado","5":"-105.07975","6":"40.55059","7":"https://untappd.com/brewery/273338","8":"3.730","9":"14313","10":"126","11":"17973","12":"4819","13":"Maxline_Brewing"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 
 </div>
 </div>

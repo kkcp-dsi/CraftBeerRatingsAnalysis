@@ -39,21 +39,6 @@ all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
 all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
 ```
 
-```{r, echo=FALSE}
-cleaned_all_breweries <- all_breweries %>%
-  filter(num_of_beers >= 10) %>%
-  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
-```
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-cleaned_all_beers <- all_beers %>% 
-  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
-  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
-  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
-  mutate(year=format(beer_added, format="%Y")) %>%
-  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
-```
-
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 top_most_popular_beer_styles <- cleaned_all_beers %>%
   drop_na(beer_average_rating) %>%
@@ -77,7 +62,7 @@ most_popular_beer_ratings <- top_most_popular_beer_styles %>%
 Let's first take a look at a sample of the the brewery data below. The dataset contains the brewery name, description, address, geo coordinates, average user ratings of the brewery (calculated by the average rating of all beer ratings), the number of beers, the number of ratings given the brewery received in total, and etc.
 
 ```{r, echo=FALSE}
-rmarkdown::paged_table(head(all_breweries))
+rmarkdown::paged_table(head(cleaned_all_breweries))
 ```
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=600}

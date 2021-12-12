@@ -6,60 +6,29 @@ editor_options:
 
 # Data transformation
 
-we used following python code to merge all the beer data and brewery
-data.
+To merge all the beer ratings data downloaded by the web scrapper into
+single csv file and brewery ratings data downloaded by the web scrapper
+into single csv, we used a python script data_merger.py located in the
+repository.
 
-## Merge Beer ratings data
+To run the data merger and save the merged csv files into data folder
+follow below steps.
 
-``` {.python}
-path = r'brewery_beers'
-extension = '.csv'
-csv_list = []
-       
-for root, dirs, files in os.walk(path):
-    for filename in files:
-        if os.path.splitext(filename)[-1] == extension:
-            csv_list.append(os.path.join(root, filename))
+``` {.bash}
+$ cd CraftBeerRatingsAnalysis/brewery_beer_parser
 
-frames = []
-for file in csv_list:
-    state_and_brewery = file.split('/')
-    df = pd.read_csv(file, index_col=False)
-    df.insert(1, 'brewery', state_and_brewery[2].split('.')[0])
-    df.insert(2, 'state', state_and_brewery[2])
-    df['state'] = state_and_brewery[1]
-    df['brewery'] = state_and_brewery[2].split('.')[0]
-    df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
-    frames.append(df)
-
-# exports to csv file
-pd.concat(frames).to_csv('all_beers.csv')
+$ python3 data_merger.py
 ```
 
-We Added State and Brewery name to beer dataset in order to make it easy
-for us to join brewery data to beer data.
+\*\* We Added State and Brewery name to beer dataset using the in order
+to make it easy for us to join brewery data to beer data in case if we
+needed that in our further analysis.
 
-## Merge Brewery Info data
+Merged data will be exported to `data` directory in the project.
 
-``` {.python}
-breweries_list = []
-       
-for root, dirs, files in os.walk(path):
-    for filename in files:
-        if os.path.splitext(filename)[-1] == extension:
-            breweries_list.append(os.path.join(root, filename))
+**Beer data:** `CraftBeerRatingsAnalysis/data/all_beers.csv`
 
-brewery_frames = []
-for file in breweries_list:
-    df = pd.read_csv(file, index_col=False)
-    df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
-    brewery_frames.append(df)
-
-#exports to csv file    
-pd.concat(brewery_frames).to_csv('all_breweries.csv')
-```
-
-# Data Cleaning
+**Brewery Data:** `CraftBeerRatingsAnalysis/data/all_breweries.csv`
 
 ```{r}
 library(tidyverse)
@@ -68,7 +37,7 @@ all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
 all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
 ```
 
-### Beer Ratings Data:
+## Beer Ratings Data:
 
 **Before Cleaning**
 
@@ -128,7 +97,7 @@ cleaned_all_beers$state <- gsub('_', ' ', cleaned_all_beers$state)
 rmarkdown::paged_table(sample_n(cleaned_all_beers, 10))
 ```
 
-### Brewery Info Data:
+## Brewery Ratings Data:
 
 ```{r}
 rmarkdown::paged_table(sample_n(all_breweries, 10))
@@ -144,13 +113,13 @@ question.
 ```{r}
 cleaned_all_breweries <-
   all_breweries %>% select(
-    brewery_id,
     name,
     brewery_type,
     city,
     state,
     longitude,
     latitude,
+    brewery_id,
     average_rating,
     num_of_ratings,
     num_of_beers,

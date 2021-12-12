@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Data Cleaning | Craft Beer Ratings Analysis</title>
+  <meta name="description" content="Chapter 4 Data Cleaning | Craft Beer Ratings Analysis" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Data Cleaning | Craft Beer Ratings Analysis" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Data Cleaning | Craft Beer Ratings Analysis" />
+  
+  
+  
+
+<meta name="author" content="Krishna Kalluri, Chao Pang" />
+
+
+<meta name="date" content="2021-12-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="data-transformation.html"/>
+<link rel="next" href="missing-values.html"/>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">CraftBeer</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span><strong>OpenBreweryDB</strong></span> </a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span><strong>Untappd</strong></span></a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#web-scrapper"><i class="fa fa-check"></i><b>2.3</b> <span>Web Scrapper</span></a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#merge-beer-ratings-data"><i class="fa fa-check"></i><b>3.1</b> Merge Beer ratings data</a></li>
+<li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#merge-brewery-info-data"><i class="fa fa-check"></i><b>3.2</b> Merge Brewery Info data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-cleaning.html"><a href="data-cleaning.html"><i class="fa fa-check"></i><b>4</b> Data Cleaning</a>
+<ul>
+<li class="chapter" data-level="4.0.1" data-path="data-cleaning.html"><a href="data-cleaning.html#beer-ratings-data"><i class="fa fa-check"></i><b>4.0.1</b> Beer Ratings Data:</a></li>
+<li class="chapter" data-level="4.0.2" data-path="data-cleaning.html"><a href="data-cleaning.html#brewery-info-data"><i class="fa fa-check"></i><b>4.0.2</b> Brewery Info Data:</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>5</b> Missing values</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="missing-values.html"><a href="missing-values.html#missing-values-in-beer-dataset"><i class="fa fa-check"></i><b>5.1</b> Missing Values in Beer Dataset</a></li>
+<li class="chapter" data-level="5.2" data-path="missing-values.html"><a href="missing-values.html#missing-values-in-brewery-dataset"><i class="fa fa-check"></i><b>5.2</b> Missing Values in Brewery Dataset</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>6</b> Results</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="results.html"><a href="results.html#where-are-the-breweries-located"><i class="fa fa-check"></i><b>6.1</b> Where are the breweries located?</a></li>
+<li class="chapter" data-level="6.2" data-path="results.html"><a href="results.html#what-kind-of-beer-styles-are-most-popular-across-the-us"><i class="fa fa-check"></i><b>6.2</b> What kind of beer styles are most popular across the US?</a></li>
+<li class="chapter" data-level="6.3" data-path="results.html"><a href="results.html#do-people-rate-beersbreweries-differently-across-the-us"><i class="fa fa-check"></i><b>6.3</b> Do people rate beers/breweries differently across the US?</a></li>
+<li class="chapter" data-level="6.4" data-path="results.html"><a href="results.html#what-are-the-popular-beer-styles"><i class="fa fa-check"></i><b>6.4</b> What are the popular beer styles?</a></li>
+<li class="chapter" data-level="6.5" data-path="results.html"><a href="results.html#what-are-the-highly-rated-beer-styles-and-what-makes-a-beer-better-rated"><i class="fa fa-check"></i><b>6.5</b> What are the highly rated beer styles and what makes a beer better rated?</a></li>
+<li class="chapter" data-level="6.6" data-path="results.html"><a href="results.html#ratings-for-west-coast-ipa-and-east-coast-ipa"><i class="fa fa-check"></i><b>6.6</b> Ratings for West Coast IPA and East Coast IPA</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>7</b> Interactive component</a></li>
+<li class="chapter" data-level="8" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>8</b> Conclusion</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Craft Beer Ratings Analysis</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-cleaning" class="section level1" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Data Cleaning</h1>
+<div id="beer-ratings-data" class="section level3" number="4.0.1">
+<h3><span class="header-section-number">4.0.1</span> Beer Ratings Data:</h3>
+<p><strong>Before Cleaning</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["brewery"],"name":[1],"type":["chr"],"align":["left"]},{"label":["state"],"name":[2],"type":["chr"],"align":["left"]},{"label":["beer_url"],"name":[3],"type":["chr"],"align":["left"]},{"label":["beer_name"],"name":[4],"type":["chr"],"align":["left"]},{"label":["beer_style"],"name":[5],"type":["chr"],"align":["left"]},{"label":["beer_desc"],"name":[6],"type":["chr"],"align":["left"]},{"label":["beer_abv"],"name":[7],"type":["chr"],"align":["left"]},{"label":["beer_ibu"],"name":[8],"type":["chr"],"align":["left"]},{"label":["beer_average_rating"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["beer_num_ratings"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["beer_added"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"Potosi_Brewing_Co","2":"Wisconsin","3":"https://untappd.com//b/potosi-brewing-company-potosi-lux/3356498","4":"Potosi Lux","5":"Lager - American Light","6":"Potosi, WI is where  is crafted and that craft is celebrated at the National Brewery Museum. The  you hold was brewed in that town by it’s fine… Read More","7":"3.9% ABV","8":"8 IBU","9":"3.29","10":"803","11":"07/29/19"},{"1":"Cercis_Brewing_Company","2":"Wisconsin","3":"https://untappd.com//b/cercis-brewing-company-ten-pin-pale-ale/2671416","4":"Ten Pin Pale Ale","5":"Pale Ale - American","6":"NA","7":"5.8% ABV","8":"N/A IBU","9":"3.50","10":"242","11":"05/27/18"},{"1":"Stesti_Brewing_Company","2":"Texas","3":"https://untappd.com//b/stesti-brewing-company-satyr/1872095","4":"Satyr","5":"Lager - Pale","6":"Bohemian style lager with notes of rum and molasses","7":"7.2% ABV","8":"30 IBU","9":"3.72","10":"113","11":"12/20/16"},{"1":"Seven_Stills","2":"California","3":"https://untappd.com//b/seven-stills-brewery-and-distillery-holy-guacamole/2842084","4":"Holy Guacamole","5":"IPA - New England / Hazy","6":"Hazy IPA made in collaboration with Casa Sanchez Foods. Tortilla chips in the mash and dry hopped with fresh guacamole.","7":"7% ABV","8":"N/A IBU","9":"3.40","10":"399","11":"09/12/18"},{"1":"Hopped_Up_Brewing_Company","2":"Washington","3":"https://untappd.com//b/hopped-up-brewing-company-wa-wrong-way-ipa/1562297","4":"Wrong Way Ipa","5":"IPA - American","6":"NA","7":"7.7% ABV","8":"85 IBU","9":"3.57","10":"27","11":"05/20/16"},{"1":"Good_People_Brewing_Co","2":"Alabama","3":"https://untappd.com//b/good-people-brewing-company-smash-mosaic/1482487","4":"SMASH - Mosaic","5":"IPA - American","6":"NA","7":"5.1% ABV","8":"50 IBU","9":"3.75","10":"399","11":"03/25/16"},{"1":"Moose_Lake_Brewing_Company","2":"Minnesota","3":"https://untappd.com//b/moose-lake-brewing-company-pulp-mill-raspberry-vanilla-milkshake-ipa/4357169","4":"Pulp Mill Raspberry-Vanilla Milkshake IPA","5":"IPA - Milkshake","6":"Raspberry-Vanilla","7":"NA","8":"NA","9":"3.63","10":"NA","11":"NA"},{"1":"Dearborn_Brewing","2":"Michigan","3":"https://untappd.com//b/dearborn-brewing-ab-phab-peach-honey-basil-ale/4363709","4":"Ab PHaB Peach Honey Basil Ale","5":"Fruit","6":"Exactly what it sounds like. Get the best taste of summer with bright peach flavor, honey sweetness, and earthy basil. It's Absolutely PHaBulous!","7":"7.1% ABV","8":"N/A IBU","9":"3.94","10":"57","11":"06/16/21"},{"1":"515_Brewing_Co","2":"Iowa","3":"https://untappd.com//b/515-brewing-company-wired-heifer/493725","4":"Wired Heifer","5":"Stout - Milk / Sweet","6":"A sweet stout brewed with locally roasted coffee from Downtown staple, Java Joe's. This opaque  is belied by a light body, with milky sweetness offset… Read More","7":"5.2% ABV","8":"35 IBU","9":"3.79","10":"1213","11":"11/02/13"},{"1":"River_Horse_Brewing_Company","2":"New_Jersey","3":"https://untappd.com//b/river-horse-brewing-co-brewers-reserve-berliner-weisse/683720","4":"Brewers' Reserve Berliner Weisse","5":"Sour - Berliner Weisse","6":"Tapped at the Ewing, NJ brewery in spring 2014","7":"4% ABV","8":"N/A IBU","9":"3.31","10":"1820","11":"05/17/14"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Cleaned up the beer_abv column by removing the characters <code>% ABV</code> and
+beer_ibu column by removing the characters <code>IBU</code> and converted those
+columns to a double datatype.</p>
+<p>Cleaned up date values to same format and added a new column named year.</p>
+<p>Generalized known duplicated beer styles.</p>
+<p>Cleaned up state name in cleaned_all_beers to remove <code>_</code> ’s</p>
+<p><strong>After Cleaning</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["brewery"],"name":[1],"type":["chr"],"align":["left"]},{"label":["state"],"name":[2],"type":["chr"],"align":["left"]},{"label":["beer_url"],"name":[3],"type":["chr"],"align":["left"]},{"label":["beer_name"],"name":[4],"type":["chr"],"align":["left"]},{"label":["beer_style"],"name":[5],"type":["chr"],"align":["left"]},{"label":["beer_desc"],"name":[6],"type":["chr"],"align":["left"]},{"label":["beer_abv"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["beer_ibu"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["beer_average_rating"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["beer_num_ratings"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["beer_added"],"name":[11],"type":["date"],"align":["right"]},{"label":["year"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"Jellyfish_Brewing_Company","2":"Washington","3":"https://untappd.com//b/jellyfish-brewing-company-winter-fix-winterfruit/2920870","4":"Winter Fix Winterfruit","5":"Double IPA","6":"Blood Orange, Apple and Cranberry.","7":"NA","8":"NA","9":"3.72","10":"NA","11":"<NA>","12":"NA","_row":"IPA - Imperial / Double"},{"1":"Columbia_Kettle_Works","2":"Pennsylvania","3":"https://untappd.com//b/columbia-kettle-works-vanna-wit/1907477","4":"Vanna Wit","5":"Wheat  - Witbier / Blanche","6":"A refreshing Belgian wheat  brewed with corriander and orange peel.","7":"4.1","8":"10","9":"3.59","10":"380","11":"2017-01-14","12":"2017","_row":"Wheat  - Witbier / Blanche"},{"1":"Brieux_Carre_Brewing_Company","2":"Louisiana","3":"https://untappd.com//b/brieux-carre-brewing-company-three-threads/2003269","4":"Three Threads","5":"Porter - Baltic","6":"A full bodied, dark brown  with dark chick flavor, and a slight coffee aroma.","7":"7.6","8":"24","9":"3.69","10":"597","11":"2017-03-19","12":"2017","_row":"Porter - Baltic"},{"1":"Young_Lion_Brewing_Co","2":"New York","3":"https://untappd.com//b/young-lion-brewing-company-earl-grey-gose/2714382","4":"Earl Grey Gose","5":"Sour - Traditional Gose","6":"NA","7":"4.2","8":"NA","9":"3.60","10":"224","11":"2018-06-23","12":"2018","_row":"Sour - Traditional Gose"},{"1":"Mudhook_Brewing_Co","2":"Pennsylvania","3":"https://untappd.com//b/mudhook-brewing-co-papaganoush/358559","4":"Papaganoush","5":"Pilsner - Other","6":"NA","7":"5.0","8":"35","9":"3.22","10":"167","11":"2013-05-05","12":"2013","_row":"Pilsner - Other"},{"1":"Heritage_Brewing_Co","2":"Virginia","3":"https://untappd.com//b/heritage-brewing-company-wild-belgian-sour-ale/1991870","4":"Wild Belgian Sour Ale","5":"Belgian Strong Dark Ale","6":"A dark belgian-style ale barrel aged in rue wiskey barrels for twelve months.","7":"13.0","8":"NA","9":"3.60","10":"108","11":"2017-03-12","12":"2017","_row":"Belgian Strong Dark Ale"},{"1":"Devout_Brewing","2":"Pennsylvania","3":"https://untappd.com//b/devout-brewing-american-gold/3000496","4":"American Gold","5":"Wheat  - Other","6":"NA","7":"4.2","8":"NA","9":"3.47","10":"153","11":"2018-12-21","12":"2018","_row":"Wheat  - Other"},{"1":"E2W_Brewing","2":"Washington","3":"https://untappd.com//b/e2w-brewing-raspberry-blonde/2653101","4":"Raspberry Blonde","5":"Fruit","6":"A light clean refreshing ale brewed with fresh raspberries that isn’t over fruity. We captured the fruit essence without sacrificing the  with an… Read More","7":"5.4","8":"14","9":"NA","10":"9","11":"2018-05-17","12":"2018","_row":"Fruit"},{"1":"Lake_Ann_Brewing_Co","2":"Michigan","3":"https://untappd.com//b/lake-ann-brewing-company-exerciser/2655816","4":"Exerciser","5":"Mead - Cyser","6":"NA","7":"6.0","8":"NA","9":"4.13","10":"64","11":"2018-05-19","12":"2018","_row":"Mead - Cyser"},{"1":"Wide_Awake_Brewing_Company","2":"South Carolina","3":"https://untappd.com//b/wide-awake-brewing-company-belgian-dubbel/3247045","4":"Belgian Dubbel","5":"Belgian Dubbel","6":"NA","7":"7.0","8":"20","9":"3.74","10":"37","11":"2019-05-25","12":"2019","_row":"Belgian Dubbel"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="brewery-info-data" class="section level3" number="4.0.2">
+<h3><span class="header-section-number">4.0.2</span> Brewery Info Data:</h3>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["obdb_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["brewery_type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["street"],"name":[4],"type":["chr"],"align":["left"]},{"label":["address_2"],"name":[5],"type":["lgl"],"align":["right"]},{"label":["address_3"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["city"],"name":[7],"type":["chr"],"align":["left"]},{"label":["state"],"name":[8],"type":["chr"],"align":["left"]},{"label":["county_province"],"name":[9],"type":["lgl"],"align":["right"]},{"label":["postal_code"],"name":[10],"type":["chr"],"align":["left"]},{"label":["website_url"],"name":[11],"type":["chr"],"align":["left"]},{"label":["phone"],"name":[12],"type":["chr"],"align":["left"]},{"label":["country"],"name":[13],"type":["chr"],"align":["left"]},{"label":["longitude"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["latitude"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["tags"],"name":[16],"type":["lgl"],"align":["right"]},{"label":["brewery_id"],"name":[17],"type":["chr"],"align":["left"]},{"label":["average_rating"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["num_of_ratings"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["num_of_beers"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["total_check_ins"],"name":[21],"type":["chr"],"align":["left"]},{"label":["unique_user_check_ins"],"name":[22],"type":["chr"],"align":["left"]},{"label":["last_four_week_check_ins"],"name":[23],"type":["dbl"],"align":["right"]},{"label":["brewery_desc"],"name":[24],"type":["chr"],"align":["left"]},{"label":["brewery"],"name":[25],"type":["chr"],"align":["left"]}],"data":[{"1":"franklin-street-brewing-company-manchester","2":"Franklin Street Brewing Company","3":"micro","4":"116 S Franklin St","5":"NA","6":"NA","7":"Manchester","8":"Iowa","9":"NA","10":"52057-2121","11":"http://www.franklinstreetbrewing.com","12":"5639272722.0","13":"United States","14":"-91.45778","15":"42.48329","16":"NA","17":"https://untappd.com/brewery/70650","18":"3.842","19":"20664","20":"146","21":"27937","22":"8538","23":"197","24":"Show Less","25":"Franklin_Street_Brewing_Company"},{"1":"cosmos-brewing-hugo","2":"Cosmos Brewing","3":"micro","4":"9480 140th St N","5":"NA","6":"NA","7":"Hugo","8":"Minnesota","9":"NA","10":"55038-9411","11":"http://www.cosmosbrewing.com","12":"6512699199.0","13":"United States","14":"-92.91373","15":"45.15267","16":"NA","17":"https://untappd.com/brewery/308570","18":"3.621","19":"3978","20":"0","21":"4771","22":"2618","23":"0","24":"Hop aboard and be a part of our travels into the future. Learn from the past, be present, drink forward, and remember... SAVE SPACE FOR BEER! Show Less","25":"Cosmos_Brewing"},{"1":"uproar-brewing-san-jose","2":"Uproar Brewing","3":"brewpub","4":"439 S 1st St","5":"NA","6":"NA","7":"San Jose","8":"California","9":"NA","10":"95113-2816","11":"http://www.uproarbrewing.com","12":"4086732266.0","13":"United States","14":"-121.88564","15":"37.32939","16":"NA","17":"https://untappd.com/brewery/345809","18":"3.644","19":"7995","20":"69","21":"9644","22":"3265","23":"20","24":"Good beer by bad people. Located in the SoFA district of downtown San Jose, California. Show Less","25":"Uproar_Brewing"},{"1":"midnight-jack-brewing-company-oceanside","2":"Midnight Jack Brewing Company","3":"micro","4":"3801 Oceanic Dr Ste 101","5":"NA","6":"NA","7":"Oceanside","8":"California","9":"NA","10":"92056-5850","11":"http://www.midnightjackbrewing.com","12":"7606379679.0","13":"United States","14":"-117.30474","15":"33.20484","16":"NA","17":"https://untappd.com/brewery/12345","18":"3.611","19":"3221","20":"0","21":"4549","22":"1186","23":"0","24":"Show Less","25":"Midnight_Jack_Brewing_Company"},{"1":"district-brewing-mount-vernon","2":"District Brewing","3":"brewpub","4":"520 S Main St","5":"NA","6":"NA","7":"Mount Vernon","8":"Washington","9":"NA","10":"98273-3840","11":"https://districtbrewco.com/","12":"3608736714.0","13":"United States","14":"-122.33883","15":"48.41920","16":"NA","17":"https://untappd.com/brewery/67113","18":"3.752","19":"253908","20":"308","21":"322353","22":"111779","23":"1684","24":"Unquestionably Original Crafted Ales Show Less","25":"District_Brewing"},{"1":"mudbug-brewery-thibodaux","2":"Mudbug Brewery","3":"micro","4":"1878 LA Hwy 3185","5":"NA","6":"NA","7":"Thibodaux","8":"Louisiana","9":"NA","10":"70302-1077","11":"http://www.mudbugbrewery.com","12":"9854921610.0","13":"United States","14":"NA","15":"NA","16":"NA","17":"https://untappd.com/brewery/44818","18":"3.605","19":"6495","20":"52","21":"9182","22":"4307","23":"0","24":"Show Less","25":"Mudbug_Brewery"},{"1":"the-mitten-brewing-co-grand-rapids","2":"The Mitten Brewing Co","3":"brewpub","4":"527 Leonard St NW","5":"NA","6":"NA","7":"Grand Rapids","8":"Michigan","9":"NA","10":"49504-4278","11":"http://www.mittenbrewing.com","12":"6166085612.0","13":"United States","14":"-85.68101","15":"42.98508","16":"NA","17":"https://untappd.com/brewery/43398","18":"3.735","19":"111182","20":"289","21":"139100","22":"33552","23":"438","24":"The Mitten Brewing Co. is a vintage baseball-themed microbrewery that expertly pairs handcrafted beers with gourmet pizzas. Show Less","25":"The_Mitten_Brewing_Co"},{"1":"gneiss-brewing-limerick","2":"Gneiss Brewing","3":"micro","4":"94 Patterson Rd","5":"NA","6":"NA","7":"Limerick","8":"Maine","9":"NA","10":"04048-4242","11":"http://www.gneissbeer.com","12":"2077930046.0","13":"United States","14":"-70.81800","15":"43.64831","16":"NA","17":"https://untappd.com/brewery/83249","18":"3.683","19":"15475","20":"111","21":"20427.0","22":"8583","23":"176","24":"Brewery located in the woods of Maine specializing in German style ales, particularly wheat-centric beers. Prost! Show Less","25":"Gneiss_Brewing"},{"1":"ancestry-brewery-tualatin","2":"Ancestry Brewery","3":"brewpub","4":"20585 SW 115th Ave","5":"NA","6":"NA","7":"Tualatin","8":"Oregon","9":"NA","10":"97062-6857","11":"http://www.ancestrybrewing.com","12":"5037060448.0","13":"United States","14":"-122.79678","15":"45.37115","16":"NA","17":"https://untappd.com/brewery/225583","18":"3.345","19":"170","20":"0","21":"192","22":"90","23":"0","24":"Show Less","25":"Ancestry_Brewery"},{"1":"lake-drum-brewing-geneva","2":"Lake Drum Brewing","3":"micro","4":"16 E Castle St","5":"NA","6":"NA","7":"Geneva","8":"New York","9":"NA","10":"14456-2400","11":"http://www.lakedrumbrewing.com","12":"3157891200.0","13":"United States","14":"-76.98094","15":"42.86777","16":"NA","17":"https://untappd.com/brewery/178035","18":"3.561","19":"6690","20":"171","21":"7912","22":"2810","23":"68","24":"Show Less","25":"Lake_Drum_Brewing"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Removed un-necessary columns in all_breweries data frame and renamed
+<code>name</code> to <code>brewery_name</code> column.</p>
+<p>Cleaned breweries with less than 10 beers total and the breweries which
+are closed, proprietor, bar as there are mostly useless for our
+question.</p>
+<p><strong>After Cleaning</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["brewery_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["brewery_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["brewery_type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["city"],"name":[4],"type":["chr"],"align":["left"]},{"label":["state"],"name":[5],"type":["chr"],"align":["left"]},{"label":["longitude"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["latitude"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["average_rating"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["num_of_ratings"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["num_of_beers"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["total_check_ins"],"name":[11],"type":["chr"],"align":["left"]},{"label":["unique_user_check_ins"],"name":[12],"type":["chr"],"align":["left"]},{"label":["brewery"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"https://untappd.com/brewery/325691","2":"Four Eyed Guys Brewing","3":"micro","4":"Spokane","5":"Washington","6":"NA","7":"NA","8":"3.765","9":"930","10":"91","11":"1115","12":"463","13":"Four_Eyed_Guys_Brewing"},{"1":"https://untappd.com/brewery/337977","2":"Rescue Brewing Co","3":"micro","4":"Upland","5":"California","6":"-117.64852","7":"34.09582","8":"3.773","9":"7286","10":"213","11":"9114","12":"2013","13":"Rescue_Brewing_Co"},{"1":"https://untappd.com/brewery/204792","2":"Gordon Street Tavern","3":"brewpub","4":"Alvin","5":"Texas","6":"-95.24399","7":"29.42403","8":"3.714","9":"1062","10":"26","11":"1338.0","12":"593","13":"Gordon_Street_Tavern"},{"1":"https://untappd.com/brewery/485","2":"E.J. Phair Brewing Co.","3":"micro","4":"Pittsburg","5":"California","6":"-121.88247","7":"38.03308","8":"3.634","9":"14284","10":"121","11":"20195","12":"6514","13":"E_J_Phair_Brewing_Co_"},{"1":"https://untappd.com/brewery/206337","2":"Halpatter Brewing Company","3":"micro","4":"Lake City","5":"Florida","6":"-82.63655","7":"30.19050","8":"3.916","9":"7170","10":"193","11":"9115.0","12":"2734","13":"Halpatter_Brewing_Company"},{"1":"https://untappd.com/brewery/326852","2":"Midland Brewing Co","3":"brewpub","4":"Midland","5":"Michigan","6":"-84.29109","7":"43.64087","8":"3.609","9":"30615","10":"104","11":"39267","12":"13048","13":"Midland_Brewing_Co"},{"1":"https://untappd.com/brewery/31157","2":"Calicraft Brewing Co","3":"micro","4":"Walnut Creek","5":"California","6":"NA","7":"NA","8":"3.655","9":"74724","10":"225","11":"95407","12":"42977","13":"Calicraft_Brewing_Co"},{"1":"https://untappd.com/brewery/342496","2":"Ballad Brewing","3":"micro","4":"Danville","5":"Virginia","6":"-79.38637","7":"36.58479","8":"3.765","9":"15268","10":"229","11":"18618","12":"7272","13":"Ballad_Brewing"},{"1":"https://untappd.com/brewery/6972","2":"Coddington Brewing Co","3":"brewpub","4":"Middletown","5":"Rhode Island","6":"-71.30492","7":"41.51870","8":"3.380","9":"13949","10":"68","11":"16412","12":"4189","13":"Coddington_Brewing_Co"},{"1":"https://untappd.com/brewery/319708","2":"Masthead Brewing Co","3":"brewpub","4":"Cleveland","5":"Ohio","6":"-81.68539","7":"41.50414","8":"3.990","9":"220368","10":"269","11":"296061","12":"54630","13":"Masthead_Brewing_Co"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="data-transformation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="missing-values.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/edit/main/03-cleaning.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/03-cleaning.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
