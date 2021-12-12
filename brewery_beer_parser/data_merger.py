@@ -22,7 +22,7 @@ def merge_all_beers():
         df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
         frames.append(df)
     
-    pd.concat(frames).to_csv('all_beers.csv')
+    pd.concat(frames).to_csv('../data/all_beers.csv')
 
     return None
 
@@ -40,7 +40,7 @@ def merge_al_breweries():
         df = pd.read_csv(file, index_col=False)
         df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
         brewery_frames.append(df)
-    pd.concat(brewery_frames).to_csv('all_beers.csv')
+    pd.concat(brewery_frames).to_csv('../data/all_beers.csv')
     return None
 
 if __name__ == '__main__':
