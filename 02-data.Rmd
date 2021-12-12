@@ -13,3 +13,37 @@ We used the brewery names downloaded from OpenBreweryDB as queries to get the li
 ## [**Untappd**](https://untappd.com/)
 
 Untappd is a social network for beer enthusiasts that allows its users to check-in as they drink beers, share these check-ins, and option to rate the beer they are consuming, earn badges, share pictures of their beers, comment on checked-in beers. It also allows Breweries to officially post the beers that they produce. (paraphrased the definition from Wikipedia).
+
+## [Web Scrapper](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py)
+
+We built a parser to get the list of beers from untappd using Python as we started scrapping data earlier than when we were introduced to web scrapping in R.
+
+Our web scraper uses beautiful soup a library in python to scrape the data from web pages.
+
+The workflow of the web scrapper is as follows:
+
+1.  We used the downloaded a csv file from [**List Breweries API**](https://www.openbrewerydb.org/documentation/01-listbreweries)then filter the breweries list from the csv for the state we are trying to download the data for.
+
+2.  The brewery name downloaded from OpenBreweryDB in some cases is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, the scraper opens [untappd search bar](https://untappd.com/search?q=) to find each breweries page on untappd and opens a brewery page. Once the brewery page is found and opened scrapper goes to page source and searches for div class `beer-list` and `distinct-list` once it finds the div class it expands the div class looks for another div class `beer-item` and gets `beer_url`, `beer_name`, `beer_style`, `beer_desc`, `beer_abv`, `beer_ibu`, `beer_average_rating`, `beer_num_ratings`, `beer_added` and adds everything to a csv.
+
+3.  For the Brewery data we run a similar scrapper to get `brewery_id`, `average_rating`, `num_of_ratings`, `num_of_beers`, `total_check_ins`, `unique_user_check_ins`, `last_four_week_check_ins`, `brewery_desc` and adds everything to a csv.
+
+Using this web scrapper we scraped the rating information for the top 24 most popular beers for each brewery on untappd for all the states in US. then retrieved the top 24 most popular beers associated with that brewery.
+
+To use the web scrapper and download the data try following the below steps:
+
+``` {.bash}
+$ cd brewery_beer_parser
+
+$ pip install -r requirements.txt
+
+$ python3 beer_scraping.py -i data/breweries.csv -o brewery_beers/ -s "New York"
+```
+
+**Once the scrapping is done the data for New York outputs as following**
+
+All the beers per brewery will be exported to -\> `brewery_beer_parser/brewery_beers/New_York/*brewery_name.csv`
+
+All the breweries that the parser could find the beers for will be exported to -\> `brewery_beer_parser/brewery_beers/New_York_brewery_info.csv`
+
+Once we repeated this step for all the states we manually copied the `state`\_brewery_info.csv to `brewery_beer_parser/Breweries/`

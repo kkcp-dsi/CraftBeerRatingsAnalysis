@@ -22,15 +22,17 @@ API**](https://www.openbrewerydb.org/documentation/01-listbreweries)then
 filter the breweries list from the csv for the state we are trying to
 download the data for.
 
-Then the scraper opens [untappd search
+The brewery name downloaded from OpenBreweryDB in some cases is not the
+same as the one used in untappd, we used the untappd search function to
+resolve the brewery name first, the scraper opens [untappd search
 bar](https://untappd.com/search?q=) to find each breweries page on
-untappd and opens a brewery page once the brewery page is opened it goes
-to page source and searches for div class `beer-list` and
-`distinct-list` once it finds the div class it expands the div class
-looks for another div class `beer-item` and gets `beer_url`,
-`beer_name`, `beer_style`, `beer_desc`, `beer_abv`, `beer_ibu`,
-`beer_average_rating`, `beer_num_ratings`, `beer_added` and adds
-everything to a csv.
+untappd and opens a brewery page. Once the brewery page is found and
+opened scrapper goes to page source and searches for div class
+`beer-list` and `distinct-list` once it finds the div class it expands
+the div class looks for another div class `beer-item` and gets
+`beer_url`, `beer_name`, `beer_style`, `beer_desc`, `beer_abv`,
+`beer_ibu`, `beer_average_rating`, `beer_num_ratings`, `beer_added` and
+adds everything to a csv.
 
 For the Brewery data we run a similar scrapper to get `brewery_id`,
 `average_rating`, `num_of_ratings`, `num_of_beers`, `total_check_ins`,
@@ -39,10 +41,8 @@ adds everything to a csv.
 
 Using this web scrapper we scraped the rating information for the top 24
 most popular beers for each brewery on untappd for all the states in US.
-Because the brewery name downloaded from OpenBreweryDB is not the same
-as the one used in untappd, we used the untappd search function to
-resolve the brewery name first, then retrieved the top 24 most popular
-beers associated with that brewery.
+then retrieved the top 24 most popular beers associated with that
+brewery.
 
 To use the web scrapper and download the data try following the below
 steps:
@@ -146,6 +146,10 @@ sample_n(all_beers, 20)
 
 ```{r}
 sample_n(all_breweries, 10)
+```
+
+```{r}
+colnames(all_beers)
 ```
 
 We cleaned up the beer_abv column by removing the characters `% ABV` and
