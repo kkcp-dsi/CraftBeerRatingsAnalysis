@@ -4,9 +4,8 @@ openbrewerydb
 untappd
 web-scrapper
 data-transformation
-data-cleaning
 beer-ratings-data
-brewery-info-data
+brewery-ratings-data
 missing-values
 missing-values-in-beer-ratings-dataset
 missing-values-in-brewery-ratings-dataset

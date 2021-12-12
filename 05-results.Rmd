@@ -33,12 +33,6 @@ source("utility/utility.R")
 us_geo <- states(class = "sf")
 ```
 
-```{r, echo=FALSE}
-folder_path <- paste(getwd(), 'data', sep='/')
-all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
-all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
-```
-
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 top_most_popular_beer_styles <- cleaned_all_beers %>%
   drop_na(beer_average_rating) %>%
