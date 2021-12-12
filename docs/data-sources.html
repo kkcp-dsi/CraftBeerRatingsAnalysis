@@ -24,7 +24,7 @@
 <meta name="author" content="Krishna Kalluri, Chao Pang" />
 
 
-<meta name="date" content="2021-12-11" />
+<meta name="date" content="2021-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,18 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script>
 
 
 <style type="text/css">
@@ -140,22 +152,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span><strong>OpenBreweryDB</strong></span> </a></li>
-<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span><strong>Untappd</strong></span></a></li>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#openbrewerydb"><i class="fa fa-check"></i><b>2.1</b> <span>OpenBreweryDB</span> </a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#untappd"><i class="fa fa-check"></i><b>2.2</b> <span>Untappd</span></a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#web-scrapper"><i class="fa fa-check"></i><b>2.3</b> <span>Web Scrapper</span></a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#web-scrapper"><i class="fa fa-check"></i><b>3.1</b> <span>Web Scrapper</span></a></li>
-<li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#merge-beer-ratings-data"><i class="fa fa-check"></i><b>3.2</b> Merge Beer ratings data</a></li>
-<li class="chapter" data-level="3.3" data-path="data-transformation.html"><a href="data-transformation.html#merge-brewery-info-data"><i class="fa fa-check"></i><b>3.3</b> Merge Brewery Info data</a></li>
-<li class="chapter" data-level="3.4" data-path="data-transformation.html"><a href="data-transformation.html#data-cleaning"><i class="fa fa-check"></i><b>3.4</b> Data Cleaning</a>
+<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#beer-ratings-data"><i class="fa fa-check"></i><b>3.1</b> Beer Ratings Data:</a></li>
+<li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#brewery-ratings-data"><i class="fa fa-check"></i><b>3.2</b> Brewery Ratings Data:</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a>
 <ul>
-<li class="chapter" data-level="3.4.1" data-path="data-transformation.html"><a href="data-transformation.html#sample-beer-ratings-data"><i class="fa fa-check"></i><b>3.4.1</b> Sample Beer Ratings Data:</a></li>
-<li class="chapter" data-level="3.4.2" data-path="data-transformation.html"><a href="data-transformation.html#sample-brewery-info-data"><i class="fa fa-check"></i><b>3.4.2</b> Sample Brewery Info Data:</a></li>
+<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#missing-values-in-beer-ratings-dataset"><i class="fa fa-check"></i><b>4.1</b> Missing Values in Beer Ratings Dataset</a></li>
+<li class="chapter" data-level="4.2" data-path="missing-values.html"><a href="missing-values.html#missing-values-in-brewery-ratings-dataset"><i class="fa fa-check"></i><b>4.2</b> Missing Values in Brewery Ratings Dataset</a></li>
 </ul></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#where-are-the-breweries-located"><i class="fa fa-check"></i><b>5.1</b> Where are the breweries located?</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#what-kind-of-beer-styles-are-most-popular-across-the-us"><i class="fa fa-check"></i><b>5.2</b> What kind of beer styles are most popular across the US?</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#do-people-rate-beersbreweries-differently-across-the-us"><i class="fa fa-check"></i><b>5.3</b> Do people rate beers/breweries differently across the US?</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#what-are-the-popular-beer-styles"><i class="fa fa-check"></i><b>5.4</b> What are the popular beer styles?</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#what-are-the-highly-rated-beer-styles-and-what-makes-a-beer-better-rated"><i class="fa fa-check"></i><b>5.5</b> What are the highly rated beer styles and what makes a beer better rated?</a></li>
+<li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#ratings-for-west-coast-ipa-and-east-coast-ipa"><i class="fa fa-check"></i><b>5.6</b> Ratings for West Coast IPA and East Coast IPA</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -181,14 +200,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
 <p>To answer these questions, we’ve obtained data from two sources <code>OpenBreweryDB</code> and <code>Untappd</code>, which we will describe in detail in the following sections. We are still working on obtaining the ingredients of beers, depending on whether or not we will actually acquire the data, our questions may be subject to changes. </p>
 <div id="openbrewerydb" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> <a href="https://openbrewerydb.org"><strong>OpenBreweryDB</strong></a> </h2>
+<h2><span class="header-section-number">2.1</span> <a href="https://openbrewerydb.org">OpenBreweryDB</a> </h2>
 <p>Open Brewery DB is a free dataset and API with public information on breweries, cideres, brewpubs, and bottle shops. We downloaded lists of breweries per state using the <code>OpenBreweryDB</code> API.</p>
 <p><a href="https://www.openbrewerydb.org/documentation/01-listbreweries"><strong>List Breweries API</strong></a></p>
 <p>We used the brewery names downloaded from OpenBreweryDB as queries to get the list of beers and their corresponding aggregated rating information from the Untappd.</p>
 </div>
 <div id="untappd" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> <a href="https://untappd.com/"><strong>Untappd</strong></a></h2>
+<h2><span class="header-section-number">2.2</span> <a href="https://untappd.com/">Untappd</a></h2>
 <p>Untappd is a social network for beer enthusiasts that allows its users to check-in as they drink beers, share these check-ins, and option to rate the beer they are consuming, earn badges, share pictures of their beers, comment on checked-in beers. It also allows Breweries to officially post the beers that they produce. (paraphrased the definition from Wikipedia).</p>
+</div>
+<div id="web-scrapper" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> <a href="https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/beer_scraping.py">Web Scrapper</a></h2>
+<p>We built a parser to get the list of beers from untappd using Python as we started scrapping data earlier than when we were introduced to web scrapping in R.</p>
+<p>Our web scraper uses beautiful soup a library in python to scrape the data from web pages.</p>
+<p>The workflow of the web scrapper is as follows:</p>
+<ol style="list-style-type: decimal">
+<li><p>We used the downloaded a csv file from <a href="https://www.openbrewerydb.org/documentation/01-listbreweries"><strong>List Breweries API</strong></a>then filter the breweries list from the csv for the state we are trying to download the data for.</p></li>
+<li><p>The brewery name downloaded from OpenBreweryDB in some cases is not the same as the one used in untappd, we used the untappd search function to resolve the brewery name first, the scraper opens <a href="https://untappd.com/search?q=">untappd search bar</a> to find each breweries page on untappd and opens a brewery page. Once the brewery page is found and opened scrapper goes to page source and searches for div class <code>beer-list</code> and <code>distinct-list</code> once it finds the div class it expands the div class looks for another div class <code>beer-item</code> and gets <code>beer_url</code>, <code>beer_name</code>, <code>beer_style</code>, <code>beer_desc</code>, <code>beer_abv</code>, <code>beer_ibu</code>, <code>beer_average_rating</code>, <code>beer_num_ratings</code>, <code>beer_added</code> and adds everything to a csv.</p></li>
+<li><p>For the Brewery data we run a similar scrapper to get <code>brewery_id</code>, <code>average_rating</code>, <code>num_of_ratings</code>, <code>num_of_beers</code>, <code>total_check_ins</code>, <code>unique_user_check_ins</code>, <code>last_four_week_check_ins</code>, <code>brewery_desc</code> and adds everything to a csv.</p></li>
+</ol>
+<p>Using this web scrapper we scraped the rating information for the top 24 most popular beers for each brewery on untappd for all the states in US. then retrieved the top 24 most popular beers associated with that brewery.</p>
+<p>To use the web scrapper and download the data try following the below steps:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="data-sources.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd brewery_beer_parser</span>
+<span id="cb1-2"><a href="data-sources.html#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="data-sources.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-4"><a href="data-sources.html#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="data-sources.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python3 beer_scraping.py <span class="at">-i</span> data/breweries.csv <span class="at">-o</span> brewery_beers/ <span class="at">-s</span> <span class="st">&quot;New York&quot;</span></span></code></pre></div>
+<p><strong>Once the scrapping is done the data for New York outputs as following</strong></p>
+<p>All the beers per brewery will be exported to -&gt; <code>brewery_beer_parser/brewery_beers/New_York/*brewery_name.csv</code></p>
+<p>All the breweries that the parser could find the beers for will be exported to -&gt; <code>brewery_beer_parser/brewery_beers/New_York_brewery_info.csv</code></p>
+<p>Once we repeated this step for all the states we manually copied the <code>state</code>_brewery_info.csv to <code>brewery_beer_parser/Breweries/</code></p>
+<p>** We did check <a href="https://untapped.com/robots.txt" class="uri">&lt;https://untapped.com/robots.txt&gt;</a> to see if scrapping is permitted. They do not have any restrictions under user agents. And we also checked their user agreement. There weren’t any rules about getting data for the list of beers. They only mentioned rules about obtaining user data.</p>
 
 </div>
 </div>

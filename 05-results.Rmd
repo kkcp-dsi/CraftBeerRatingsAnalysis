@@ -34,28 +34,6 @@ source("utility/utility.R")
 us_geo <- states(class = "sf")
 ```
 
-```{r, echo=FALSE}
-folder_path <- paste(getwd(), 'data', sep='/')
-all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
-all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
-population <- read_csv(paste(folder_path, 'us_population_by_state_2020.csv', sep='/'))
-```
-
-```{r, echo=FALSE}
-cleaned_all_breweries <- all_breweries %>%
-  filter(num_of_beers >= 10) %>%
-  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
-```
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-cleaned_all_beers <- all_beers %>% 
-  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
-  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
-  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
-  mutate(year=format(beer_added, format="%Y")) %>%
-  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
-```
-
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 top_most_popular_beer_styles <- cleaned_all_beers %>%
   drop_na(beer_average_rating) %>%
@@ -79,7 +57,7 @@ most_popular_beer_ratings <- top_most_popular_beer_styles %>%
 Let's first take a look at a sample of the the brewery data below. The dataset contains the brewery name, description, address, geo coordinates, average user ratings of the brewery (calculated by the average rating of all beer ratings), the number of beers, the number of ratings given the brewery received in total, and etc.
 
 ```{r, echo=FALSE}
-rmarkdown::paged_table(head(all_breweries))
+rmarkdown::paged_table(head(cleaned_all_breweries))
 ```
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=600}
@@ -335,8 +313,8 @@ beer_style_production_by_year <- cleaned_all_beers %>%
   filter(production_rank <= 10)
 ```
 
-```{r, echo=FALSE, fig.width=12}
-beer_style_palette <- distinctColorPalette(25)
+```{r, echo=FALSE, fig.width = 12, fig.height= 6}
+beer_style_palette <- distinctColorPalette(25, runTsne = TRUE)
 ggplot(
   beer_style_production_by_year,
   mapping = aes(
@@ -393,7 +371,6 @@ vcd::mosaic(beer_rating_category ~ beer_abv_category + beer_ibu_category,
 ```
 
 ## What are the best breweries and what beers are they making?
-
 ```{r, echo=FALSE, fig.width=8, fig.height=8}
 best_brewery_data <- cleaned_all_breweries %>% 
   select(brewery, average_rating) %>%
