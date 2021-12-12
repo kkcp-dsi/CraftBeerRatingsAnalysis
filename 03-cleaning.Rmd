@@ -68,44 +68,23 @@ all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
 all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
 ```
 
-### Sample Beer Ratings Data:
+### Beer Ratings Data:
+
+**Before Cleaning**
 
 ```{r}
 rmarkdown::paged_table(sample_n(all_beers, 10))
 ```
 
-### Sample Brewery Info Data:
-
-```{r}
-rmarkdown::paged_table(sample_n(all_breweries, 10))
-```
-
-```{r}
-colnames(all_beers)
-```
-
-We cleaned up the beer_abv column by removing the characters `% ABV` and
-beer_ibu column by removing the characters `IBU` .
-
-```{r}
-cleaned_all_beers <- all_beers %>%
-  mutate(beer_abv = as.double(str_trim(gsub(
-    "%\\s+ABV", "", beer_abv
-  )))) %>%
-  mutate(beer_ibu = as.double(str_trim(gsub(
-    "\\s+IBU", "", beer_ibu
-  ))))
-```
+Cleaned up the beer_abv column by removing the characters `% ABV` and
+beer_ibu column by removing the characters `IBU` and converted those
+columns to a double datatype.
 
 Cleaned up date values to same format and added a new column named year.
 
-```{r}
-cleaned_all_beers <- cleaned_all_beers %>%
-  mutate(beer_added = as.Date(beer_added, format = "%m/%d/%y")) %>%
-  mutate(year = format(beer_added, format = "%Y"))
-```
+Generalized known duplicated beer styles.
 
-Generalized known similar types of beer styles
+Cleaned up state name in cleaned_all_beers to remove `_` 's
 
 ```{r}
 clean_up_beer_style <- function(beer_style_name) {
@@ -129,30 +108,62 @@ clean_up_beer_style <- function(beer_style_name) {
   return (beer_style_name)
 }
 
-cleaned_all_beers <-
-  cleaned_all_beers %>% mutate(beer_style = sapply(beer_style, clean_up_beer_style))
+cleaned_all_beers <- all_beers %>%
+  mutate(beer_abv = as.double(str_trim(gsub(
+    "%\\s+ABV", "", beer_abv
+  )))) %>%
+  mutate(beer_ibu = as.double(str_trim(gsub(
+    "\\s+IBU", "", beer_ibu
+  )))) %>%
+  mutate(beer_added = as.Date(beer_added, format = "%m/%d/%y")) %>%
+  mutate(year = format(beer_added, format = "%Y")) %>%
+  mutate(beer_style = sapply(beer_style, clean_up_beer_style))
 
-```
-
-Cleaned up state name in cleaned_all_beers to remove `_` 's
-
-```{r}
 cleaned_all_beers$state <- gsub('_', ' ', cleaned_all_beers$state)
 ```
 
-Remove unusable columns in all_breweries data frame and rename name
-column
+**After Cleaning**
 
 ```{r}
-cleaned_all_breweries <- all_breweries %>% select(brewery_id, name, brewery_type, city, state, longitude, latitude, average_rating, num_of_ratings, num_of_beers, total_check_ins, unique_user_check_ins, brewery) %>% rename(brewery_name = name)
+rmarkdown::paged_table(sample_n(cleaned_all_beers, 10))
 ```
+
+### Brewery Info Data:
+
+```{r}
+rmarkdown::paged_table(sample_n(all_breweries, 10))
+```
+
+Removed un-necessary columns in all_breweries data frame and renamed
+`name` to `brewery_name` column.
 
 Cleaned breweries with less than 10 beers total and the breweries which
 are closed, proprietor, bar as there are mostly useless for our
 question.
 
 ```{r}
-cleaned_all_breweries <- cleaned_all_breweries %>%
-  filter(num_of_beers >= 10) %>%
+cleaned_all_breweries <-
+  all_breweries %>% select(
+    brewery_id,
+    name,
+    brewery_type,
+    city,
+    state,
+    longitude,
+    latitude,
+    average_rating,
+    num_of_ratings,
+    num_of_beers,
+    total_check_ins,
+    unique_user_check_ins,
+    brewery
+  ) %>% rename(brewery_name = name) %>%
+  filter(num_of_beers >= 10) %>% 
   filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
+```
+
+**After Cleaning**
+
+```{r}
+rmarkdown::paged_table(sample_n(cleaned_all_breweries, 10))
 ```
