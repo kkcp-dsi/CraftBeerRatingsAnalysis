@@ -6,11 +6,11 @@ editor_options:
 
 # Data transformation
 
-To merge all the beer ratings data downloaded by the web scrapper into
-single csv file and brewery ratings data downloaded by the web scrapper
-into single csv, we used a python script
-[data_merger.py](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/data_merger.py)
-located in the repository.
+To merge all the beer ratings data downloaded by the web scrapper into a
+single CSV file and brewery ratings data downloaded by the web scrapper
+into a single CSV, we used a python script
+[CraftBeerRatingsAnalysis/brewer_beer_parser/data_merger.py](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/brewery_beer_parser/data_merger.py)
+available in the repository.
 
 To run the data merger and save the merged csv files into data folder
 follow below steps.
