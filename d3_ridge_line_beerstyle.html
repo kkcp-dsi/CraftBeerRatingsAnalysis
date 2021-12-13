@@ -5,12 +5,18 @@
     <title>Beer Style</title>
     <script src="https://d3js.org/d3.v7.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
   </head>
   
   <body>
+    <div class="container-fluid">
+      Instruction
+    </div>
+    </br>
     <div class="container-fluid">
       <div class="row">
         <div class="col-4">
@@ -21,6 +27,16 @@
               Select all states
             </label>
           </div>
+        </div>
+        <div class="col-2">
+          <p>
+          <label for = "rating_range">Adjust rating range:</label>
+          <input type = "text" id = "rating_range" 
+            style = "border:0; font-weight:bold;">
+          </p>
+        </div>
+        <div class="col-2">
+          <div id = "rating_range_slider"></div>
         </div>
       </div>
       <div class="row">
@@ -112,12 +128,12 @@
       
       all_density_curves.join("path")
         .attr("transform", function(d){return("translate(0," + (yName(d.key) - height) +")")})
-        .attr("fill", d=>myColor(d.key))
+        .attr("fill", "#008cf4")
         .attr("data-id", d=>d.key)
         .datum(d=>d.density)
         .transition()
         .duration(500)
-        .attr("opacity", 0.5)
+        .attr("opacity", 0.8)
         .attr("stroke", "#000")
         .attr("stroke-width", 0.1)
         .attr("d", lineGenerator);
@@ -130,11 +146,13 @@
       });
     }
     
-    function update_hist(_svg, _bins, _xScaleYear, _yScaleYear)
+    function update_hist(_svg, _bins, _xScaleYear, _yScaleYear, _opacity=1.0)
     {
       var all_recs = _svg.select(".density")
         .selectAll("rect")
         .data(_bins, d=>d.key);
+      
+      var maxBinLength = d3.max(_bins.map(d=>d.length));
       
       var yScaleYearDomainMax = _yScaleYear.domain()[1];
       _yScaleYear.domain([0, yScaleYearDomainMax + 150 * yName.domain().length]);
@@ -149,7 +167,7 @@
         .transition()
         .duration(500)
         .ease(d3.easeLinear)
-        .attr("fill", d => myColor(d.color))
+        .attr("fill", "#008cf4")
         .attr("width", d => _xScaleYear(d.x1) - _xScaleYear(d.x0))
         .attr("height", d => height - _yScaleYear(d.length));
       
@@ -190,7 +208,7 @@
         .transition()
         .duration(500)
         .ease(d3.easeLinear)
-        .attr("fill", d => _colorGenerator(d.color))
+        .attr("fill", "#008cf4")
         .attr("width", d => _xScaleState.bandwidth() * 0.8)
         .attr("height", d => height - _yScaleState(d.length));
       
@@ -209,12 +227,12 @@
     }
 
     
-    function compute_hist(states, state_data, histogram)
+    function compute_hist(states, state_data, _histogram)
     {
       var allDensity = [];
       for (i in states){
         var state = states[i]
-        var bins = histogram(state_data[state]);
+        var bins = _histogram(state_data[state]);
         bins = d3.map(bins, function(d, j){
           d["key"] = state + j;
           d["color"] = state;
@@ -226,6 +244,50 @@
         });
       }
       return allDensity;
+    }
+    
+    function filterBeerByStateData(beer_style_by_state, _selections){
+        
+      var filteredBeerByStateData = {};
+      
+      for (i in _selections){
+        var style = _selections[i];
+        filteredBeerByStateData[style] = {};
+        var styleData = beer_style_by_state[style];
+        for (state in styleData){
+          filteredBeerByStateData[style][state] = styleData[state].filter(d=> (d >= rating_lower_bound && d <= rating_upper_bound))
+        }
+      }    
+      return filteredBeerByStateData;
+    }
+    
+    function filterTopItems(beer_style_data, _selections){
+      
+      var filterTopItems = {};
+      
+      for (i in _selections){
+        var key = _selections[i];
+        var data = beer_style_data[key];
+        var filtered_data = {
+          'beer_average_rating':[],
+          'beer_abv':[],
+          'beer_ibu':[],
+          'beer_added':[],
+          'beer_num_ratings':[]
+        };
+        for (j in data.beer_average_rating){
+          var beerRating = data.beer_average_rating[j];
+          if (beerRating >= rating_lower_bound & beerRating <= rating_upper_bound){
+            filtered_data.beer_average_rating.push(data.beer_average_rating[j]);
+            filtered_data.beer_abv.push(data.beer_abv[j]);
+            filtered_data.beer_ibu.push(data.beer_ibu[j]);
+            filtered_data.beer_added.push(data.beer_added[j]);
+            filtered_data.beer_num_ratings.push(data.beer_num_ratings[j]);
+          }
+        }
+        filterTopItems[key] = filtered_data;
+      }
+      return filterTopItems;
     }
     
     
@@ -244,8 +306,10 @@
     };
     // set the dimensions and margins of the graph
     var margin = {top: 100, right: 40, bottom: 50, left:120},
-        width = 700 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = 400 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+        
+    var stateHistMargin = {top: 100, right: 40, bottom: 50, left:80};
     
      // X axis: scale and draw:
     var xScale = d3.scaleLinear()
@@ -267,7 +331,7 @@
       .range([ height, 0]);
     
     var yScaleYear = d3.scaleLinear()
-      .domain([0, 1000])
+      .domain([0, 500])
       .range([height, 0]);
 
     var myColor =  d3.scaleOrdinal()
@@ -281,7 +345,7 @@
     var xScaleYear = d3.scaleTime().domain(
       [new Date("2010-01-01"), new Date("2021-01-01")]).range([0, width]);
     
-    var formatDate = d3.timeFormat("%d/%m/%y");
+    var formatDate = d3.timeFormat("%m/%y");
     var xAxisYear = d3.axisBottom()
       .scale(xScaleYear)
       .tickFormat(formatDate);
@@ -290,6 +354,11 @@
       .value(d=>d)   // I need to give the vector of value
       .domain(xScaleYear.domain())  // then the domain of the graphic
       .thresholds(xScaleYear.ticks(100)); // then the numbers of bins
+      
+    var histogram_rating = d3.histogram()
+      .value(d=>d)   // I need to give the vector of value
+      .domain(xScale.domain())  // then the domain of the graphic
+      .thresholds(xScale.ticks(100)); // then the numbers of bins
     
     // X axis for ABV
     var xScaleABV = d3.scaleLinear()
@@ -302,6 +371,12 @@
     var yScaleABV = d3.scaleLinear()
       .domain([0.0, 4.0])
       .range([ height, 0]);
+      
+    var histogram_abv = d3.histogram()
+      .value(d=>d)
+      .domain(xScaleABV.domain())
+      .thresholds(xScaleABV.ticks(100));
+    
     
     var abvLineGenerator = d3.line()
       .curve(d3.curveBasis)
@@ -315,6 +390,11 @@
     
     var xAxisIBU = d3.axisBottom()
       .scale(xScaleIBU);
+      
+    var histogram_ibu = d3.histogram()
+      .value(d=>d)
+      .domain(xScaleIBU.domain())
+      .thresholds(xScaleIBU.ticks(30));
     
     var yScaleIBU = d3.scaleLinear()
       .domain([0.0, 2.0])
@@ -327,13 +407,13 @@
       
     // X axis for state
     var xScaleState = d3.scaleBand()
-      .range([0, width * 2.2]);
+      .range([0, width * 3.3]);
     
     var xAxisState = d3.axisBottom()
       .scale(xScaleState);  
       
     var yScaleState = d3.scaleLinear()
-      .domain([0.0, 10000])
+      .domain([0.0, 5000])
       .range([ height, 0]);
       
     // append the svg object to the body of the page
@@ -346,7 +426,28 @@
     
     var svg_ibu = create_svg(d3.select("#beer_ibu"), margin, height, width,  xAxisIBU, yAxis, "Beer style IBU");
     
-    var svg_state = create_svg(d3.select("#beer_state"), margin, height, width *  2.2,  xAxisState, yAxis, "Beer style by state");
+    var svg_state = create_svg(d3.select("#beer_state"), stateHistMargin, height, width * 3.3,  xAxisState, yAxis, "Beer style by state");
+  
+    var rating_lower_bound = 0.0;
+    var rating_upper_bound = 5.0;
+      
+    $("#rating_range_slider" ).slider({
+       range:true,
+       min: 200,
+       max: 500,
+       values: [200, 500],
+       slide: function( event, ui ) {
+          $("#rating_range" ).val(ui.values[0]/100 + " - " + ui.values[1]/100);
+       },
+       stop: function( event, ui ) {
+          rating_lower_bound = ui.values[0]/100;
+          rating_upper_bound = ui.values[1]/100;
+          $('#select_all_states').change();
+       }
+    });
+    $( "#rating_range" ).val($( "#rating_range_slider" ).slider("values", 0)/100 +
+       " - " + $("#rating_range_slider").slider( "values", 1)/100);
+    
     
     d3.csv(beer_data_path, rowConverter).then(function(data){
       var beer_style_data = {};
@@ -389,9 +490,9 @@
           translateState = getStateAbbr(data[i].state.replace('_', ' '));
         if (translateState != undefined){
           if (!(translateState in beer_style_by_state[beer_style])){
-            beer_style_by_state[beer_style][translateState] = 0;
+            beer_style_by_state[beer_style][translateState] = [];
           }
-          beer_style_by_state[beer_style][translateState] += 1;
+          beer_style_by_state[beer_style][translateState].push(data[i].beer_average_rating);
         }
       }
       
@@ -404,7 +505,8 @@
       );
       
       var topItems = items.slice(0, 20);
-      myColor.domain(topItems.map(d=>d[0]));
+      var topStyles = topItems.map(d=>d[0]);
+      myColor.domain(topStyles);
       
       var allStates = new Set(Object.keys(beer_style_by_state).map(d=>Object.keys(beer_style_by_state[d])).flat());
       
@@ -421,25 +523,29 @@
           if(this.checked) {
             $('#states').prop('disabled', true);
             
+            var filteredData = filterTopItems(beer_style_data, topStyles);
+            var filteredBeerStyleByState = filterBeerByStateData(beer_style_by_state, topStyles);
+            
             var topItemsRatingData = {};
             var topItemsYearDate = {};
             var topItemsBeerABV = {};
             var topItemsBeerIBU = {};
-            topItems.map(d => topItemsRatingData[d[0]] = d[1].beer_average_rating);
-            topItems.map(d => topItemsYearDate[d[0]] = d[1].beer_added);
-            topItems.map(d => topItemsBeerABV[d[0]] = d[1].beer_abv.filter(d=>!isNaN(d)));
-            topItems.map(d => topItemsBeerIBU[d[0]] = d[1].beer_ibu.filter(d=>!isNaN(d)));
-            
             var beerStyleStatebins = [];
-            for (i in topItems){
-              var style = topItems[i][0];
-              for (state in beer_style_by_state[style]){
+            
+            for (i in topStyles){
+              var style = topStyles[i];
+              topItemsRatingData[style] = filteredData[style].beer_average_rating;
+              topItemsYearDate[style] = filteredData[style].beer_added;
+              topItemsBeerABV[style] = filteredData[style].beer_abv.filter(d=>!isNaN(d));
+              topItemsBeerIBU[style] = filteredData[style].beer_ibu.filter(d=>!isNaN(d));
+              
+              for (state in filteredBeerStyleByState[style]){
                 beerStyleStatebins.push({
                   'x0' : xScaleState(state) - xScaleState.bandwidth() / 2,
                   'x1' : xScaleState(state) + xScaleState.bandwidth() / 2,
                   'key' : style + state,
                   'color' : style,
-                  'length': beer_style_by_state[style][state]
+                  'length': filteredBeerStyleByState[style][state].length
                 });
               }
             }
@@ -476,23 +582,29 @@
         var topItemsBeerABV = {};
         var topItemsBeerIBU = {};
         var beerStyleStatebins = [];
+        
+        var filteredData = filterTopItems(beer_style_data, selections);
+        var filteredBeerStyleByState = filterBeerByStateData(beer_style_by_state, selections);
+        
         for (i in selections){
-          var style = selections[i];
-          topItemsRatingData[style] = beer_style_data[style].beer_average_rating;
-          topItemsYearDate[style] = beer_style_data[style].beer_added;
-          topItemsBeerABV[style] = beer_style_data[style].beer_abv.filter(d=>!isNaN(d));
-          topItemsBeerIBU[style] = beer_style_data[style].beer_ibu.filter(d=>!isNaN(d));
           
-          for (state in beer_style_by_state[style]){
+          var style = selections[i];
+          topItemsRatingData[style] = filteredData[style].beer_average_rating;
+          topItemsYearDate[style] = filteredData[style].beer_added;
+          topItemsBeerABV[style] = filteredData[style].beer_abv.filter(d=>!isNaN(d));
+          topItemsBeerIBU[style] = filteredData[style].beer_ibu.filter(d=>!isNaN(d));
+          
+          for (state in filteredBeerStyleByState[style]){
             beerStyleStatebins.push({
               'x0' : xScaleState(state) - xScaleState.bandwidth() / 2,
               'x1' : xScaleState(state) + xScaleState.bandwidth() / 2,
               'key' : style + state,
               'color' : style,
-              'length': beer_style_by_state[style][state]
+              'length': filteredBeerStyleByState[style][state].length
             });
           }
         }
+        
         sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(30));
         yName.domain($.map(sortedDensity, d => d.key));
         update(svg, sortedDensity, lineGenerator);
