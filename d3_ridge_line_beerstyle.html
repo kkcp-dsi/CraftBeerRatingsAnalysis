@@ -130,7 +130,7 @@
       });
     }
     
-    function update_hist(_svg, _bins, _xScaleYear, _yScaleYear)
+    function update_hist(_svg, _bins, _xScaleYear, _yScaleYear, _opacity=1.0)
     {
       var all_recs = _svg.select(".density")
         .selectAll("rect")
@@ -151,7 +151,8 @@
         .ease(d3.easeLinear)
         .attr("fill", d => myColor(d.color))
         .attr("width", d => _xScaleYear(d.x1) - _xScaleYear(d.x0))
-        .attr("height", d => height - _yScaleYear(d.length));
+        .attr("height", d => height - _yScaleYear(d.length))
+        .attr("opacity", _opacity);
       
       all_recs
           .exit()
@@ -209,12 +210,12 @@
     }
 
     
-    function compute_hist(states, state_data, histogram)
+    function compute_hist(states, state_data, _histogram)
     {
       var allDensity = [];
       for (i in states){
         var state = states[i]
-        var bins = histogram(state_data[state]);
+        var bins = _histogram(state_data[state]);
         bins = d3.map(bins, function(d, j){
           d["key"] = state + j;
           d["color"] = state;
@@ -263,11 +264,11 @@
       .scale(yName);
 
     var yScale = d3.scaleLinear()
-      .domain([0.0, 10.0])
+      .domain([0.0, 1500])
       .range([ height, 0]);
     
     var yScaleYear = d3.scaleLinear()
-      .domain([0, 1000])
+      .domain([0, 500])
       .range([height, 0]);
 
     var myColor =  d3.scaleOrdinal()
@@ -290,6 +291,11 @@
       .value(d=>d)   // I need to give the vector of value
       .domain(xScaleYear.domain())  // then the domain of the graphic
       .thresholds(xScaleYear.ticks(100)); // then the numbers of bins
+      
+    var histogram_rating = d3.histogram()
+      .value(d=>d)   // I need to give the vector of value
+      .domain(xScale.domain())  // then the domain of the graphic
+      .thresholds(xScale.ticks(100)); // then the numbers of bins
     
     // X axis for ABV
     var xScaleABV = d3.scaleLinear()
@@ -333,7 +339,7 @@
       .scale(xScaleState);  
       
     var yScaleState = d3.scaleLinear()
-      .domain([0.0, 10000])
+      .domain([0.0, 5000])
       .range([ height, 0]);
       
     // append the svg object to the body of the page
@@ -444,9 +450,15 @@
               }
             }
             
-            sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(30));
-            yName.domain($.map(sortedDensity, d => d.key));
-            update(svg, sortedDensity, lineGenerator);
+            sorted_keys = Object.keys(topItemsRatingData).sort(function(x, y){
+              return d3.descending(d3.median(topItemsRatingData[x]), d3.median(topItemsRatingData[y]));
+            });
+        
+            yName.domain(sorted_keys);
+            
+            rating_bins = compute_hist(Object.keys(topItemsRatingData), topItemsRatingData, histogram_rating)
+              .map(d=>d.bins).flat();
+            update_hist(svg, rating_bins, xScale, yScale, 0.5);
             
             bins = compute_hist(Object.keys(topItemsYearDate), topItemsYearDate, histogram)
               .map(d=>d.bins).flat();
@@ -493,9 +505,16 @@
             });
           }
         }
-        sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(30));
-        yName.domain($.map(sortedDensity, d => d.key));
-        update(svg, sortedDensity, lineGenerator);
+        
+        sorted_keys = Object.keys(topItemsRatingData).sort(function(x, y){
+           return d3.descending(d3.median(topItemsRatingData[x]), d3.median(topItemsRatingData[y]));
+        });
+        
+        yName.domain(sorted_keys);
+        
+        rating_bins = compute_hist(Object.keys(topItemsRatingData), topItemsRatingData, histogram_rating)
+          .map(d=>d.bins).flat();
+        update_hist(svg, rating_bins, xScale, yScale);
         
         bins = compute_hist(Object.keys(topItemsYearDate), topItemsYearDate, histogram)
           .map(d=>d.bins).flat();
