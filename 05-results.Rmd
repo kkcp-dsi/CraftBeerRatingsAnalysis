@@ -393,10 +393,10 @@ ggplot(
             aes(
               label = paste(
                 beer_style_production_by_year$production_rank,
-                "-",
+                "\n",
                 abbreviate(beer_style_production_by_year$beer_style)
               )),
-              size = 2
+              size = 3
             ) +
   scale_fill_manual(values = beer_style_palette) +
   guides(y = "none", fill=guide_legend(ncol=4)) +
