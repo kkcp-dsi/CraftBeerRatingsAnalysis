@@ -14,6 +14,10 @@
   
   <body>
     <div class="container-fluid">
+      Instruction
+    </div>
+    </br>
+    <div class="container-fluid">
       <div class="row">
         <div class="col-4">
           <select id="states" style="width:100%"></select>
@@ -26,10 +30,12 @@
         </div>
         <div class="col-2">
           <p>
-          <label for = "rating_range">Rating range:</label>
+          <label for = "rating_range">Adjust rating range:</label>
           <input type = "text" id = "rating_range" 
             style = "border:0; font-weight:bold;">
           </p>
+        </div>
+        <div class="col-2">
           <div id = "rating_range_slider"></div>
         </div>
       </div>
@@ -122,12 +128,12 @@
       
       all_density_curves.join("path")
         .attr("transform", function(d){return("translate(0," + (yName(d.key) - height) +")")})
-        .attr("fill", d=>myColor(d.key))
+        .attr("fill", "#3344bb")
         .attr("data-id", d=>d.key)
         .datum(d=>d.density)
         .transition()
         .duration(500)
-        .attr("opacity", 0.5)
+        .attr("opacity", 0.8)
         .attr("stroke", "#000")
         .attr("stroke-width", 0.1)
         .attr("d", lineGenerator);
@@ -149,7 +155,7 @@
       var maxBinLength = d3.max(_bins.map(d=>d.length));
       
       var yScaleYearDomainMax = _yScaleYear.domain()[1];
-      _yScaleYear.domain([0, Math.max(yScaleYearDomainMax + 200 * yName.domain().length - maxBinLength, 10)]);
+      _yScaleYear.domain([0, yScaleYearDomainMax + 150 * yName.domain().length]);
       
       all_recs.enter().append("rect")
         .attr("class", "bar")
@@ -161,10 +167,9 @@
         .transition()
         .duration(500)
         .ease(d3.easeLinear)
-        .attr("fill", d => myColor(d.color))
+        .attr("fill", "#3344bb")
         .attr("width", d => _xScaleYear(d.x1) - _xScaleYear(d.x0))
-        .attr("height", d => height - _yScaleYear(d.length))
-        .attr("opacity", _opacity);
+        .attr("height", d => height - _yScaleYear(d.length));
       
       all_recs
           .exit()
@@ -203,7 +208,7 @@
         .transition()
         .duration(500)
         .ease(d3.easeLinear)
-        .attr("fill", d => _colorGenerator(d.color))
+        .attr("fill", "#3344bb")
         .attr("width", d => _xScaleState.bandwidth() * 0.8)
         .attr("height", d => height - _yScaleState(d.length));
       
@@ -320,7 +325,7 @@
       .scale(yName);
 
     var yScale = d3.scaleLinear()
-      .domain([0.0, 1500])
+      .domain([0.0, 10.0])
       .range([ height, 0]);
     
     var yScaleYear = d3.scaleLinear()
@@ -362,7 +367,7 @@
       .scale(xScaleABV);
     
     var yScaleABV = d3.scaleLinear()
-      .domain([0.0, 4000])
+      .domain([0.0, 4.0])
       .range([ height, 0]);
       
     var histogram_abv = d3.histogram()
@@ -390,7 +395,7 @@
       .thresholds(xScaleIBU.ticks(30));
     
     var yScaleIBU = d3.scaleLinear()
-      .domain([0.0, 4000])
+      .domain([0.0, 2.0])
       .range([ height, 0]);
     
     var ibuLineGenerator = d3.line()
@@ -543,28 +548,19 @@
               }
             }
             
-            sorted_keys = Object.keys(topItemsRatingData).sort(function(x, y){
-              return d3.descending(d3.median(topItemsRatingData[x]), d3.median(topItemsRatingData[y]));
-            });
-        
-            yName.domain(sorted_keys);
-            
-            rating_bins = compute_hist(Object.keys(topItemsRatingData), topItemsRatingData, histogram_rating)
-              .map(d=>d.bins).flat();
-            update_hist(svg, rating_bins, xScale, yScale, 0.5);
+            sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(30));
+            yName.domain($.map(sortedDensity, d => d.key));
+            update(svg, sortedDensity, lineGenerator);
             
             bins = compute_hist(Object.keys(topItemsYearDate), topItemsYearDate, histogram)
               .map(d=>d.bins).flat();
             update_hist(svg_popularity, bins, xScaleYear, yScaleYear);
             
-            bins = compute_hist(Object.keys(topItemsBeerABV), topItemsBeerABV, histogram_abv)
-              .map(d=>d.bins).flat();
-            update_hist(svg_abv, bins, xScaleABV, yScaleABV, 0.5);
+            sortedDensity = compute_density(Object.keys(topItemsBeerABV), topItemsBeerABV, xScaleABV.ticks(30));
+            update(svg_abv, sortedDensity, abvLineGenerator);
             
-            
-            bins = compute_hist(Object.keys(topItemsBeerIBU), topItemsBeerIBU, histogram_ibu)
-              .map(d=>d.bins).flat();
-            update_hist(svg_ibu, bins, xScaleIBU, yScaleIBU, 0.5);
+            sortedDensity = compute_density(Object.keys(topItemsBeerIBU), topItemsBeerIBU, xScaleIBU.ticks(30));
+            update(svg_ibu, sortedDensity, ibuLineGenerator);
             
             //Beer style by state histogram
             update_state_hist(beerStyleStatebins, svg_state, xScaleState, yScaleState, xAxisState, yAxis, myColor);
@@ -607,27 +603,19 @@
           }
         }
         
-        sorted_keys = Object.keys(topItemsRatingData).sort(function(x, y){
-           return d3.descending(d3.median(topItemsRatingData[x]), d3.median(topItemsRatingData[y]));
-        });
-        
-        yName.domain(sorted_keys);
-        
-        rating_bins = compute_hist(Object.keys(topItemsRatingData), topItemsRatingData, histogram_rating)
-          .map(d=>d.bins).flat();
-        update_hist(svg, rating_bins, xScale, yScale);
+        sortedDensity = compute_density(Object.keys(topItemsRatingData), topItemsRatingData, xScale.ticks(30));
+        yName.domain($.map(sortedDensity, d => d.key));
+        update(svg, sortedDensity, lineGenerator);
         
         bins = compute_hist(Object.keys(topItemsYearDate), topItemsYearDate, histogram)
           .map(d=>d.bins).flat();
         update_hist(svg_popularity, bins, xScaleYear, yScaleYear);
         
-        bins = compute_hist(Object.keys(topItemsBeerABV), topItemsBeerABV, histogram_abv)
-          .map(d=>d.bins).flat();
-        update_hist(svg_abv, bins, xScaleABV, yScaleABV);
+        sortedDensity = compute_density(Object.keys(topItemsBeerABV), topItemsBeerABV, xScaleABV.ticks(30));
+        update(svg_abv, sortedDensity, abvLineGenerator);
         
-        bins = compute_hist(Object.keys(topItemsBeerIBU), topItemsBeerIBU, histogram_ibu)
-          .map(d=>d.bins).flat();
-        update_hist(svg_ibu, bins, xScaleIBU, yScaleIBU);
+        sortedDensity = compute_density(Object.keys(topItemsBeerIBU), topItemsBeerIBU, xScaleIBU.ticks(30));
+        update(svg_ibu, sortedDensity, ibuLineGenerator);
         
         //Beer style by state histogram
         update_state_hist(beerStyleStatebins, svg_state, xScaleState, yScaleState, xAxisState, yAxis, myColor);
