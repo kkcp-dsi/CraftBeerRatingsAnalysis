@@ -14,23 +14,54 @@
   
   <body>
     <div class="container-fluid">
-      Instruction
+      <h2>Background</h2>
+      <p class="font-italic">
+        Authors: Chao Pang & Krishna Kalluri
+      </p>
+      <p class="font-italic">
+        Class: STAT W5702 002
+      </p>
+      <p>
+        The purpose of this D3 visualization is to better understand the landscape of the craft beer industry. Specifically this visualization is primarily motivated by several questions shown below,
+      </p>
+        <ul>
+          <li>
+            What are the popular beer styles?   
+          </li>
+          <li>
+            What beer styles are more popular across different states?   
+          </li>
+          <li>
+            What are the characteristics of each beer style?
+          </li>
+          <li>
+            why are certain beer styles better rated than others? 
+          </li>
+        </ul>
+<p>The D3 visualization combines several plots together including the beer style rating density, beer style popularity over time, beer ibu density, beer abv density, and beer style production by state. Although some of the plots have been shown individual in the results section of our book, we believe looking at the data holistically could give us a better understanding of the data. To avoid overplotting, we've only included the top 20 most popular beer styles in this visualization, which is defined as the number of beers associated with that particular beer style. </p>
+    </div>
+    <div class="container-fluid">
+      <h2>Instructions</h2>
+      <p>
+        There are two interactive components in this visualization including: 1) a multi-select dropdown box that allows users to add more beer styles to the plots; 2) a beer rating slider for including beers with a specific rating range, the range is cut off at 2.0 on the lower bound because there are almost no beers in that range. In addition under the dropdown box, we included a checkbox a shortcut to include all beer styles in the plots. By default, American IPA, New England IPA, and Sour - Fruited are selected and the rating slider contains the full range of the ratings. At last, we want to make a comment about density plots, where the underlying density function interpolates the missing values therefore the density plots span the ratings that are not selected by the rating slider. 
+        
+      </p>
     </div>
     </br>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-4">
+        <div class="offset-md-1 col-4">
           <select id="states" style="width:100%"></select>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="select_all_states">
             <label class="form-check-label" for="flexCheckDefault">
-              Select all states
+              Select all beer styles
             </label>
           </div>
         </div>
-        <div class="col-2">
+        <div class="offset-md-1 col-2">
           <p>
-          <label for = "rating_range">Adjust rating range:</label>
+          <label for="rating_range">Adjust rating range:</label>
           <input type = "text" id = "rating_range" 
             style = "border:0; font-weight:bold;">
           </p>
@@ -72,7 +103,14 @@
       return x => Math.abs(x /= bandwidth) <= 1 ? 0.75 * (1 - x * x) / bandwidth : 0;
     }
     
-    function create_svg(d3_html_element, _margin, _height, _width, _xAxis, _yAxis, _xAxisName){
+    function create_svg(
+      d3_html_element, 
+      _margin, 
+      _height, 
+      _width, 
+      _xAxis, 
+      _yAxis, 
+      _xAxisName){
       // append the svg object to the body of the page
       var _svg = d3_html_element.append("svg")
         .attr("width", _width + _margin.left + _margin.right)
@@ -309,7 +347,7 @@
         width = 400 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
         
-    var stateHistMargin = {top: 100, right: 40, bottom: 50, left:80};
+    var stateHistMargin = {top: 100, right: 0, bottom: 50, left:80};
     
      // X axis: scale and draw:
     var xScale = d3.scaleLinear()
@@ -343,7 +381,7 @@
       .y(d=>yScale(d[1]));
     
     var xScaleYear = d3.scaleTime().domain(
-      [new Date("2010-01-01"), new Date("2021-01-01")]).range([0, width]);
+      [new Date("2010-01-01"), new Date("2022-01-01")]).range([0, width]);
     
     var formatDate = d3.timeFormat("%m/%y");
     var xAxisYear = d3.axisBottom()
@@ -421,6 +459,14 @@
     
     // append the svg object to the body of the page
     var svg_popularity = create_svg(d3.select("#state_hist_popular"), margin, height, width,  xAxisYear, yAxis, "Beer style popularity");
+    
+    svg_popularity.select('.xAxis')        
+      .selectAll("text")
+      .attr("y", 0)
+      .attr("x", 9)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(" + 45 + ")")
+      .style("text-anchor", "start");
     
     var svg_abv = create_svg(d3.select("#beer_abv"), margin, height, width,  xAxisABV, yAxis, "Beer style ABV");
     
@@ -514,9 +560,9 @@
       
       var mySelect = $('#states');
       $.each(topItems, function(key, val) {
-          mySelect.append(
-              $('<option></option>').val(val[0]).html(val[0])
-          );
+        mySelect.append(
+            $('<option></option>').val(val[0]).html(val[0])
+        );
       });
 
       $('#select_all_states').change(function() {
@@ -574,8 +620,7 @@
       });
       
       var stateSelect = $("#states").select2({multiple: true});
-      stateSelect.on("change", function (e) {
-        
+      stateSelect.val(["IPA - American", "New England IPA", "Sour - Fruited"]).on("change", function (e) {
         var selections = $(e.currentTarget).val();
         var topItemsRatingData = {};
         var topItemsYearDate = {};
