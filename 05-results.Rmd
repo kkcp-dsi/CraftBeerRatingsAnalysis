@@ -30,28 +30,6 @@ library(tigris)
 source("utility/utility.R")
 ```
 
-```{r, echo=FALSE}
-folder_path <- paste(getwd(), 'data', sep='/')
-all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
-all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
-population <- read_csv(paste(folder_path, 'us_population_by_state_2020.csv', sep='/'))
-```
-
-```{r, echo=FALSE}
-cleaned_all_breweries <- all_breweries %>%
-  filter(num_of_beers >= 10) %>%
-  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
-```
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-cleaned_all_beers <- all_beers %>% 
-  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
-  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
-  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
-  mutate(year=format(beer_added, format="%Y")) %>%
-  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
-```
-
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 us_geo <- states(class = "sf")
 ```
