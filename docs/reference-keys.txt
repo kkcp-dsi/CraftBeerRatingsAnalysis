@@ -21,3 +21,6 @@ what-makes-a-beer-more-desirable
 what-are-the-best-breweries-and-what-beers-are-they-making
 interactive-component
 conclusion
+observations
+limitations
+future-work
