@@ -201,12 +201,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Too find out the missing values in our cleaned data sets we used a missing_value_plot function we created as part of our course assignment. The missing_value plot function can be found at <a href="https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/analysis_notebooks/plot_missing.R">plot_missing.R</a></p>
 <div id="missing-values-in-beer-ratings-dataset" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Missing Values in Beer Ratings Dataset</h2>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>The more percentage of missing values in the cleaned_all_beers dataset are in <code>beer_ibu</code>, <code>beer_desc</code> and <code>beer_abv</code> columns. We can ignore <code>beer_desc</code> column as that column will not help in out analysis. In case of <code>beer_abv</code> and <code>beer_ibu</code> we are going to to remove the null value rows while utilizing these variables in our analysis as we cannot add the data to the missing rows using any of the generalization methods. <code>beer_ibu</code> and <code>beer_abv</code> can tell a lot about a beer taste so we do not want to drop these columns as well.</p>
 </div>
 <div id="missing-values-in-brewery-ratings-dataset" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Missing Values in Brewery Ratings Dataset</h2>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>The more percentage of missing values in the cleaned_brewery_dataset is in <code>latitude</code> and <code>Longitude</code> columns. We are ignoring these columns as we have other columns we can utilize to get spatial maps namely <code>city</code> and <code>state</code>.</p>
 
 </div>
