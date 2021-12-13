@@ -14,7 +14,13 @@ where-are-the-breweries-located
 what-kind-of-beer-styles-are-most-popular-across-the-us
 do-people-rate-beersbreweries-differently-across-the-us
 what-are-the-popular-beer-styles
-what-are-the-highly-rated-beer-styles-and-what-makes-a-beer-better-rated
+what-makes-ipa-so-popular
+does-popularity-change-over-time
+what-are-the-highly-rated-beer-styles
+what-makes-a-beer-more-desirable
 what-are-the-best-breweries-and-what-beers-are-they-making
 interactive-component
 conclusion
+observations
+limitations
+future-work

@@ -1,12 +1,12 @@
 # Missing values
 
-Too find out the missing values in our cleaned data sets we used a missing_value_plot function we created as part of our course assignment. The missing_value plot function can be found at [plot_missing.R](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/analysis_notebooks/plot_missing.R)
+Too find out the missing values in our cleaned data sets we used a missing_value_plot function we created as part of our course assignment. The missing_value plot function can be found at [plot_missing.R](https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/utility/plot_missing.R)
 
 ## Missing Values in Beer Ratings Dataset
 
 ```{r}
 source("utility/plot_missing.R")
-plot_missing(cleaned_all_beers, shortenNames = F)
+plot_missing(cleaned_all_beers, shortenNames = T)
 ```
 
 The more percentage of missing values in the cleaned_all_beers dataset are in `beer_ibu`, `beer_desc` and `beer_abv` columns. We can ignore `beer_desc` column as that column will not help in out analysis. In case of `beer_abv` and `beer_ibu` we are going to to remove the null value rows while utilizing these variables in our analysis as we cannot add the data to the missing rows using any of the generalization methods. `beer_ibu` and `beer_abv` can tell a lot about a beer taste so we do not want to drop these columns as well.
