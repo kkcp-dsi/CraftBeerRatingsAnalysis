@@ -319,7 +319,7 @@ ggplot(top_most_popular_beer_styles, aes(x=freq, y=fct_reorder(beer_style, freq)
   ylab("Beer style")
 ```
 
-### What makes IPA so popular? 
+### What makes IPA so popular?
 
 Naturally, the next question is that what makes IPA so popular? Why do people love it so much? To answer this question, we will compare its beer characteristics (IBU and ABV) with other beer styles. To avoid over plotting, we decide to group all IPAs together, all sour styles together and also lump all stouts and porters into a single category called Stout & Porter, we will leave out other beer styles in this analysis for now, when we get to the D3 interactive component, we could look at the same type of information much more clearly.
 
@@ -364,7 +364,7 @@ ggplot(beer_category_scatter_plot, aes(beer_abv, beer_ibu, color=beer_category))
 
 As we can see from this scatter plot, the IPAs are more bitter than other beer styles, in addition, their alcohol percentage is higher than Sour but lower than the Stout. It looks like people prefer beers that are bitter (hoppy) but not too strong in terms of the alcohol content. This makes sense because IPAs are famous for their hoppiness, despite the high bitterness level, IPAs are normally very fruity at the same time due to the use of special hops in IPAs. Overall, they are relatively easy to drink and most of people could accept it for the first time. On the other hand, sour beers, porters and stouts are considered as "advanced beers", which might take newcomers some time to develop the appreciation for. When we portray the craft beer landscape, it could be thought of as a pyramid, where lagers, and IPAs are on the bottom and everyone could have easy access to it. As you climb the pyramid, Stouts and Porters would be the next level challenge, eventually once you reach the top of the pyramid, you would finally appreciate sour beers.
 
-### Does popularity change over time? 
+### Does popularity change over time?
 
 Now we've established that IPAs are the most popular beer style by far, has IPA always been that popular? Does the popularity change at all over time? Because based on our experience, we know new beer styles are coming out all the time, breweries are quickly adapting to brew those beers to capture the momentum of the new beer styles. So let's look at the popularity over time, again the definition of popularity remains the same, which is defined as the number of beers associated with that particular beer style.
 
@@ -409,17 +409,23 @@ ggplot(
     stratum = factor(production_rank)
   )
 ) +
-  geom_flow(aes(fill = beer_style), color = "black") +
+  geom_alluvium(aes(fill = beer_style), color = "black") +
   geom_stratum(aes(fill = beer_style)) +
   geom_text(
     stat = "alluvium",
-    aes(label = beer_style_production_by_year$production_rank),
-    size = 4
-  ) +
-  scale_fill_manual(values = beer_style_palette) +
-  guides(y = "none") +
-  theme_wsj(color="gray") +
-  ggtitle("Beer styles Production Increases over years in America")
+    aes(
+      label = paste(
+        beer_style_production_by_year$production_rank,
+        "-",
+        abbreviate(beer_style_production_by_year$beer_style)
+      ),
+      size = 5
+    )) +
+      scale_fill_manual(values = beer_style_palette) +
+      guides(y = "none") + 
+      theme_wsj(color = "gray") +
+      ggtitle("Beer styles Production Increases over years in America"
+      )
 ```
 
 Voila, this is cool! We could see the exact ranks of each beer style over time by year. Now we know New England IPA surpassed American IPA, and has been the most popular beer style in since 2019. Sour was only ranked at 9th in 2018 but moved up on the list to the rank 3rd in 2019. Farmhouse Ale enjoyed its popularity from 2012 through 2019, then fell out of the top 10 most popular beer style in the following year, but made it back to the list in 2021. Red American Amber also had a similar fate where it remained popular from 2010 till 2017, eventually fell out of favor in 2018. Imperial Stout is an interesting case where it was ranked at 9th in 2010, and disappeared in the subsequent years, it did make its comback in 2015 and ranked at 6th and remain on the popularity list. Milkshake IPA was a once super hyped beer style that made its short appearance on the list in 2019 and 2020. Surprisingly, American Lager took a spot in both 2020 and 2021 and ranked at 8t and 9t respectively, Lager (e.g. Budweiser) used to be considered "uncrafty" by the craft beer geeks, apparently brewers started making tweaks to the traditional recipes to make it more interesting.
