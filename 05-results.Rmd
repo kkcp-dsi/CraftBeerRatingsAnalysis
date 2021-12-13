@@ -30,28 +30,6 @@ library(tigris)
 source("utility/utility.R")
 ```
 
-```{r, echo=FALSE}
-folder_path <- paste(getwd(), 'data', sep='/')
-all_breweries <- read_csv(paste(folder_path, 'all_breweries.csv', sep='/'))
-all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
-population <- read_csv(paste(folder_path, 'us_population_by_state_2020.csv', sep='/'))
-```
-
-```{r, echo=FALSE}
-cleaned_all_breweries <- all_breweries %>%
-  filter(num_of_beers >= 10) %>%
-  filter(!brewery_type %in% c("proprietor", "bar", "nano", "closed"))
-```
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-cleaned_all_beers <- all_beers %>% 
-  mutate(beer_abv=as.double(str_trim(gsub("%\\s+ABV", "", beer_abv)))) %>%
-  mutate(beer_ibu=as.double(str_trim(gsub("\\s+IBU", "", beer_ibu)))) %>%
-  mutate(beer_added=as.Date(beer_added, format = "%m/%d/%y")) %>%
-  mutate(year=format(beer_added, format="%Y")) %>%
-  mutate(beer_style=sapply(beer_style, clean_up_beer_style))
-```
-
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 us_geo <- states(class = "sf")
 ```
@@ -256,7 +234,7 @@ One of the questions we have long suspected is that people have different rating
 
 To answer this question, we will go back to our brewery data, where it contains the rating of every brewery (calculated as the average of all beer ratings) from every state, we could easily dump all of brewery ratings in ridgeline plot by state to look at rating behaviors across the country. To avoid overplotting, we will only show the top 20 states with the most breweries in this analysis.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.height=7}
 
 top_20_states <- cleaned_all_breweries %>% 
   group_by(state) %>% 
@@ -368,7 +346,7 @@ As we can see from this scatter plot, the IPAs are more bitter than other beer s
 
 Now we've established that IPAs are the most popular beer style by far, has IPA always been that popular? Does the popularity change at all over time? Because based on our experience, we know new beer styles are coming out all the time, breweries are quickly adapting to brew those beers to capture the momentum of the new beer styles. So let's look at the popularity over time, again the definition of popularity remains the same, which is defined as the number of beers associated with that particular beer style.
 
-```{r, echo=FALSE, fig.height=6}
+```{r, echo=FALSE, fig.height=7}
 facted_hist_input <- cleaned_all_beers %>% 
   inner_join(top_most_popular_beer_styles, on=beer_style) %>%
   drop_na(c(beer_average_rating, year)) %>%
@@ -430,9 +408,9 @@ ggplot(
 
 Voila, this is cool! We could see the exact ranks of each beer style over time by year. Now we know New England IPA surpassed American IPA, and has been the most popular beer style in since 2019. Sour was only ranked at 9th in 2018 but moved up on the list to the rank 3rd in 2019. Farmhouse Ale enjoyed its popularity from 2012 through 2019, then fell out of the top 10 most popular beer style in the following year, but made it back to the list in 2021. Red American Amber also had a similar fate where it remained popular from 2010 till 2017, eventually fell out of favor in 2018. Imperial Stout is an interesting case where it was ranked at 9th in 2010, and disappeared in the subsequent years, it did make its comback in 2015 and ranked at 6th and remain on the popularity list. Milkshake IPA was a once super hyped beer style that made its short appearance on the list in 2019 and 2020. Surprisingly, American Lager took a spot in both 2020 and 2021 and ranked at 8t and 9t respectively, Lager (e.g. Budweiser) used to be considered "uncrafty" by the craft beer geeks, apparently brewers started making tweaks to the traditional recipes to make it more interesting.
 
-## What are the highly rated beer styles and what makes a beer better rated?
+## What are the highly rated beer styles?
 
-So far we have looked at the popular beer styles, however,
+So far we have looked at the popular beer styles, however, as stated previously a popular beer style doesn't always receive a high rating, it only suggests that people are drinking this style of beers a lot more than other styles. Okay now, let's find out what the most highly rated beer styles, we are going to show this using a boxplot. Again we will limit this analysis to the top 20 most popular beers.
 
 ```{r, echo=FALSE}
 most_popular_beer_ratings <- top_most_popular_beer_styles %>% 
@@ -446,6 +424,38 @@ ggplot(most_popular_beer_ratings, aes(x=beer_average_rating, y= fct_reorder(beer
   ylab("Beer style")
 ```
 
+This is interesting! The most deserved beer styles are New England IPA (including the Double version), Stout (including Imperial Stout and Milk Stout), Sour (Including Sour - Fruited and Sour - Other), and also Double IPA. The most popular beer style American IPA is not rated very favorably, on top of that, it has a lot outlines on the left, indicating there are a lot of badly rated American IPA beers. Although the median rating of the Farmhouse Ale is not very high, it seems to have a lot of outliers on the right side, suggesting there are lot of high rated Farmhouse Ales.
+
+### What makes a beer more desirable?
+
+We couldn't help but wonder why some beers are rated higher than others, perhaps the highly desired beers share the same characteristics? If so what are the those characteristics? We set out to answer this question by looking at beer IBU and beer ABV. Before we jump into the analysis, we want to clarify one thing, which is that different beer styles have fundamentally different characteristics, e.g. Imperial Stout is inherently more alcoholic and sweeter than American IPA, so it would inevitably introduce some noise if we treat all beer styles the same. As seasoned Untappd users ourselves, we would use different benchmarks when it comes to rating different beer styles. Due to this reason, we decided to focus on IPA styles only for answering this question (defined as the beer styles that contain the mention of IPA).
+
+We used our beer experience to discretize beer IBU, beer ABU and beer rating using the following rules, and then create a mosaic plot.
+
+-   If beer ABV value
+
+    1.  \< 6% then low
+
+    2.  \>= 6% and \< 8% then median
+
+    3.  \>= 8% then high
+
+-   If beer IBU value
+
+    1.  \< 30 then low
+
+    2.  \>= 30 and \< 50 then median
+
+    3.  \>= 50 then high
+
+-   If beer rating value
+
+    1.  \< 3.6 then low
+
+    2.  \>= 3.6 and \< 4 then median
+
+    3.  \>= 4 then high
+
 ```{r, echo=FALSE}
 beer_rating_mosaic <- cleaned_all_beers %>%
   select(beer_style, state, beer_average_rating, beer_abv, beer_ibu) %>%
@@ -456,23 +466,33 @@ beer_rating_mosaic <- cleaned_all_beers %>%
   mutate(beer_rating_category = ifelse(beer_average_rating < 3.6, "low", ifelse(beer_average_rating < 4.0, "median", "high"))) %>% 
   mutate(beer_abv_category = fct_rev(fct_reorder(beer_abv_category, beer_abv))) %>%
   mutate(beer_ibu_category = fct_rev(fct_reorder(beer_ibu_category, beer_ibu))) %>%
-  mutate(beer_rating_category = fct_reorder(beer_rating_category, beer_average_rating))
+  mutate(beer_rating_category = fct_reorder(beer_rating_category, beer_average_rating)) %>%
+  mutate(beer_abv = beer_abv_category, 
+         beer_ibu = beer_ibu_category, 
+         beer_rating=beer_rating_category)
 ```
 
 ```{r, echo=FALSE}
-vcd::mosaic(beer_rating_category ~ beer_abv_category + beer_ibu_category, 
+vcd::mosaic(beer_rating ~ beer_abv + beer_ibu, 
             direction=c("v", "v", "h"), 
+            rot_labels = c(0, 90, 45, 90),
+            set_var = c("a", "b", "c"),
             beer_rating_mosaic,
-            highlighting_fill=brewer.pal(3, 'Reds'))
+            highlighting_fill=brewer.pal(3, 'Reds'), 
+            main="Beer rating V.S. beer abv and beer ibu for IPA styles")
 ```
+
+The mosaic plot shows that IPAs with higher ABVs tend to receive a higher rating. In addition, the IPAs with low IBUs tend to get higher ratings as well. In other words, people tend to prefer a strong but not too hoppy IPA (hopefully very fruity), this actually makes sense to us because we all love to drink for both flavor and effect at the same time.
 
 ## What are the best breweries and what beers are they making?
 
-```{r, echo=FALSE, fig.width=8, fig.height=6}
+We have looked the popular beer styles and their corresponding ratings. The next question is very relevant for us because we really want to know what the best breweries are and what they are making, this will facilitate us in our beer hunting adventure. However, there are so many breweries in the dataset, we will limit this analysis to the top 50 most highly rated breweries across the US.
+
+```{r, echo=FALSE, fig.width=8, fig.height=7}
 best_brewery_data <- cleaned_all_breweries %>% 
   select(brewery, average_rating) %>%
   arrange(desc(average_rating)) %>%
-  top_n(50) %>%
+  top_n(62) %>%
   inner_join(most_popular_beer_ratings, by="brewery") %>%
   group_by(brewery, beer_style) %>%
   summarise(freq=n()) %>%
@@ -484,7 +504,9 @@ best_brewery_data <- cleaned_all_breweries %>%
   mutate(across("brewery", str_replace_all, "Brewing Company", "")) %>%
   mutate(across("brewery", str_replace_all, "Brewing", "")) %>%
   mutate(across("brewery", str_replace_all, "Co", "")) %>%
-  mutate(across("brewery", str_replace_all, "Brewery", ""))
+  mutate(across("brewery", str_replace_all, "Brewery", "")) %>%
+  mutate(brewery = str_trim(brewery))
+
   
 ggplot(best_brewery_data, aes(fct_infreq(beer_style), fct_infreq(brewery), fill=scaled_freq)) +
   geom_tile(color="white") + 
@@ -498,7 +520,10 @@ ggplot(best_brewery_data, aes(fct_infreq(beer_style), fct_infreq(brewery), fill=
   ggtitle("Relative frequency of beer styles per state") + 
   xlab("Brewery") + 
   ylab("Beer style") +
-  scale_fill_gradient(
+  scale_fill_gradient2(
+    low = "#A1D3FA",
+    mid = "#3670A0",
+    high = "#142F47",
     breaks = c(-1, 0.8, 2.5),
     labels = c("low", "median", "high"),
     guide = guide_colourbar(nbin = 100, 
@@ -508,3 +533,5 @@ ggplot(best_brewery_data, aes(fct_infreq(beer_style), fct_infreq(brewery), fill=
                             title="Relative frequency")
    )
 ```
+
+It looks like most of the top breweries are making a lot of IPAs at the first glance, this actually corroborates with what we've observed so far, which is that IPAs are the most popular beer styles and some of the IPA styles (New England or Double IPA) have the best ratings in the US. There are some all-around breweries such as Cypress Creek Southern Ales that brew all kinds of beer styles. On the other hand, more than half of the top breweries seem to specialize in certain beer styles, which is probably reason why they are so good at what they are doing. For example, Trilium, Treehouse and Other half only focus on IPAs, whereas breweries like Side Project, and Ladd & Lass brewing focus on the sour and farmhouse styles. We do want to emphasize the fact that we only scraped the top 24 beers for each brewery due to the limited information Untappd allows us to pull, however, we think 24 beers could be a good proxy for all beers of each brewery, because the beers from the same brewery do not deviate too much from what they've done in the past.
