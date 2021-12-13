@@ -377,7 +377,7 @@ beer_style_production_by_year <- cleaned_all_beers %>%
   filter(production_rank <= 10)
 ```
 
-```{r, echo=FALSE, fig.width = 14, fig.height= 9}
+```{r, echo=FALSE, fig.width = 12, fig.height= 7}
 beer_style_palette <- distinctColorPalette(25, runTsne = TRUE)
 ggplot(
   beer_style_production_by_year,
@@ -387,26 +387,24 @@ ggplot(
     stratum = factor(production_rank)
   )
 ) +
-  geom_alluvium(aes(fill = beer_style), color = "black") +
+  geom_flow(aes(fill = beer_style), color = "black") +
   geom_stratum(aes(fill = beer_style)) +
-  geom_text(
-    stat = "alluvium",
-    aes(
-      label = paste(
-        beer_style_production_by_year$production_rank,
-        "-",
-        abbreviate(beer_style_production_by_year$beer_style)
-      ),
-      size = 5
-    )) +
-      scale_fill_manual(values = beer_style_palette) +
-      guides(y = "none") + 
-      theme_wsj(color = "gray") +
-      ggtitle("Beer styles Production Increases over years in America"
-      )
+  geom_text(stat = "alluvium",
+            aes(
+              label = paste(
+                beer_style_production_by_year$production_rank,
+                "-",
+                abbreviate(beer_style_production_by_year$beer_style)
+              )),
+              size = 2
+            ) +
+  scale_fill_manual(values = beer_style_palette) +
+  guides(y = "none", fill=guide_legend(ncol=4)) +
+  theme_wsj(color="gray") +
+  ggtitle("Beer styles Production Increases over years in America")
 ```
 
-Voila, this is cool! We could see the exact ranks of each beer style over time by year. Now we know New England IPA surpassed American IPA, and has been the most popular beer style in since 2019. Sour was only ranked at 9th in 2018 but moved up on the list to the rank 3rd in 2019. Farmhouse Ale enjoyed its popularity from 2012 through 2019, then fell out of the top 10 most popular beer style in the following year, but made it back to the list in 2021. Red American Amber also had a similar fate where it remained popular from 2010 till 2017, eventually fell out of favor in 2018. Imperial Stout is an interesting case where it was ranked at 9th in 2010, and disappeared in the subsequent years, it did make its comback in 2015 and ranked at 6th and remain on the popularity list. Milkshake IPA was a once super hyped beer style that made its short appearance on the list in 2019 and 2020. Surprisingly, American Lager took a spot in both 2020 and 2021 and ranked at 8t and 9t respectively, Lager (e.g. Budweiser) used to be considered "uncrafty" by the craft beer geeks, apparently brewers started making tweaks to the traditional recipes to make it more interesting.
+o VVla, this is cool! We could see the exact ranks of each beer style over time by year. Now we know New England IPA surpassed American IPA, and has been the most popular beer style in since 2019. Sour was only ranked at 9th in 2018 but moved up on the list to the rank 3rd in 2019. Farmhouse Ale enjoyed its popularity from 2012 through 2019, then fell out of the top 10 most popular beer style in the following year, but made it back to the list in 2021. Red American Amber also had a similar fate where it remained popular from 2010 till 2017, eventually fell out of favor in 2018. Imperial Stout is an interesting case where it was ranked at 9th in 2010, and disappeared in the subsequent years, it did make its comback in 2015 and ranked at 6th and remain on the popularity list. Milkshake IPA was a once super hyped beer style that made its short appearance on the list in 2019 and 2020. Surprisingly, American Lager took a spot in both 2020 and 2021 and ranked at 8t and 9t respectively, Lager (e.g. Budweiser) used to be considered "uncrafty" by the craft beer geeks, apparently brewers started making tweaks to the traditional recipes to make it more interesting.
 
 ## What are the highly rated beer styles?
 
