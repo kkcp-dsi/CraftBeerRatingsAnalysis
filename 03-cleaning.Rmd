@@ -93,6 +93,7 @@ cleaned_all_beers$state <- gsub('_', ' ', cleaned_all_beers$state)
 ```
 
 **After Cleaning**
+After cleaning, we have 124,916 beers in total. 
 
 ```{r}
 rmarkdown::paged_table(sample_n(cleaned_all_beers, 10))
@@ -109,7 +110,7 @@ Removed un-necessary columns in all_breweries data frame and renamed
 
 Cleaned breweries with less than 10 beers total and the breweries which
 are closed, proprietor, bar as there are mostly useless for our
-question.
+question. There are 5015 breweries in total after the cleaning. 
 
 ```{r}
 cleaned_all_breweries <-
