@@ -182,7 +182,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#what-are-the-best-breweries-and-what-beers-are-they-making"><i class="fa fa-check"></i><b>5.6</b> What are the best breweries and what beers are they making?</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
+<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="interactive-component.html"><a href="interactive-component.html#instructions"><i class="fa fa-check"></i><b>6.1</b> Instructions</a></li>
+</ul></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#observations"><i class="fa fa-check"></i><b>7.1</b> Observations</a></li>
@@ -210,7 +213,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="interactive-component" class="section level1" number="6">
 <h1><span class="header-section-number">Chapter 6</span> Interactive component</h1>
+<p>The purpose of this D3 visualization is to better understand the landscape of the craft beer industry. Specifically this visualization is primarily motivated by several questions shown below,</p>
+<ul>
+<li><p>What are the popular beer styles?</p></li>
+<li><p>What beer styles are more popular across different states?</p></li>
+<li><p>What are the characteristics of each beer style?</p></li>
+<li><p>why are certain beer styles better rated than others?</p></li>
+</ul>
+<p>The D3 visualization combines several plots together including the beer style rating density, beer style popularity over time, beer ibu density, beer abv density, and beer style production by state. Although some of the plots have been shown individual in the results section of our book, we believe looking at the data holistically could give us a better understanding of the data. To avoid overplotting, we’ve only included the top 20 most popular beer styles in this visualization, which is defined as the number of beers associated with that particular beer style.</p>
+<div id="instructions" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Instructions</h2>
+<p>There are two interactive components in this visualization including:</p>
+<ul>
+<li><p>A multi-select dropdown box that allows users to add more beer styles to the plots.</p></li>
+<li><p>A beer rating slider for including beers with a specific rating range, the range is cut off at 2.0 on the lower bound because there are almost no beers in that range.</p></li>
+<li><p>In addition under the dropdown box, we included a checkbox as a shortcut for users to include all beer styles in the plots.</p></li>
+<li><p>By default, American IPA, New England IPA, and Sour - Fruited are selected and the rating slider contains the full range of the ratings.</p></li>
+<li><p>At last, we want to make a comment about density plots, where the underlying density function interpolates the missing values therefore the density plots span the ratings that are not selected by the rating slider.</p></li>
+</ul>
+<iframe src="https://vizhub.com/undefined/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=embed" width="100%" height="1080px" data-external="1">
+</iframe>
+<p>Unfortunately, the D3 visualization is getting cut off after being rendered in the book, one would have to scroll up and down like crazy to see it. Therefore we decided to move the D3 visualization to vizhub, which can be found at <a href="https://vizhub.com/ChaoPang/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=full" class="uri">https://vizhub.com/ChaoPang/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=full</a></p>
 
+</div>
 </div>
             </section>
 
