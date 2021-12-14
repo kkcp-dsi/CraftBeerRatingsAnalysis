@@ -27,7 +27,7 @@ There are two interactive components in this visualization including:
 -   At last, we want to make a comment about density plots, where the underlying density function interpolates the missing values therefore the density plots span the ratings that are not selected by the rating slider.
 
 ```{r, out.width="100%"}
-knitr::include_url("https://vizhub.com/ChaoPang/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=full", height = "1080px")
+knitr::include_url("https://vizhub.com/undefined/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=embed", height = "1080px")
 ```
 
 Unfortunately, the D3 visualization is getting cut off after being rendered in the book, one would have to scroll up and down like crazy to see it. Therefore we decided to move the D3 visualization to vizhub, which can be found at <https://vizhub.com/ChaoPang/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=full>
