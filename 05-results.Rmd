@@ -52,6 +52,18 @@ most_popular_beer_ratings <- top_most_popular_beer_styles %>%
   drop_na(beer_average_rating)
 ```
 
+**Total Beers in Beer Ratings data:**
+
+```{r, echo=FALSE}
+cat(paste("No.of Beers: ", nrow(cleaned_all_beers[!is.na(cleaned_all_beers$beer_name), ])))
+```
+
+**Total Breweries in Brewery info data:**
+
+```{r, echo=FALSE}
+cat(paste("No.of Breweries: ", nrow(cleaned_all_breweries[!is.na(cleaned_all_breweries$brewery), ])))
+```
+
 ## Where are the breweries located?
 
 Let's first take a look at a sample of the brewery data below. The dataset contains the brewery name, description, address, geo coordinates, average user ratings of the brewery (calculated by the average rating of all beer ratings), the number of beers, the number of ratings given the brewery received in total, and etc.
@@ -188,6 +200,44 @@ most_popular_beer_ratings %>%
   sample_n(20) %>%
   rmarkdown::paged_table()
 ```
+
+You can read more about beer styles using the following links
+
+[Sour - Fruited](https://www.brewersassociation.org/edu/brewers-association-beer-style-guidelines/#:~:text=vary%20widely%20EBC)-,American%2DStyle%20Fruited%20Sour%20Ale,-Color%3A%20Can%20range)
+
+[IPA - American](https://www.brewersassociation.org/edu/brewers-association-beer-style-guidelines/#:~:text=6%2D14%20EBC)-,American%2DStyle%20India%20Pale%20Ale,-Color%3A%20Pale%20to)
+
+[Pale Ale - American](https://www.brewersassociation.org/edu/brewers-association-beer-style-guidelines/#:~:text=16%2D36%20EBC)-,American%2DStyle%20Pale%20Ale,-Color%3A%20Straw%20to)
+
+[New England - IPA](https://vinepair.com/wine-blog/what-is-new-england-ipa/)
+
+[Sour - Other](https://www.brewersassociation.org/edu/brewers-association-beer-style-guidelines/#:~:text=20%2B(40%2B%20EBC)-,American%2DStyle%20Sour%20Ale,-Color%3A%20Pale%20to)
+
+[Double New England IPA](https://hazyandhoppy.com/when-does-an-ipa-become-a-double-ipa/)
+
+[Porter - American](https://www.totalwine.com/beer-guide/ale/porter/american-porter#:~:text=American%20Imperial%20Porter%20is%20emerging,reaching%2010%20percent%20or%20more.)
+
+[Porter - Other](https://www.craftbeer.com/beer-styles?family=porters)
+
+[Blonde Ale](https://www.brewersassociation.org/edu/brewers-association-beer-style-guidelines/#:~:text=Origin%20Ale%20Styles-,Golden%20or%20Blonde%20Ale,-Color%3A%20Straw%20to)
+
+[Brown Ale](https://en.wikipedia.org/wiki/Brown_ale)
+
+[Stout - Imperial](https://www.craftbeer.com/styles/american-imperial-stout)
+
+[Stout - Milk/Sweet](https://www.craftbeer.com/styles/english-style-sweet-stout-milk-stout)
+
+[Stout - American](https://www.craftbeer.com/styles/american-stout)
+
+[American - Lager](https://www.brewersassociation.org/edu/brewers-association-beer-style-guidelines/#:~:text=Origin%20Lager%20Styles-,American%2DStyle%20Lager,-Color%3A%20Straw%20to)
+
+[Märzen](https://www.americancraftbeer.com/what-the-hell-is-a-maerzen/)
+
+[Red American Amber](https://craftbeerclub.com/beer-style/american-amber--red-ale#:~:text=This%20an%20umbrella%20term%20that,from%20amber%20to%20red%20tones.&text=Ambers%20use%20the%20crystal%20malt,reddish%20Munich%20or%20Vienna%20malts.)
+
+[Wheat - Hefeweizen](https://www.craftbeer.com/styles/german-style-hefeweizen)
+
+Farmhouse Ale
 
 We decided not to compare the absolute frequencies across states due to the fact that states such as California and New York have way more breweries than states like Mississippi, the fills associated with those dominant states would overshadow the other states in a heatmap. To work around this issue, we calculated the relative frequency of the beer styles for each state and used it as the fill-in heatmap. And this is a reasonable decision because we just wanted to see what types of beer are more popular in different states.
 

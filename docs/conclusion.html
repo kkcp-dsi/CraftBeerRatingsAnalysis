@@ -213,29 +213,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="conclusion" class="section level1" number="7">
 <h1><span class="header-section-number">Chapter 7</span> Conclusion</h1>
+<p>We initiated this project with a bunch of specific questions in mind to help us understand the craft beer industry. As we were diving deeper into the data, we came up with new questions along this journey and expanded our results. To recap, we started out our analysis by investigating the brewery distribution across country, then looked at the popular beer styles in each state. Next we investigated whether there is a difference in people’s rating beer ratings, and eventually we looked at what makes specific beers/breweries more favorable. The analyses we’ve done so far not only confirmed our pre-existing beliefs about craft beer but also provided some new insights that we didn’t know previously. In addition, the interactive visualization allows us to look at beer data from different aspects at the same time holistically, which enabled us to answer unplanned questions on the fly.</p>
 <div id="observations" class="section level2" number="7.1">
 <h2><span class="header-section-number">7.1</span> Observations</h2>
-<p>From the analysis, we had some new revelations and also some support for our existing understanding of how craft beer ratings are being given out and the increase in popularity of different beer styles over the years.</p>
 <ul>
-<li><p>The majority of the breweries in the country are located in about 10 states with California being on the top with 547 Breweries followed by Washington(274) and New York(273).</p></li>
-<li><p>We thought that ratings will be different by the state for craft beers but the average ratings for the craft beers across the states are following a unimodal distribution.</p></li>
-<li><p>IPA-American seems to be the beer style that most Americans like by looking at the numbers, it does have more beers available than any other style in this country.</p></li>
-<li><p>Since the last 4 years, new beer styles are gaining popularity as we observed more new beers are being added in other beer_styles. For example, each year since 2010-2010-2017 IPA-American is the beer style with a new number of beers added in the year. Since 2018 The first place is taken by New England-IPA. Interestingly Lager isn’t in the top 10 list from 2010-2019 but it made the list in 2020 and 2021 by being on 8th and 9th this is interesting because lager isn’t considered as a beer.</p></li>
+<li><p>The majority of the breweries in the country are located in about 10 states with California being on the top with 547 Breweries followed by Washington (274) and New York (273).</p></li>
+<li><p>We long suspected that the beer rating behaviors would be different across regions (people from certain regions are more generous and strict), however, the brewery ratings regardless of the regions seem to follow a uni-modal distribution and center around the same median, suggesting people rate beers in a similar fashion.</p></li>
+<li><p>American IPA is by far the most beer style at all time and had been ranked 1st from 2010 until New England IPA took over in 2019. Despite its popularity, American IPA is not the most highly rated beer style, this finding suggests that American IPA is an easy to drink beer and people might prefer it for its popularity and availability.</p></li>
+<li><p>In the past 4 years, new beer styles started gaining momentum in the beer community as we observed more new beers being added in other beer_styles.</p></li>
 </ul>
+<p>For example, each year since 2010-2017 IPA-American is the beer style with a new number of beers added in the year. Since 2018 The first place is taken by New England-IPA. Interestingly Lager isn’t in the top 10 list from 2010-2019 but it made the list in 2020 and 2021 by being on 8th and 9th this is interesting because lager isn’t considered as a beer.</p>
 </div>
 <div id="limitations" class="section level2" number="7.2">
 <h2><span class="header-section-number">7.2</span> Limitations</h2>
 <ul>
-<li><p>The beer data we downloaded from untappd only gave us popular 24 beers per brewery without an api_access. We got everything we can get without the API-access. And these ratings are as of November 1st, 2021. Ideally, we would like to see all the beers information so we can get more insights.</p></li>
-<li><p>We have missing data in beer_ibu and beer_abv values. we had to drop those beers with missing values while using those variables in our analysis.</p></li>
+<li><p>We web-scraped the beer data from the Untappd website, unfortunately, we could only get our hands on the top 24 popular beers per brewery without using their official rest API. We tried to request it through the official channel, but their site states explicitly that the API would not be used for any type of research or personal projects, which is the reason we went for the web-scraping approach. Ideally, we would like to include the beers for this project.</p></li>
+<li><p>About half of beer entries have missing values in the beer characteristics columns (beer_ibu and beer_abv), we had to drop those beers for specific analyses, we thought about imputing those missing values by using the average values of similar beers brewed by the same brewery. Due to the time constraint, we didn’t pursue this idea further.</p></li>
 </ul>
 </div>
 <div id="future-work" class="section level2" number="7.3">
 <h2><span class="header-section-number">7.3</span> Future Work</h2>
 <ul>
-<li><p>We would like to request untappd to query their API and have user-level beer check-ins and rating data by which we can also overlay single user rating behavior vs larger population by state, city, or country.</p></li>
-<li><p>We would also like to get data from different social mediums where users give ratings to craft beers and compare results from all the different sources and see if there are any differences in rating behaviors.</p></li>
-<li><p>If possible we would like to get data of ingredients used in producing the beer and probably run analysis on what ingredients presence and compositions make a beer liked more. By doing this we can run a machine learning model to predict beer ingredients and compositions which can be liked by more people.</p></li>
+<li><p>Since we’ve come this far and built out the data pipeline already, we really want to do all the analyses once again using the full beer data. To do that, we need to get the Untappd approval for using their official API or figure out a different strategy to web-scrape all the data (since each beer page is a publicly available page we just need to figure out a way to resolve those URLs). In addition, the Untappd API gives us access to the user level data, that would open up all kinds of possibilities for new research topics such understanding people’s rating behaviors.</p></li>
+<li><p>As beer hunters ourselves, we really want to find good beers. As we collect more beer data, we could potentially build a recommender system for ourselves to guide our beer hunting adventure. The good news is that Untappd actually allows us to download our own beer rating data if we pay a small patronage, we could easily plug in our beer history into to get new beer recommendations.</p></li>
+<li><p>If possible we would like to get data on beer ingredients (hops, malts and yeasts) and brewing techniques, we could run an analysis on what ingredients and compositions make a beer more desirable. We could even take this one step further by training a machine learning model to predict whether or not a beer would become highly rated given its ingredients, techniques, brewery and other information we could collect on this beer.</p></li>
 </ul>
 
 </div>

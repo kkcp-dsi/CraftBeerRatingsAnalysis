@@ -68,7 +68,7 @@ the beer rating data (will be discussed later in the data source
 section) in conjunction with our beer knowledge hopefully, we will gain
 some new insights that we didn't previously know. Specifically, we
 decided to analyze the beer styles, beer characteristics, regional
-origins, and the corresponding ratings given out by users, we have
+origins, and the corresponding ratings given out by users. We have
 designed a few starter questions to get us started shown below, however,
 as we dive into the data deeper, the questions will definitely go beyond
 the scope defined here in the later chapters.
