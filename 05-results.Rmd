@@ -291,7 +291,7 @@ The x-axis is ordered by the popularity of the beer style and the y-axis is orde
 
 One of the questions we have long suspected is that people have different rating behaviors across regions, and this question was actually motivated by a conversation with our beer friends in the Netherlands, where our Dutch friends criticized that Americans always give high ratings to beers whereas Dutch people are more objective when it comes to beer rating, as a consequence, American beers tend to receive high ratings than the Dutch/European beers. It was quite an accusation and at the same time an interesting hypothesis, so this idea has been stuck with us for a long time, now it's time to put it to test! Unfortunately, the data we've collected is only limited to the US, but the good news is that the same idea still applies to this data, therefore we decided to check whether people across different states have slightly different beer rating behaviors. So are people from certain states more generous or strict with ratings?
 
-To answer this question, we will go back to our brewery data, where it contains the rating of every brewery (calculated as the average of all beer ratings) from every state, we could easily dump all of the brewery ratings in ridgeline plot by the state to look at rating behaviors across the country. To avoid overplotting, we will only show the top 20 states with the most breweries in this analysis.
+To answer this question, we will go back to our brewery data, where it contains the rating of every brewery (calculated as the average of all beer ratings) from every state, we could easily dump all of the brewery ratings in ridgeline plot by state to look at rating behaviors across the country. To avoid overplotting, we will only show the top 20 states with the most breweries in this analysis.
 
 ```{r, echo=FALSE, fig.height=7}
 
@@ -314,7 +314,7 @@ ggplot(aes(average_rating, fct_reorder(state, average_rating))) +
   theme(plot.title = element_text(size=16))
 ```
 
-Apparently, most of the states follow a uni-modal distribution, and their peaks are centered around the same rating, we don't observe any differences in terms of rating behaviors across the states. So this observation contrasts with our Dutch friend's hypothesis, perhaps he is wrong? After some serious pondering, we think our dear Dutch friend might be biased in their assessment, let's try to explain the rationale here. Our Dutch beer friend is a beer connoisseur and is on a mission to drink the best beers in the world, he has had more than 8000 unique beers at the time of writing based on his Untappd profile, our theory is that the American beers he finds at the local beer stores in the Netherlands or beer ordering websites only carry the best American beers, in addition, he is most likely only looking for American beers with high ratings and blatantly ignoring those with low-ratings, as a consequence, his sample of American beers might be biased towards the high rating ones. To test this theory, we are going to look at the same data again, however, this time we will simulate our friends' beer purchasing behavior where one would only order beers from the top 50 most highly rated breweries of each state.
+Apparently, most of the states follow a uni-modal distribution, and their peaks are centered around the same rating, we don't observe any differences in terms of rating behaviors across the states. So this observation contrasts with our Dutch friend's hypothesis, perhaps he is wrong? After some serious pondering, we think our dear Dutch friend might be biased in their assessment, let's try to explain the rationale here. Our Dutch beer friend is a beer connoisseur and is on a mission to drink the best beers in the world, he has had more than 8000 unique beers at the time of writing based on his Untappd profile. Our theory is that the American beers he finds at the local beer stores in the Netherlands or beer ordering websites only carry the best American beers, in addition, he is most likely only looking for American beers with high ratings and blatantly ignoring those with low-ratings, as a consequence, his sample of American beers might be biased towards the high rating ones. To test this theory, we are going to look at the same data again, however, this time we will simulate our friends' beer purchasing behavior where one would only order beers from the top 50 most highly rated breweries of each state.
 
 ```{r, echo=FALSE, fig.height=7}
 cleaned_all_breweries %>%
@@ -369,10 +369,8 @@ create_beer_category <- function(beer_style) {
     return ("IPA")
   }else if(grepl("Sour", beer_style)){
     return ("Sour")
-  }else if(grepl("Stout", beer_style)){
-    return ("Stout")
-  }else if(grepl("Porter", beer_style)){
-    return ("Porter")
+  }else if(grepl("Stout", beer_style) || grepl("Porter", beer_style)){
+    return ("Stout & Porter")
   }
   return (NA)
 }
