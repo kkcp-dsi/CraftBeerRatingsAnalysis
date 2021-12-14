@@ -33,7 +33,7 @@
   
 <link rel="prev" href="data-transformation.html"/>
 <link rel="next" href="results.html"/>
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -182,10 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#what-are-the-best-breweries-and-what-beers-are-they-making"><i class="fa fa-check"></i><b>5.6</b> What are the best breweries and what beers are they making?</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="interactive-component.html"><a href="interactive-component.html#instructions"><i class="fa fa-check"></i><b>6.1</b> Instructions</a></li>
-</ul></li>
+<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#observations"><i class="fa fa-check"></i><b>7.1</b> Observations</a></li>
@@ -216,12 +213,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Too find out the missing values in our cleaned data sets we used a missing_value_plot function we created as part of our course assignment. The missing_value plot function can be found at <a href="https://github.com/kkcp-dsi/CraftBeerRatingsAnalysis/blob/main/utility/plot_missing.R">plot_missing.R</a></p>
 <div id="missing-values-in-beer-ratings-dataset" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Missing Values in Beer Ratings Dataset</h2>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>The more percentage of missing values in the cleaned_all_beers dataset are in <code>beer_ibu</code>, <code>beer_desc</code> and <code>beer_abv</code> columns. We can ignore <code>beer_desc</code> column as that column will not help in out analysis. In case of <code>beer_abv</code> and <code>beer_ibu</code> we are going to to remove the null value rows while utilizing these variables in our analysis as we cannot add the data to the missing rows using any of the generalization methods. <code>beer_ibu</code> and <code>beer_abv</code> can tell a lot about a beer taste so we do not want to drop these columns as well.</p>
 </div>
 <div id="missing-values-in-brewery-ratings-dataset" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Missing Values in Brewery Ratings Dataset</h2>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>The more percentage of missing values in the cleaned_brewery_dataset is in <code>latitude</code> and <code>Longitude</code> columns. We are ignoring these columns as we have other columns we can utilize to get spatial maps namely <code>city</code> and <code>state</code>.</p>
 
 </div>
