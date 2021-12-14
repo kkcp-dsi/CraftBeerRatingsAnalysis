@@ -21,8 +21,8 @@ $ cd CraftBeerRatingsAnalysis/brewery_beer_parser
 $ python3 data_merger.py
 ```
 
-\*\* We Added State and Brewery name to beer dataset using the in order
-to make it easy for us to join brewery data to beer data in case if we
+\*\* We added State and Brewery name to the beer dataset in order to
+make it easy for us to join brewery data to beer data in case if we
 needed that in our further analysis.
 
 Merged data will be exported to `data` directory in the project.
@@ -46,15 +46,15 @@ all_beers <- read_csv(paste(folder_path, 'all_beers.csv', sep='/'))
 rmarkdown::paged_table(sample_n(all_beers, 10))
 ```
 
-Cleaned up the beer_abv column by removing the characters `% ABV` and
-beer_ibu column by removing the characters `IBU` and converted those
-columns to a double datatype.
-
-Cleaned up date values to same format and added a new column named year.
-
-Generalized known duplicated beer styles.
-
-Cleaned up state name in cleaned_all_beers to remove `_` 's
+We removed `% ABV` characters from the beer_abv column and `IBU`
+characters from the beer_ibu column, then we converted these two columns
+as numeric datatype. Next, we converted the beer_added column to date
+datatype and also added a year column that will be required by the
+downstream analysis. In addition, we standardized the beer style names
+because the same style could be referred to differently in the data e.g.
+IPA - New England / Hazy and IPA - New England both refer to the New
+England IPA. Finally, we cleaned up state name in cleaned_all_beers to
+remove `_` 's. After cleaning, we have 124,916 beers in total.
 
 ```{r}
 clean_up_beer_style <- function(beer_style_name) {
@@ -93,7 +93,6 @@ cleaned_all_beers$state <- gsub('_', ' ', cleaned_all_beers$state)
 ```
 
 **After Cleaning**
-After cleaning, we have 124,916 beers in total. 
 
 ```{r}
 rmarkdown::paged_table(sample_n(cleaned_all_beers, 10))
@@ -105,12 +104,10 @@ rmarkdown::paged_table(sample_n(cleaned_all_beers, 10))
 rmarkdown::paged_table(sample_n(all_breweries, 10))
 ```
 
-Removed un-necessary columns in all_breweries data frame and renamed
-`name` to `brewery_name` column.
-
-Cleaned breweries with less than 10 beers total and the breweries which
-are closed, proprietor, bar as there are mostly useless for our
-question. There are 5015 breweries in total after the cleaning. 
+We removed un-necessary columns in all_breweries dataset and renamed the
+`name` column to `brewery_name`. Furthermore, we removed breweries
+flagged as closed, proprietor, bar, and also breweries with less than 10
+beers. After cleaning there are 5015 breweries in total.
 
 ```{r}
 cleaned_all_breweries <-
