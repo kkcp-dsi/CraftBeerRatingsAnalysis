@@ -124,27 +124,28 @@ state_beer_summary_info <-
   inner_join(state_avg_rating, beer_style_beer_brewery)
 ```
 
-We used [tigris](https://rdocumentation.org/packages/tigris/versions/1.5) to get spatial data for state boundaries in US and t_map for generating an interactive map to show the number of breweries across the US.
-
 When you click on each state, a popup window will appear to show additional information such as the number of breweries, number of beers made, the average brewery rating for that state. Based on this map, it's clear to see that most of the breweries are located in the northeast region, west coast, and Texas and Colorado. In particular, California has the most breweries (547 in total), which surpasses the runner-up Washington state (274 in total). If you want to have a full craft beer experience, I guess California would be the place to go!
 
+We used [tigris](https://rdocumentation.org/packages/tigris/versions/1.5) to get spatial data for state boundaries in US and t_map for generating an interactive map to show the number of breweries across the US.
+
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-mean_rating_map <- inner_join(us_geo, state_beer_summary_info) %>% select(
-  NAME,
-  AverageRating,
-  BreweryCount,
-  NumRatings,
-  NumOfBeers,
-  NumOfCheckins,
-  NumOfUniqueCheckins,
-  brewery,
-  average_rating,
-  beer_name,
-  beer_average_rating,
-  beer_style,
-  AvgBeerStyleRating,
-  geometry
-)
+mean_rating_map <-
+  inner_join(us_geo, state_beer_summary_info) %>% select(
+    NAME,
+    AverageRating,
+    BreweryCount,
+    NumRatings,
+    NumOfBeers,
+    NumOfCheckins,
+    NumOfUniqueCheckins,
+    brewery,
+    average_rating,
+    beer_name,
+    beer_average_rating,
+    beer_style,
+    AvgBeerStyleRating,
+    geometry
+  )
 
 mean_rating_map <-
   subset(mean_rating_map, !(NAME %in% c("Alaska", "Hawaii", "Puerto Rico")))
@@ -164,11 +165,16 @@ my_interactive_map <- tm_shape(mean_rating_map) +
       "Popular Beer :" = "beer_name"
     ),
     id = "NAME",
-    border.col = "white",
+    border.col = "gray",
     palette = "Greens"
+  ) +
+  tm_layout(
+    title = "Breweries Summary by State in US",
+    legend.position=c("left", "bottom")
   )
 
-my_interactive_map <- tmap_leaflet(my_interactive_map)
+my_interactive_map <-
+  tmap_leaflet(my_interactive_map, add.titles = TRUE)
 my_interactive_map
 ```
 
@@ -221,7 +227,8 @@ ggplot(heatmap_input, aes(fct_reorder(beer_style, rn), fct_rev(fct_reorder(state
   ) +
   scale_shape_manual(name = "Labels", values = levels(fct_reorder(
     factor(heatmap_input$beer_style), heatmap_input$rn
-  )))
+  ))) +
+  theme(plot.title = element_text(size=16))
 ```
 
 ```{r}
@@ -253,7 +260,8 @@ ggplot(aes(average_rating, fct_reorder(state, average_rating))) +
   geom_density_ridges(scale=4.0, alpha=0.5) + 
   ggtitle("Distribution of brewery ratings per state") + 
   xlab("Brewery rating") + 
-  ylab("State")
+  ylab("State") +
+  theme(plot.title = element_text(size=16))
 ```
 
 Apparently, most of the states follow a uni-modal distribution, and their peaks are centered around the same rating, we don't observe any differences in terms of rating behaviors across the states. So this observation contrasts with our Dutch friend's hypothesis, perhaps he is wrong? After some serious pondering, we think our dear Dutch friend might be biased in their assessment, let's try to explain the rationale here. Our Dutch beer friend is a beer connoisseur and is on a mission to drink the best beers in the world, he has had more than 8000 unique beers at the time of writing based on his Untappd profile, our theory is that the American beers he finds at the local beer stores in the Netherlands or beer ordering websites only carry the best American beers, in addition, he is most likely only looking for American beers with high ratings and blatantly ignoring those with low-ratings, as a consequence, his sample of American beers might be biased towards the high rating ones. To test this theory, we are going to look at the same data again, however, this time we will simulate our friends' beer purchasing behavior where one would only order beers from the top 50 most highly rated breweries of each state.
@@ -272,7 +280,8 @@ ggplot(aes(average_rating, fct_reorder(state, average_rating))) +
   geom_density_ridges(scale=4.0, alpha=0.5) + 
   ggtitle("Distribution of top 50 breweries ratings per state") + 
   xlab("Brewery rating") + 
-  ylab("State")
+  ylab("State") +
+  theme(plot.title = element_text(size=16))
 ```
 
 Now we can clearly see that there is a difference in terms of the distribution of the brewery ratings across the top 20 states. This confirmes our hypothesis about our friend's biased assessment of the American beers, and we don't think there is a regional difference in terms of the beer rating behaviors.
@@ -296,7 +305,8 @@ ggplot(top_most_popular_beer_styles, aes(x=freq, y=fct_reorder(beer_style, freq)
   geom_point() + 
   ggtitle("Top 20 most popular beer styles") + 
   xlab("Num of beers") + 
-  ylab("Beer style")
+  ylab("Beer style") +
+  theme(plot.title = element_text(size=16))
 ```
 
 ### What makes IPA so popular?
@@ -360,7 +370,8 @@ ggplot(facted_hist_input, aes(year, fct_rev(fct_infreq(beer_style)))) +
   geom_density_ridges(scale=3.0, alpha=0.5) + 
   ggtitle("Popularity of beer styles over time") + 
   xlab("Year") + 
-  ylab("Beer style")
+  ylab("Beer style") +
+  theme(plot.title = element_text(size=16))
 ```
 
 Wow! Pretty interesting, apparently three beer styles including New England IPA, Double New England, and Sour - Fruited took off recently after 2016. We could see New England IPA surpassed American IPA at some point. Porter used to be popular between 2012-2016 but its popularity started to come back down. Although this gives us a rough sense of beer popularity over time, it doesn't tell us the exact popularity rank of each beer style, and how the rank changes. To do that, we created an alluvium diagram below to show the popularity rank of the most popular beer styles by year. Again we only included the top 10 beer styles in this analysis to avoid overplotting. In addition, it's important to mention that the top 10 most popular beer styles at all time may not be the most popular beers in a specific year, so it's perfectly normal to see more beer styles in this alluvium diagram than the previous popularity plots in the same section.
@@ -376,34 +387,35 @@ beer_style_production_by_year <- cleaned_all_beers %>%
     fun      = row_number,
     x        = desc(num_of_beers)
   )) %>%
-  filter(production_rank <= 10)
+  filter(production_rank <= 10) %>%
+  mutate(beer_style_wit_abb = paste(abbreviate(beer_style), ": ", beer_style))
 ```
 
-```{r, echo=FALSE, fig.width = 12, fig.height= 7}
+```{r, echo=FALSE, fig.width = 12, fig.height= 9}
 beer_style_palette <- distinctColorPalette(25, runTsne = TRUE)
 ggplot(
   beer_style_production_by_year,
   mapping = aes(
-    alluvium = beer_style,
+    alluvium = beer_style_wit_abb,
     x = year,
     stratum = factor(production_rank)
   )
 ) +
-  geom_flow(aes(fill = beer_style), color = "black") +
-  geom_stratum(aes(fill = beer_style)) +
+  geom_flow(aes(fill = beer_style_wit_abb), color = "black") +
+  geom_stratum(aes(fill = beer_style_wit_abb)) +
   geom_text(stat = "alluvium",
             aes(
               label = paste(
                 beer_style_production_by_year$production_rank,
                 "\n",
                 abbreviate(beer_style_production_by_year$beer_style)
-              )),
-              size = 3
-            ) +
-  scale_fill_manual(values = beer_style_palette) +
-  guides(y = "none", fill=guide_legend(ncol=4)) +
-  theme_wsj(color="gray") +
-  ggtitle("Beer styles Production Increases over years")
+              )
+            ),
+            size = 3) +
+  scale_fill_manual(name = "Beer Styles", values = beer_style_palette) +
+  guides(y = "none", fill = guide_legend(ncol = 3)) +
+  theme_wsj(color = "gray") +
+  ggtitle("Top 10 Beer Styles\nBy No.of New Beers Added in Each Style")
 ```
 
 Voila, this is cool! We could see the exact ranks of each beer style over time by year. Now we know New England IPA surpassed American IPA and has been the most popular beer style since 2019. Sour was only ranked 9th in 2018 but moved up on the list to the rank 3rd in 2019. Farmhouse Ale enjoyed its popularity from 2012 through 2019, then fell out of the top 10 most popular beer styles in the following year, but made it back to the list in 2021. Red American Amber also had a similar fate where it remained popular from 2010 till 2017, eventually falling out of favor in 2018. Imperial Stout is an interesting case where it was ranked 9th in 2010 and disappeared in the subsequent years, it did make its comeback in 2015 and ranked at 6th and remain on the popularity list. Milkshake IPA was a once super hyped beer style that made its short appearance on the list in 2019 and 2020. Surprisingly, American Lager took a spot in both 2020 and 2021 and ranked at 8t and 9t respectively, Lager (e.g. Budweiser) used to be considered "uncrafty" by the craft beer geeks, apparently, brewers started making tweaks to the traditional recipes to make it more interesting.
@@ -421,7 +433,8 @@ ggplot(most_popular_beer_ratings, aes(x=beer_average_rating, y= fct_reorder(beer
   geom_boxplot() + 
   ggtitle("Boxplots of beer ratings for the top 20 most popular beer styles") + 
   xlab("Beer rating") + 
-  ylab("Beer style")
+  ylab("Beer style") +
+  theme(plot.title = element_text(size=16))
 ```
 
 This is interesting! The most deserved beer styles are New England IPA (including the Double version), Stout (including Imperial Stout and Milk Stout), Sour (Including Sour - Fruited, and Sour - Other), and also Double IPA. The most popular beer style American IPA is not rated very favorably, on top of that, it has a lot of outlines on the left, indicating there are a lot of badly rated American IPA beers. Although the median rating of the Farmhouse Ale is not very high, it seems to have a lot of outliers on the right side, suggesting there are a lot of high-rated Farmhouse Ales.
@@ -531,7 +544,8 @@ ggplot(best_brewery_data, aes(fct_infreq(beer_style), fct_infreq(brewery), fill=
                             draw.llim = FALSE, 
                             barheight = 5,
                             title="Relative frequency")
-   )
+   ) +
+  theme(plot.title = element_text(size=16))
 ```
 
 It looks like most of the top breweries are making a lot of IPAs at the first glance, this actually corroborates with what we've observed so far, which is that IPAs are the most popular beer styles and some of the IPA styles (New England or Double IPA) have the best ratings in the US. There are some all-around breweries such as Cypress Creek Southern Ales that brew all kinds of beer styles. On the other hand, more than half of the top breweries seem to specialize in certain beer styles, which is probably the reason why they are so good at what they are doing. For example, Trillium, Treehouse, and Other Half only focus on IPAs, whereas breweries like Side Project, and Ladd & Lass brewing focus on the sour and farmhouse styles. We do want to emphasize the fact that we only scraped the top 24 beers for each brewery due to the limited information Untappd allows us to pull, however, we think 24 beers could be a good proxy for all beers of each brewery because the beers from the same brewery do not deviate too much from what they've done in the past.

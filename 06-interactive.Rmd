@@ -1,3 +1,33 @@
 # Interactive component
 
-Unfortunately, the D3 visualization is getting cut off after being rendered in the book, one would have to scroll up and down like crazy to see it. Therefore we decided to move the D3 visualization to vizhub, which can be found at <https://vizhub.com/ChaoPang/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=full>.
+The purpose of this D3 visualization is to better understand the landscape of the craft beer industry. Specifically this visualization is primarily motivated by several questions shown below,
+
+-   What are the popular beer styles?
+
+-   What beer styles are more popular across different states?
+
+-   What are the characteristics of each beer style?
+
+-   why are certain beer styles better rated than others?
+
+The D3 visualization combines several plots together including the beer style rating density, beer style popularity over time, beer ibu density, beer abv density, and beer style production by state. Although some of the plots have been shown individual in the results section of our book, we believe looking at the data holistically could give us a better understanding of the data. To avoid overplotting, we've only included the top 20 most popular beer styles in this visualization, which is defined as the number of beers associated with that particular beer style.
+
+## Instructions
+
+There are two interactive components in this visualization including:
+
+-   A multi-select dropdown box that allows users to add more beer styles to the plots.
+
+-   A beer rating slider for including beers with a specific rating range, the range is cut off at 2.0 on the lower bound because there are almost no beers in that range.
+
+-   In addition under the dropdown box, we included a checkbox as a shortcut for users to include all beer styles in the plots.
+
+-   By default, American IPA, New England IPA, and Sour - Fruited are selected and the rating slider contains the full range of the ratings.
+
+-   At last, we want to make a comment about density plots, where the underlying density function interpolates the missing values therefore the density plots span the ratings that are not selected by the rating slider.
+
+```{r, out.width="100%"}
+knitr::include_url("https://vizhub.com/ChaoPang/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=full", height = "1080px")
+```
+
+Unfortunately, the D3 visualization is getting cut off after being rendered in the book, one would have to scroll up and down like crazy to see it. Therefore we decided to move the D3 visualization to vizhub, which can be found at <https://vizhub.com/ChaoPang/aa1efcb807334bf5b716f2a5a0c5c3a7?mode=full>
