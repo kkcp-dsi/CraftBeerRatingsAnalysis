@@ -237,7 +237,7 @@ You can read more about beer styles using the following links
 
 [Wheat - Hefeweizen](https://www.craftbeer.com/styles/german-style-hefeweizen)
 
-Farmhouse Ale
+[Farmhouse Ale](https://en.wikipedia.org/wiki/Farmhouse_ale)
 
 We decided not to compare the absolute frequencies across states due to the fact that states such as California and New York have way more breweries than states like Mississippi, the fills associated with those dominant states would overshadow the other states in a heatmap. To work around this issue, we calculated the relative frequency of the beer styles for each state and used it as the fill-in heatmap. And this is a reasonable decision because we just wanted to see what types of beer are more popular in different states.
 
